@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<!-- 可以配置多个appender来对应不同的输出，如文件输出，控制台输出等 -->
+	<!-- 不同的输出类型对应着不同的calss，如控制台输出class对应着 org.apache.log4j.ConsoleAppender，文件输出可以使用class 
+		org.apache.log4j.RollingFileAppender -->
+
+	<!--配置appender为文件 -->
+	<!-- Log4j提供的appender有以下几种: -->
+	<!-- org.apache.log4j.ConsoleAppender(控制台), -->
+	<!-- org.apache.log4j.FileAppender(文件), -->
+	<!-- org.apache.log4j.rolling.RollingFileAppender(每天产生一个日志文件), -->
+	<!-- org.apache.log4j.RollingFileAppender(文件大小到达指定尺寸的时候产生一个新的文件), -->
+	<!-- org.apache.log4j.WriterAppender(将日志信息以流格式发送到任意指定的地方) -->
+	<appender name="rollingFile" class="org.apache.log4j.RollingFileAppender">
+		<!-- <param name="file" value="$${webapp.root}/logs/test.log"/> -->
+		<param name="file" value="E:/logs/test.log" />
+		<param name="append" value="true" />
+		<param name="maxFileSize" value="1MB" />
+		<param name="maxBackupIndex" value="2" />
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+			<param name="FileNamePattern" value="E:/logs/%d{yyyy-MM-dd}/runtime-log.log" />
+		</rollingPolicy>
+		<layout class="org.apache.log4j.EnhancedPatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p](%-35c:%-3L) %m%n" />
+		</layout>
+	</appender>
+
+	<!--配置appender为控制台 -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">  <!-- name给logger或者root调用 -->
+		<layout class="org.apache.log4j.EnhancedPatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p](%-35c:%-3L) %m%n" />
+		</layout>
+		<!--filter过滤器设置输出的级别:ALL < DEBUG < INFO < WARN < ERROR < FATAL < OFF 所以下面输出的是debug到warn，不会有fatal -->
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="levelMin" value="info" />
+			<param name="levelMax" value="warn" />
+			<param name="AcceptOnMatch" value="true" />
+		</filter>
+	</appender>
+
+
+	<!--配置包的日志级别,additivity为是否继承root的日志级别 -->
+	<!--level 配置日志的级别，value="INFO",debug级别的日志不会打印 -->
+	<logger name="com.controller" additivity="false">
+		<level value="INFO" />
+		<!--<appender-ref ref="console"/> -->
+		<appender-ref ref="rollingFile" />
+	</logger>
+
+
+	<!-- Root Logger -->
+	<!-- 所有logger的父类，记录所有的日志。 -->
+	<root>
+		<level value="INFO" />
+		<!--<appender-ref ref="console" /> -->
+		<appender-ref ref="rollingFile" />
+	</root>
+</log4j:configuration>
