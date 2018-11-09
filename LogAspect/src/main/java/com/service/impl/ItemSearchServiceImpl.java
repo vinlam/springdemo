@@ -92,7 +92,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
      */
     @Override
     public Map<String, Object> search(Map searchMap) {
-        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<String, Object>();
         //1.先获取从页面传递过来的参数的值   通过KEY获取
         String keywords = (String)searchMap.get("keywords");//获取主查询的条件
 

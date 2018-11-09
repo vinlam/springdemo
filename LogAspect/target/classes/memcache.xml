@@ -30,7 +30,7 @@
     <bean id="memcachedClient" factory-bean="memcachedClientBuilder"  
         factory-method="build" destroy-method="shutdown" />  
           
-    <bean id="cacheManager" class="com.common.MemcachedCacheManager">  
+    <bean id="cacheManager" class="com.common.memcached.MemcachedCacheManager">  
         <property name="memcachedClient" ref="memcachedClient" />  
         <property name="configMap">  
             <map>  

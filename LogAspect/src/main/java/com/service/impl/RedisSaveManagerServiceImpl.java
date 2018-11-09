@@ -67,7 +67,7 @@ public class RedisSaveManagerServiceImpl<K, V> extends AbstractBaseRedisDao<Stri
 
 	@Override
 	public void delete(String key) {
-		List<String> list = new ArrayList<>();
+		List<String> list = new ArrayList<String>();
 		list.add(key);
 		delete(list);
 	}
