@@ -1,8 +1,10 @@
 package com.common.memcached;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeoutException;
 
 import net.rubyeye.xmemcached.MemcachedClient;  
+import net.rubyeye.xmemcached.exception.MemcachedException;
 
 import org.springframework.cache.Cache;  
 import org.springframework.cache.support.SimpleValueWrapper;  
@@ -20,7 +22,18 @@ public class MemcachedCache implements Cache{
   
     @Override  
     public void clear(){  
-        memCache.clear();  
+        try {
+			memCache.clear();
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MemcachedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
     }  
   
     @Override  

@@ -84,6 +84,13 @@ public class testcontroller {
 		return mv;
 	}
 	
+	@RequestMapping(value="/upload")
+	public ModelAndView upload(){
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("upload");
+		
+		return mv;
+	}
 	
 	@Autowired
 	private MemCacheTestServiceImpl memCacheTestServiceImpl; 
@@ -119,4 +126,13 @@ public class testcontroller {
     	
     	return JSONObject.toJSON(userDTO).toString();
     }
+	@RequestMapping(value="/getUser1",method = RequestMethod.GET,produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	// @Logs(operationType="add操作:",operationName="添加用户")  
+	//@Log(desc="test define annotation")  
+	@ResponseBody
+	public String getUser1(UserDTO userDTO){        
+		System.out.println(JSONObject.toJSON(userDTO));
+		
+		return JSONObject.toJSON(userDTO).toString();
+	}
 }

@@ -76,7 +76,9 @@
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<!-- the maximum size of an uploaded file in bytes -->
-		<property name="maxUploadSize" value="10240000" />
+		<property name="defaultEncoding" value="utf-8"></property>   
+        <property name="maxUploadSize" value="10485760000"></property>  
+        <property name="maxInMemorySize" value="40960"></property>
 	</bean>
 	
 	<!-- solr服务器地址 -->

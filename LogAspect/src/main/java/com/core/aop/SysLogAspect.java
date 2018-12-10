@@ -53,7 +53,7 @@ public class SysLogAspect {
 			.getLogger(SysLogAspect.class);
 
 	// Controller层切点
-	@Pointcut("execution (* com.controller..*.*(..))")
+	@Pointcut("execution (* com.controller..*.*(..)) && !execution(* com.controller.UploadController.*(..))")
 	//@Pointcut("within (com.controller..*.Controller)")
 	//@Pointcut("within(com.controller..*Controller) || within(com.entity..*Entity) || within(com.dao..*Dao) || within (com.service..*Service)")
 	public void controllerAspect() {

@@ -1,4 +1,6 @@
 package com;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -77,7 +79,7 @@ public class testunit {
 	
 	@Autowired
     private SysLogService sysLogService;
-	@Test
+	@Test  //get myCache_12322
 	public void testcache() throws InterruptedException{
 		//sysLogService.selectSysLog("123");
 		
@@ -103,11 +105,53 @@ public class testunit {
 
     @Test  
     public void getTimestampTest() throws InterruptedException{  
-        System.out.println("第一次调用：" + ehCacheTestService.getTimestamp("param"));
+        System.out.println("ehcache第一次调用 key t：" + ehCacheTestService.getTimestamp("t"));
         Thread.sleep(2000);
-        System.out.println("2秒之后调用：" + ehCacheTestService.getTimestamp("param"));
+        System.out.println("ehcache2秒之后调用 key t：" + ehCacheTestService.getTimestamp("t"));
         Thread.sleep(11000);
-        System.out.println("再过11秒之后调用：" + ehCacheTestService.getTimestamp("param"));
+        System.out.println("ehcache再过11秒之后调用 key t：" + ehCacheTestService.getTimestamp("t"));
+    } 
+    
+    @Test  //get myCache_inTimeCache 
+    public void getcacheTest() throws InterruptedException{  
+    	System.out.println("ehcache第一次调用 key inTimeCache：" + ehCacheTestService.getTimestamp("inTimeCache"));
+    	Thread.sleep(2000);
+    	System.out.println("ehcache2秒之后调用 key inTimeCache：" + ehCacheTestService.getTimestamp("inTimeCache"));
+    	Thread.sleep(11000);
+    	System.out.println("ehcache再过11秒之后调用 key inTimeCache：" + ehCacheTestService.getTimestamp("inTimeCache"));
+    } 
+    
+    @Test  //get myCache_inTimeCache  stats items列出所有keys  stats cachedump 7 0 列出的items id，本例中为7，第2个参数为列出的长度，0为全部列出
+    public void clearcacheTest() throws InterruptedException{  
+    	System.out.println("mC_t：" + memCacheTestService.getTimestamp("t"));
+    	System.out.println("mC_st：" + memCacheTestService.getTimestamp("st"));
+    	System.out.println("myCache_t：" + ehCacheTestService.getTimestamp("t"));
+    	Thread.sleep(2000);
+    	System.out.println("2秒后  mC_t：" + memCacheTestService.getTimestamp("t"));
+    	System.out.println("2秒后  update mC_t：" + memCacheTestService.updateStr("t"));
+    	System.out.println("2秒后  myCache_t：" + ehCacheTestService.getTimestamp("t"));
+        memCacheTestService.clearAll();
+        Thread.sleep(5000);
+        System.out.println("5 mC_t：" + memCacheTestService.getTimestamp("t"));
+    	System.out.println("5 mC_st：" + memCacheTestService.getTimestamp("st"));
+        System.out.println("5 myCache_t：" + ehCacheTestService.getTimestamp("t"));
+    } 
+    
+    @Test  //get myCache_inTimeCache  stats items列出所有keys  stats cachedump 7 0 列出的items id，本例中为7，第2个参数为列出的长度，0为全部列出
+    public void clearcache() throws InterruptedException{  
+        memCacheTestService.clearAll();
+        System.out.println("5 mC_t：" + memCacheTestService.getTimestamp("t"));
+    	System.out.println("5 mC_st：" + memCacheTestService.getTimestamp("st"));
+        System.out.println("5 myCache_t：" + ehCacheTestService.getTimestamp("t"));
+        List<String> listKey = new ArrayList<String>();
+        listKey.add("t");
+        listKey.add("st");
+        for(String s :listKey){
+        	memCacheTestService.deleteOne(s);
+        }
+        
+        System.out.println("5 mC_t：" + memCacheTestService.getTimestamp("t"));
+    	System.out.println("5 mC_st：" + memCacheTestService.getTimestamp("st"));
     } 
     
 

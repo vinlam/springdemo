@@ -1,5 +1,7 @@
 package com.service.impl;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,27 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
 	public int count() {
 		// TODO Auto-generated method stub
 		return 999;
+	}
+	
+	@Override
+	//@CacheEvict(cacheNames="mC",allEntries=true)
+	@CacheEvict(cacheNames="mC",beforeInvocation=true,allEntries=true)
+	public void clearAll() {
+		// TODO Auto-generated method stub
+		System.out.println("clear all");
+	}
+	
+	@Override
+	@CachePut(cacheNames="mC",key="#param")
+	public String updateStr(String param) {
+		// TODO Auto-generated method stub
+		return param+ " --- " + System.currentTimeMillis();
+	}
+	@Override
+	@CacheEvict(cacheNames="mC",key="#param")
+	public void deleteOne(String param) {
+		// TODO Auto-generated method stub
+		System.out.println("delete");
 	}
 
 }

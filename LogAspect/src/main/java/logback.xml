@@ -15,7 +15,7 @@
 		</encoder>
 	</appender>
 	<!-- 每天生成日志文件,文件大小超过50则新生成一个文件，同时将旧文件按${LOG_HOME}/logs/aa.%d{yyyy-MM-dd}.%i.log.zip格式压缩，文件保存30天 -->
-	<appender name="logrulefirst"
+	<appender name="runtime"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_HOME}/runtime.log</file> <!-- 日志名称 -->
 		<rollingPolicy
@@ -119,11 +119,11 @@
 		</encoder>
 	</appender>
 
-	<!-- java项目中com.example.demo包下通过LoggerFactory.getLogger(Demo.class)获取的日志全部由logrulefirst 
+	<!-- java项目中com.example.demo包下通过LoggerFactory.getLogger(Demo.class)获取的日志全部由runtime 
 		appender处理 -->
-	<logger name="com" additivity="false">
-		<appender-ref ref="logrulefirst" />
-	</logger>
+<!-- 	<logger name="com" additivity="false"> -->
+<!-- 		<appender-ref ref="runtime" /> -->
+<!-- 	</logger> -->
 	<!-- java项目中com.example.demo包下通过LoggerFactory.getLogger(Demo2.class)获取的日志全部由logrulesecond 
 		appender处理 -->
 	<logger name="com.controller">
@@ -145,6 +145,7 @@
 	<!-- ALL < DEBUG < INFO < WARN < ERROR < FATAL < OFF -->
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="runtime" />
 <!-- 		<appender-ref ref="errorlog" /> -->
 	</root>
 
