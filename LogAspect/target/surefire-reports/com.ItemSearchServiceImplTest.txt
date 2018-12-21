@@ -1,0 +1,68 @@
+-------------------------------------------------------------------------------
+Test set: com.ItemSearchServiceImplTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 8, Skipped: 0, Time elapsed: 28.203 s <<< FAILURE! - in com.ItemSearchServiceImplTest
+testAddList(com.ItemSearchServiceImplTest)  Time elapsed: 0.82 s  <<< ERROR!
+org.springframework.data.solr.UncategorizedSolrException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore; nested exception is org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.testAddList(ItemSearchServiceImplTest.java:113)
+Caused by: org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.testAddList(ItemSearchServiceImplTest.java:113)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 127.0.0.1:8090 timed out
+	at com.ItemSearchServiceImplTest.testAddList(ItemSearchServiceImplTest.java:113)
+
+testAdd(com.ItemSearchServiceImplTest)  Time elapsed: 0.071 s  <<< ERROR!
+org.springframework.data.solr.UncategorizedSolrException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore; nested exception is org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.testAdd(ItemSearchServiceImplTest.java:93)
+Caused by: org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.testAdd(ItemSearchServiceImplTest.java:93)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 127.0.0.1:8090 timed out
+	at com.ItemSearchServiceImplTest.testAdd(ItemSearchServiceImplTest.java:93)
+
+search(com.ItemSearchServiceImplTest)  Time elapsed: 0.442 s  <<< ERROR!
+org.springframework.data.solr.UncategorizedSolrException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore; nested exception is org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.search(ItemSearchServiceImplTest.java:41)
+Caused by: org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.search(ItemSearchServiceImplTest.java:41)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 127.0.0.1:8090 timed out
+	at com.ItemSearchServiceImplTest.search(ItemSearchServiceImplTest.java:41)
+
+searchById(com.ItemSearchServiceImplTest)  Time elapsed: 0.105 s  <<< ERROR!
+org.springframework.data.solr.UncategorizedSolrException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore; nested exception is org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.searchById(ItemSearchServiceImplTest.java:120)
+Caused by: org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.searchById(ItemSearchServiceImplTest.java:120)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 127.0.0.1:8090 timed out
+	at com.ItemSearchServiceImplTest.searchById(ItemSearchServiceImplTest.java:120)
+
+deleteAll(com.ItemSearchServiceImplTest)  Time elapsed: 0.105 s  <<< ERROR!
+org.springframework.data.solr.UncategorizedSolrException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore; nested exception is org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.deleteAll(ItemSearchServiceImplTest.java:142)
+Caused by: org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.deleteAll(ItemSearchServiceImplTest.java:142)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 127.0.0.1:8090 timed out
+	at com.ItemSearchServiceImplTest.deleteAll(ItemSearchServiceImplTest.java:142)
+
+add(com.ItemSearchServiceImplTest)  Time elapsed: 0.102 s  <<< ERROR!
+org.springframework.data.solr.UncategorizedSolrException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore; nested exception is org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.add(ItemSearchServiceImplTest.java:72)
+Caused by: org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.add(ItemSearchServiceImplTest.java:72)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 127.0.0.1:8090 timed out
+	at com.ItemSearchServiceImplTest.add(ItemSearchServiceImplTest.java:72)
+
+pageQuery(com.ItemSearchServiceImplTest)  Time elapsed: 0.104 s  <<< ERROR!
+org.springframework.data.solr.UncategorizedSolrException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore; nested exception is org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.pageQuery(ItemSearchServiceImplTest.java:131)
+Caused by: org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.pageQuery(ItemSearchServiceImplTest.java:131)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 127.0.0.1:8090 timed out
+	at com.ItemSearchServiceImplTest.pageQuery(ItemSearchServiceImplTest.java:131)
+
+deleteById(com.ItemSearchServiceImplTest)  Time elapsed: 0.103 s  <<< ERROR!
+org.springframework.data.solr.UncategorizedSolrException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore; nested exception is org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.deleteById(ItemSearchServiceImplTest.java:126)
+Caused by: org.apache.solr.client.solrj.SolrServerException: IOException occured when talking to server at: http://127.0.0.1:8090/solr/itemcore
+	at com.ItemSearchServiceImplTest.deleteById(ItemSearchServiceImplTest.java:126)
+Caused by: org.apache.http.conn.ConnectTimeoutException: Connect to 127.0.0.1:8090 timed out
+	at com.ItemSearchServiceImplTest.deleteById(ItemSearchServiceImplTest.java:126)
+

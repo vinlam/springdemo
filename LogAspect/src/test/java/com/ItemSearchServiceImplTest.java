@@ -21,7 +21,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.service.ItemSearchService;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration("classpath:applicationContext.xml")
+//@ContextConfiguration("classpath:applicationContext.xml")
+@ContextConfiguration(locations = { "classpath*:/applicationContext.xml" })
+
 public class ItemSearchServiceImplTest {
 
     @Autowired

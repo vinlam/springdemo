@@ -86,13 +86,17 @@
     <!-- solr模板，使用solr模板可对索引库进行CRUD的操作 -->
     <bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">
         <constructor-arg ref="solrServer" />
+    </bean id="solrClient" class="com.common.solr.SolrClient">
+        <constructor-arg ref="solrServer" />
+    <bean>
+        
     </bean>
     
     <bean id="jobFactory" class="com.common.quartz.JobFactory"></bean>  
     <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
         <property name="jobFactory" ref="jobFactory"></property>  
     </bean>
-    
+    <import resource="spring-aop.xml"/>
 	<import resource="spring-redis.xml"/>
 	<import resource="memcache.xml"/>
 </beans>

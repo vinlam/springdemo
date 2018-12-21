@@ -1,5 +1,8 @@
 package com.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ import com.dao.TB;
 import com.dao.TC;
 import com.entity.User;
 import com.entity.UserDTO;
+import com.service.EhCacheTestService;
+import com.service.MemCacheTestService;
 import com.service.SysLogService;
 import com.service.UserService;
 import com.service.impl.MemCacheTestServiceImpl;
@@ -135,4 +140,30 @@ public class testcontroller {
 		
 		return JSONObject.toJSON(userDTO).toString();
 	}
+	
+	
+	@Autowired  
+    private MemCacheTestService memCacheTestService;
+	
+	@Autowired  
+    private EhCacheTestService ehCacheTestService;
+	@RequestMapping(value="/clearcache")
+	//get myCache_inTimeCache  stats items列出所有keys  stats cachedump 7 0 列出的items id，本例中为7，第2个参数为列出的长度，0为全部列出
+	@ResponseBody
+	public String clearcache() throws InterruptedException{  
+        memCacheTestService.clearAll();
+        System.out.println("5 mC_t：" + memCacheTestService.getTimestamp("t"));
+    	System.out.println("5 mC_st：" + memCacheTestService.getTimestamp("st"));
+        System.out.println("5 myCache_t：" + ehCacheTestService.getTimestamp("t"));
+        List<String> listKey = new ArrayList<String>();
+        listKey.add("t");
+        listKey.add("st");
+        for(String s :listKey){
+        	memCacheTestService.deleteOne(s);
+        }
+        
+        System.out.println("5 mC_t：" + memCacheTestService.getTimestamp("t"));
+    	System.out.println("5 mC_st：" + memCacheTestService.getTimestamp("st"));
+    	return "ok";
+    } 
 }

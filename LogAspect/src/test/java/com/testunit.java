@@ -9,12 +9,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.service.CustomerService;
 import com.service.EhCacheTestService;
 import com.service.MemCacheTestService;
 import com.service.SysLogService;
@@ -169,7 +172,37 @@ public class testunit {
         Thread.sleep(11000);
         System.out.println("m再过11秒之后调用：" + memCacheTestService.getTimestamp("t"));
     }
+    
+    @Autowired
+    private CustomerService customerService;
+    
+    @Test
+    public void aopMethod(){
+    	System.out.println("使用Spring AOP 如下");
+    	//ApplicationContext context = new ClassPathXmlApplicationContext("spring-aop.xml");  
+        //CustomerService cust = (CustomerService) context.getBean("customerServiceProxy");
+        System.out.println("*************************");
+        customerService.printName();
+        System.out.println("*************************");
+        customerService.printURL();
+        System.out.println("*************************");
+        ApplicationContext context = new ClassPathXmlApplicationContext("spring-aop.xml");  
+        CustomerService cust = (CustomerService) context.getBean("customerServiceProxy");
+        System.out.println("*************************");
+        cust.printName();
+        System.out.println("*************************");
+        cust.printURL();
+        System.out.println("*************************");
+        
+        try {
+        	customerService.printThrowException();
+        } catch (Exception e) {
+ 
+        }
+    }
 }
+
+
 class MyThead implements Runnable
 {
 	public void run()
