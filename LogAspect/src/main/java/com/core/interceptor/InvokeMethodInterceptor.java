@@ -15,11 +15,11 @@ public class InvokeMethodInterceptor implements MethodInterceptor {
  
         // 相当于  MethodBeforeAdvice
         System.out.println("HijackAroundMethod : Before method hijacked!");
- 
+  
         try {
             // 调用原方法，即调用CustomerService中的方法
             Object result = methodInvocation.proceed();
- 
+            //System.out.println(result.toString());
             // 相当于 AfterReturningAdvice
             System.out.println("HijackAroundMethod : After method hijacked!");
  
