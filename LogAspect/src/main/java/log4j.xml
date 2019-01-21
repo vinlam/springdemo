@@ -15,7 +15,7 @@
 	<!-- org.apache.log4j.WriterAppender(将日志信息以流格式发送到任意指定的地方) -->
 	<appender name="rollingFile" class="org.apache.log4j.RollingFileAppender">
 		<!-- <param name="file" value="$${webapp.root}/logs/test.log"/> -->
-		<param name="file" value="E:/logs/test.log" />
+		<param name="file" value="/Users/vinlam/logs/test.log" />
 		<param name="append" value="true" />
 		<param name="maxFileSize" value="1MB" />
 		<param name="maxBackupIndex" value="2" />
