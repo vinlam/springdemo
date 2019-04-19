@@ -67,7 +67,7 @@ public class SysLogAspect {
 	 */
 	@Before("controllerAspect()")
 	public void doBefore(JoinPoint joinPoint) {
-		System.out.println("==========执行controller前置通知===============");
+		logger.info("==========执行controller前置通知===============");
 		if (logger.isInfoEnabled()) {
 			logger.info("before " + joinPoint);
 		}
@@ -76,7 +76,7 @@ public class SysLogAspect {
 	// 配置controller环绕通知,使用在方法aspect()上注册的切入点
 //	@Around("controllerAspect()")
 //	public void around(JoinPoint joinPoint) {
-//		System.out.println("==========开始执行controller环绕通知===============");
+//		logger.info("==========开始执行controller环绕通知===============");
 //		long start = System.currentTimeMillis();
 //		try {
 //			((ProceedingJoinPoint) joinPoint).proceed();
@@ -85,7 +85,7 @@ public class SysLogAspect {
 //				logger.info("around " + joinPoint + "\tUse time : "
 //						+ (end - start) + " ms!");
 //			}
-//			System.out.println("==========结束执行controller环绕通知===============");
+//			logger.info("==========结束执行controller环绕通知===============");
 //		} catch (Throwable e) {
 //			long end = System.currentTimeMillis();
 //			if (logger.isInfoEnabled()) {
@@ -121,8 +121,7 @@ public class SysLogAspect {
 					joinPoint.getTarget().getClass().getName(), 
 					joinPoint.getSignature().getName(),
 					end-start,
-					"withargs:"+JsonUtil.beanToJson(result)
-					);
+					"withargs:"+JsonUtil.beanToJson(result));
 			return result;
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -130,8 +129,7 @@ public class SysLogAspect {
 			logger.error("IllegalArgumentException : {}.{}() {}",
 					joinPoint.getTarget().getClass().getName(), 
 					joinPoint.getSignature().getName(),
-					"withargs:"+JsonUtil.beanToJson(joinPoint.getArgs())
-					);
+					"withargs:"+JsonUtil.beanToJson(joinPoint.getArgs()),e);
 			throw e;
 		}
 	}
@@ -182,14 +180,14 @@ public class SysLogAspect {
 				}
 			}
 			// *========控制台输出=========*//
-			System.out.println("=====controller后置通知开始=====");
-			System.out.println("请求方法:"
+			logger.info("=====controller后置通知开始=====");
+			logger.info("请求方法:"
 					+ (joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()") + "."
 					+ operationType);
 			
-			System.out.println("方法描述:" + operationName);
-			System.out.println("请求人:" + user.getName());
-			System.out.println("请求IP:" + ip);
+			logger.info("方法描述:" + operationName);
+			logger.info("请求人:" + user.getName());
+			logger.info("请求IP:" + ip);
 			// *========数据库日志=========*//
 			SysLog log = new SysLog();
 			log.setId(UUID.randomUUID().toString());
@@ -206,7 +204,7 @@ public class SysLogAspect {
 			log.setCreateDate(new Date());
 			// 保存数据库
 			sysLogServiceImp.insert(log);
-			System.out.println("=====controller后置通知结束=====");
+			logger.info("=====controller后置通知结束=====");
 		} catch (Exception e) {
 			// 记录本地异常日志
 			e.printStackTrace();
@@ -218,7 +216,7 @@ public class SysLogAspect {
 	// 配置后置返回通知,使用在方法aspect()上注册的切入点
 	@AfterReturning("controllerAspect()")
 	public void afterReturn(JoinPoint joinPoint) {
-		System.out.println("=====执行controller后置返回通知=====");
+		logger.info("=====执行controller后置返回通知=====");
 		if (logger.isInfoEnabled()) {
 			logger.info("afterReturn " + joinPoint);
 		}
@@ -279,17 +277,17 @@ public class SysLogAspect {
 				}
 			}
 			/* ========控制台输出========= */
-			System.out.println("=====异常通知开始=====");
-			System.out.println("异常代码:" + e.getClass().getName());
-			System.out.println("异常信息:" + e.getMessage());
-			System.out.println("异常方法:"
+			logger.info("=====异常通知开始=====");
+			logger.info("异常代码:" + e.getClass().getName());
+			logger.info("异常信息:" + e.getMessage());
+			logger.info("异常方法:"
 					+ (joinPoint.getTarget().getClass().getName() + "."
 							+ joinPoint.getSignature().getName() + "()") + "."
 					+ operationType);
-			System.out.println("方法描述:" + operationName);
-			System.out.println("请求人:" + user.getName());
-			System.out.println("请求IP:" + ip);
-			System.out.println("请求参数:" + params);
+			logger.info("方法描述:" + operationName);
+			logger.info("请求人:" + user.getName());
+			logger.info("请求IP:" + ip);
+			logger.info("请求参数:" + params);
 			/* ==========数据库日志========= */
 			SysLog log = new SysLog();
 			log.setId(UUID.randomUUID().toString());
@@ -305,7 +303,7 @@ public class SysLogAspect {
 			log.setRequestIp(ip);
 			// 保存数据库
 			sysLogServiceImp.insertTest(log);
-			System.out.println("=====异常通知结束=====");
+			logger.info("=====异常通知结束=====");
 		} catch (Exception ex) {
 			// 记录本地异常日志
 			logger.error("==异常通知异常==");
