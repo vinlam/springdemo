@@ -20,17 +20,19 @@
 		<param name="maxFileSize" value="1MB" />
 		<param name="maxBackupIndex" value="2" />
 		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-			<param name="FileNamePattern" value="E:/logs/%d{yyyy-MM-dd}/runtime-log.log" />
+			<param name="FileNamePattern" value="/Users/vinlam/logs/%d{yyyy-MM-dd}/runtime-log.log" />
 		</rollingPolicy>
 		<layout class="org.apache.log4j.EnhancedPatternLayout">
-			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p](%-35c:%-3L) %m%n" />
+<!-- 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p](%-35c:%-3L) %m%n" /> -->
+			<param name="ConversionPattern" value="[%date{yyyy-MM-dd HH:mm:ss}] [%X{Ip}] [%thread] [%X{requestId}] [%X{TraceId}] [%-5level] --%mdc{client} %msg%n" />
 		</layout>
 	</appender>
 
 	<!--配置appender为控制台 -->
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">  <!-- name给logger或者root调用 -->
 		<layout class="org.apache.log4j.EnhancedPatternLayout">
-			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p](%-35c:%-3L) %m%n" />
+<!-- 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p](%-35c:%-3L) %m%n" /> -->
+<param name="ConversionPattern" value="[%date{yyyy-MM-dd HH:mm:ss}] [%X{Ip}] [%thread] [%X{requestId}] [%X{TraceId}] [%-5level] --%mdc{client} %msg%n" />
 		</layout>
 		<!--filter过滤器设置输出的级别:ALL < DEBUG < INFO < WARN < ERROR < FATAL < OFF 所以下面输出的是debug到warn，不会有fatal -->
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
