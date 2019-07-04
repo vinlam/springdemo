@@ -28,6 +28,8 @@ public abstract class BaseSolr<T,ID extends Serializable> implements SolrCrudRep
 	private List<SimpleSolrRepository<T, ID>> listRepositories;
 	private final SolrEntityInformation<T, ID> solrEntityInformation;
 	public BaseSolr(SolrClient solrClient){
+		//solrClient.setUrl("http://www.baidu.com");
+		//solrClient.initSolrServer();
 		this.solrClient = solrClient;
 		this.entityClass = (Class<T>) GenericTypeResolver.resolveTypeArguments(getClass(), BaseSolr.class)[0];
 		this.solrEntityInformation = new SolrEntityInformationCreatorImpl(new SimpleSolrMappingContext()).getEntityInformation(entityClass);

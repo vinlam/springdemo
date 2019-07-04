@@ -1,11 +1,8 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
+<?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xmlns="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	version="3.0">
+	id="WebApp_ID" version="3.0">
 	<display-name>SpringAop</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -56,4 +53,55 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+		<!-- <filter>
+		<filter-name>xssFilter</filter-name>
+		<filter-class>com.core.filter.XSSFilter</filter-class>
+		<init-param>
+			<param-name>exclude</param-name>
+			<param-value>/;/scripts/*;/styles/*;/images/*</param-value>
+		</init-param>
+	</filter> -->
+	<!-- 直接从客户端过来的请求以及通过forward过来的请求都要经过该过滤器 -->
+<!-- 	<filter-mapping> -->
+<!-- 		<filter-name>xssFilter</filter-name> -->
+<!-- 		<url-pattern>/*</url-pattern> -->
+<!-- 		<dispatcher>REQUEST</dispatcher> -->
+<!-- 		<dispatcher>FORWARD</dispatcher> -->
+<!-- 	</filter-mapping> -->
+	
+	<filter>  
+	    <filter-name>safeFilterChain</filter-name>  
+	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>  
+	    <init-param>  
+	        <param-name>targetFilterLifecycle</param-name>  
+	        <param-value>true</param-value>  
+	        <!-- <param-name>targetBeanName</param-name> -->
+	        <!-- <param-value>safeFilter</param-value> --> 
+	    </init-param>  
+	</filter>          
+    <filter-mapping>  
+    	<filter-name>safeFilterChain</filter-name>  
+    	<url-pattern>/*</url-pattern>  
+	</filter-mapping>
+	<error-page>
+		<error-code>400</error-code>
+		<location>/WEB-INF/views/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>405</error-code>
+		<location>/WEB-INF/views/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/views/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>503</error-code>
+		<location>/WEB-INF/views/error.jsp</location>
+	</error-page>
 </web-app>

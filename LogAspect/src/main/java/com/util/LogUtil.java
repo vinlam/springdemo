@@ -15,8 +15,19 @@ public class LogUtil {
 			String currentMachineIp = getInetAddress();
 			if(currentMachineIp != null) {
 				currentMachineIp = "000" + currentMachineIp.substring(currentMachineIp.lastIndexOf(".")+1);
-				currentMachineIp = currentMachineIp.length() == 4 ? "0" + currentMachineIp:currentMachineIp;
-				machineId = currentMachineIp.substring(currentMachineIp.length() - 2);
+				int len = currentMachineIp.length();
+				switch (len) {
+				case 4:
+					currentMachineIp = "00" + currentMachineIp;
+					break;
+				case 5:
+					currentMachineIp = "0" + currentMachineIp;
+				default:
+					break;
+				}
+				
+				//System.out.println(currentMachineIp+"---"+currentMachineIp.length());
+				machineId = currentMachineIp.substring(currentMachineIp.length() - 3);
 			}
 		} catch (Throwable e) {
 			// TODO: handle exception

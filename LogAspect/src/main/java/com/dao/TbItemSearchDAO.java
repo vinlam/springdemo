@@ -14,7 +14,7 @@ import com.entity.TbItem;
 @Repository
 public class TbItemSearchDAO extends BaseSolr<TbItem, String> {
 	@Autowired
-	public TbItemSearchDAO(@Qualifier("solrClient")SolrClient solrClient) {
+	public TbItemSearchDAO(@Qualifier("sClient")SolrClient solrClient) {
 		super(solrClient);
 	}
 	

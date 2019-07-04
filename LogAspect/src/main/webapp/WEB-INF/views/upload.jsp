@@ -7,24 +7,24 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form name="serForm" action="/upload/fileUpload" method="post"
+	<form name="serForm" action="/LogAspect/upload/filesUpload" method="post"
 		enctype="multipart/form-data">
 		<h1>采用流的方式上传文件</h1>
-		<input type="file" name="file"> <input type="submit"
+		<input type="file" name="files" multiple="multiple"> <input type="submit"
 			value="upload" />
 	</form>
 
-	<form name="Form2" action="/upload/fileUpload2" method="post"
+	<form name="Form2" action="/LogAspect/upload/cmfileUpload" method="post"
 		enctype="multipart/form-data">
 		<h1>采用multipart提供的file.transfer方法上传文件</h1>
-		<input type="file" name="file"> <input type="submit"
+		<input type="file" name="files" multiple="multiple"> <input type="submit"
 			value="upload" />
 	</form>
 
-	<form name="Form2" action="/upload/springUpload" method="post"
+	<form name="Form2" action="/LogAspect/upload/springUpload" method="post"
 		enctype="multipart/form-data">
 		<h1>使用spring mvc提供的类的方法上传文件</h1>
-		<input type="file" name="file"> <input type="submit"
+		<input type="file" name="files" multiple="multiple"> <input type="submit"
 			value="upload" />
 	</form>
 </body>

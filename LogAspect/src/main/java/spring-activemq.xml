@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jms
+        http://www.springframework.org/schema/jms/spring-jms.xsd
+        http://activemq.apache.org/schema/core
+        http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+	<!-- <context:component-scan base-package="com.*" /> -->
+	<!-- <mvc:annotation-driven /> -->
+	<context:property-placeholder
+		location="classpath:application.properties" ignore-unresolvable="true" />
+	<amq:connectionFactory id="amqConnectionFactory"
+		brokerURL="${activemq.url}" userName="${activemq.user}"
+		password="${activemq.password}" />
+
+	<!-- 配置JMS连接工长 -->
+	<bean id="jmsconnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<constructor-arg ref="amqConnectionFactory" />
+		<!-- Session缓存数量 -->
+		<property name="sessionCacheSize" value="100" />
+	</bean>
+
+	<!-- 定义消息队列（Queue） -->
+	<bean id="demoQueueDestination"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg>
+			<value>Jaycekon</value>
+		</constructor-arg>
+	</bean>
+
+	<!-- 配置JMS模板（Queue），Spring提供的JMS工具类，它发送、接收消息。 -->
+	<bean id="jmsTemplate"
+		class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsconnectionFactory" />
+		<property name="defaultDestination"
+			ref="demoQueueDestination" />
+		<property name="receiveTimeout" value="10000" />
+		<!-- true是topic，false是queue，默认是false，此处显示写出false -->
+		<property name="pubSubDomain" value="false" />
+	</bean>
+
+
+	<!--主题 -->
+	<bean id="TopicConsumer"
+		class="com.service.activemq.consumer.ConsumerService"></bean>
+
+	<!-- 配置消息队列监听者（Queue） -->
+	<bean id="queueMessageListener"
+		class="com.core.message.listener.QueueMessageListener" />
+
+	<!-- 显示注入消息监听容器（Queue），配置连接工厂，监听的目标是demoQueueDestination，监听器是上面定义的监听器 -->
+	<!-- <bean id="queueListenerContainer" -->
+	<!-- class="org.springframework.jms.listener.DefaultMessageListenerContainer"> -->
+	<!-- <property name="connectionFactory" ref="jmsconnectionFactory" /> -->
+	<!-- <property name="destination" ref="demoQueueDestination" /> -->
+	<!-- <property name="messageListener" ref="queueMessageListener" /> -->
+	<!-- </bean> -->
+	
+	
+    <!-- 消息处理 -->
+	<bean id="jmsMessageCoverter"
+		class="org.springframework.jms.support.converter.SimpleMessageConverter"></bean>
+    <!-- 自定义消息处理 -->
+	<bean id="defineMessageCoverter"
+		class="org.springframework.jms.support.converter.SimpleMessageConverter"></bean>
+		
+	<!-- 配置JMS模板（Queue），Spring提供的JMS工具类，它发送、接收消息。 -->
+	<bean id="jmsSubTemplate"
+		class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsconnectionFactory" />
+		<property name="receiveTimeout" value="10000" />
+		<!-- true是topic，false是queue，默认是false，此处显示写出false -->
+		<property name="pubSubDomain" value="false" />
+	</bean>
+	<bean id="receiverContainerFactory"
+	    class="org.springframework.jms.config.DefaultJmsListenerContainerFactory">
+	    <property name="connectionFactory" ref="jmsconnectionFactory" />	
+	</bean>	
+	<!-- 消息生产者 -->
+
+	<!-- Queue类型 -->
+	<bean id="jmsQueueTemplate"
+		class="org.springframework.jms.core.JmsTemplate">
+		<!-- 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 -->
+		<constructor-arg ref="jmsconnectionFactory"></constructor-arg>
+		<!-- 非pub/sub模型（发布/订阅），即队列模式 -->
+		<property name="pubSubDomain" value="false" />
+		<property name="messageConverter" ref="jmsMessageCoverter"></property>
+	</bean>
+
+	<!-- 定义JmsTemplate的Topic类型 -->
+	<bean id="jmsTopicTemplate"
+		class="org.springframework.jms.core.JmsTemplate">
+		<!-- 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 -->
+		<constructor-arg ref="jmsconnectionFactory" />
+		<!-- pub/sub模型（发布/订阅） -->
+		<property name="pubSubDomain" value="true" />
+	</bean>
+	<!--Spring JmsTemplate 的消息生产者 end -->
+
+	<!-- 消息监听器 -->
+
+	<!--队列 -->
+	<bean id="QueueConsumer_1"
+		class="com.core.message.listener.QueueConsumer_1"></bean>
+	<bean id="QueueConsumer_2"
+		class="com.core.message.listener.QueueConsumer_2"></bean>
+
+	<!--主题 -->
+	<bean id="TopicConsumer_1"
+		class="com.core.message.listener.TopicConsumer_1"></bean>
+	<bean id="TopicConsumer_2"
+		class="com.core.message.listener.TopicConsumer_2"></bean>
+
+	<!-- 消息消费者 start -->
+
+	<!-- 定义Queue监听器容器 -->
+	<jms:listener-container destination-type="queue"
+		container-type="default" connection-factory="jmsconnectionFactory"
+		acknowledge="auto">
+		<jms:listener destination="queue" ref="QueueConsumer_1" />
+		<jms:listener destination="queue" ref="QueueConsumer_2" />
+	</jms:listener-container>
+	<!-- 定义Topic监听器容器 -->
+	<jms:listener-container destination-type="topic"
+		container-type="default" connection-factory="jmsconnectionFactory"
+		acknowledge="auto">
+		<jms:listener destination="topic" ref="TopicConsumer_1" />
+		<jms:listener destination="topic" ref="TopicConsumer_2" />
+	</jms:listener-container>
+	<!-- 消息消费者 end -->
+
+	<!-- 定义队列目的地 ，点对点 -->
+	<bean id="queueDestination"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg>
+			<value>queue</value>
+		</constructor-arg>
+	</bean>
+	<!-- 定义主题目的地 -->
+	<bean id="topicDestination"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg>
+			<value>topic</value>
+		</constructor-arg>
+	</bean>
+
+	<jms:annotation-driven />
+</beans>

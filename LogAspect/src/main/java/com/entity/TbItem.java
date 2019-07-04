@@ -11,7 +11,7 @@ import org.springframework.data.solr.core.mapping.Dynamic;
 public class TbItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Field
-    private Long id;
+    private Integer id;
 
     @Field
     private String title;
@@ -22,7 +22,15 @@ public class TbItem implements Serializable {
     //@Field("item_price")
 	@Field
     private BigDecimal price;
-	
+//	private String price;
+//	
+//	public void setPrice(String price) {
+//		this.price = price;
+//	}
+//	public String getPrice() {
+//		return price;
+//	}
+
 	@Field
     private Integer stockCount;
     @Field
@@ -90,11 +98,11 @@ public class TbItem implements Serializable {
 		return title;
 	}
     
-    public Long getId() {
+    public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

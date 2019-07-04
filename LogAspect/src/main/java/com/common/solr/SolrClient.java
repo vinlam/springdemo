@@ -120,11 +120,11 @@ public class SolrClient implements InitializingBean,DisposableBean,ApplicationCo
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// TODO Auto-generated method stub
-		Assert.hasText(url, "url cannot be null");
-		initSolrServer();
+		//Assert.hasText(url, "url cannot be null");
+		//initSolrServer();
 	}
 	
-	private void initSolrServer(){
+	public void initSolrServer(){
 		if(this.url.contains(SERVER_URL_SEPATATOR)){
 			String[] urls = StringUtils.split(this.url, SERVER_URL_SEPATATOR);
 			

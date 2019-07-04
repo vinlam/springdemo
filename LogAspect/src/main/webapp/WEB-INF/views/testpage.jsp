@@ -12,15 +12,17 @@
 </head>
 <body>
 	<div>
-		<input type="button" value="testget" id="sendGet"> 
-		<input type="button" value="testgetids List&lt;Long&gt;" id="sendGetIds"> 
-		<input type="button" value="testgids String[]" id="sendGids"> 
-		<input type="button" value="getlistgids" id="sendGds"> 
-		<input type="button" value="delids" id="delids"> 
-		<input type="button" value="testpost" id="sendPost">
+		<input type="button" value="testget" id="sendGet"> <input
+			type="button" value="testgetids List&lt;Long&gt;" id="sendGetIds">
+		<input type="button" value="testgids String[]" id="sendGids">
+		<input type="button" value="getlistgids" id="sendGds"> <input
+			type="button" value="delids" id="delids"> <input
+			type="button" value="testpost" id="sendPost"> <img
+			src="http://localhost:8080/LogAspect/api/getCodeByte" />
 	</div>
 </body>
-<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.min.js"></script>
+<script type="text/javascript"
+	src="<%=request.getContextPath()%>/resources/js/jquery.min.js"></script>
 <script type="text/javascript">
        function testget(){
     	   var arr =['11111111','222222222'];
@@ -150,19 +152,22 @@
                    users:users
            }
            $.ajax({
-                   	url : "<%=request.getContextPath()%>/userController/getPostUser",
-					type : 'post',
-					//async:true, 
-					dataType : "json",
-					contentType : "application/json",
-					//traditional: true, 
-					data : JSON.stringify(param),
-					success : function(result) {
-						alert(JSON.stringify(result));
-					},error : function(XMLHttpRequest, textStatus, errorThrown) {
-						//异常处理；
-						alert("ajaxerror: " + JSON.stringify(XMLHttpRequest) + " textStatus: " + XMLHttpRequest.statusText);
-					}
+                   	url : "<%=request.getContextPath()%>
+	/userController/getPostUser",
+			type : 'post',
+			//async:true, 
+			dataType : "json",
+			contentType : "application/json",
+			//traditional: true, 
+			data : JSON.stringify(param),
+			success : function(result) {
+				alert(JSON.stringify(result));
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				//异常处理；
+				alert("ajaxerror: " + JSON.stringify(XMLHttpRequest)
+						+ " textStatus: " + XMLHttpRequest.statusText);
+			}
 		});
 	}
 

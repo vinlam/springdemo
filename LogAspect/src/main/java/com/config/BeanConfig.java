@@ -12,4 +12,9 @@ public class BeanConfig {
 	public SolrClient solrClient() {
 		return new SolrClient("http://www.baidu.com");
 	}
+	
+	@Bean(name="client")
+	public SolrClient client() {
+		return new SolrClient("https://www.google.com");
+	}
 }

@@ -1,26 +1,36 @@
 package com;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
+import javax.validation.Validator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.validation.annotation.Validated;
 
+import com.alibaba.fastjson.JSON;
+import com.common.solr.SolrClient;
+import com.config.BeanConfig;
+import com.dao.TB;
+import com.entity.Order;
+import com.entity.OrderItem;
 import com.service.CustomerService;
 import com.service.EhCacheTestService;
+import com.service.IAutoInject;
 import com.service.MemCacheTestService;
 import com.service.SysLogService;
+import com.service.UserService;
 import com.service.impl.MemCacheTestServiceImpl;
 import com.service.impl.a.AutoInject;
  
@@ -38,11 +48,15 @@ public class testunit {
 	@Autowired
 	//@Qualifier("AutoInjectB")
 	private com.service.impl.b.AutoInject autoInjectb;
+	@Autowired
+	@Qualifier("AutoInjectB")
+	private IAutoInject inj;
 	@Test
 	public void test(){
 		autoInjecta.print();
 		//autoInjectb.print();
-		System.out.println("aaat:"+autoInjecta.print());
+		//System.out.println("aaat:"+autoInjecta.print());
+		System.out.println("aaat:"+inj.print());
 		//System.out.println("aaat:"+autoInjecta.print()+autoInjectb.print());
 	}
 	
@@ -174,6 +188,7 @@ public class testunit {
     }
     
     @Autowired
+    @Qualifier("customerServiceProxy")
     private CustomerService customerService;
     
     @Test
@@ -182,17 +197,20 @@ public class testunit {
     	//ApplicationContext context = new ClassPathXmlApplicationContext("spring-aop.xml");  
         //CustomerService cust = (CustomerService) context.getBean("customerServiceProxy");
         System.out.println("*************************");
+        
         customerService.printName();
         System.out.println("*************************");
         customerService.printURL();
         System.out.println("*************************");
-        ApplicationContext context = new ClassPathXmlApplicationContext("spring-aop.xml");  
-        CustomerService cust = (CustomerService) context.getBean("customerServiceProxy");
-        System.out.println("*************************");
-        cust.printName();
-        System.out.println("*************************");
-        cust.printURL();
-        System.out.println("*************************");
+//        ApplicationContext context = new ClassPathXmlApplicationContext("spring-aop.xml");  
+//        
+//        
+//        CustomerService cust = (CustomerService) context.getBean("customerServiceProxy");
+//        System.out.println("*************************");
+//        cust.printName();
+//        System.out.println("*************************");
+//        cust.printURL();
+//        System.out.println("*************************");
         
         try {
         	customerService.printThrowException();
@@ -200,6 +218,59 @@ public class testunit {
  
         }
     }
+    
+    @Autowired
+    private UserService userService;
+    @Test
+    public void testPostConstruct() {
+    	//System.out.println(userService.addUser("aaa", "bbb"));
+    	
+    	TB tb = new TB();
+    
+    	//tb.getUser("jack");
+    	System.out.println(JSON.toJSON(userService.getUserB(tb)).toString());
+    	//userService.s();
+    }
+    
+    @SuppressWarnings("resource")
+	@Test
+    public void testBeanConfig() {
+		ApplicationContext annotationContext = new AnnotationConfigApplicationContext(BeanConfig.class);  
+        SolrClient bc = annotationContext.getBean("solrclient", SolrClient.class);
+        System.out.println("AnnotationConfigApplicationContext:"+bc.getUrl());
+        
+//        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");// 读取bean.xml中的内容
+////        SolrClient c = ctx.getBean("client", SolrClient.class);
+//        SolrClient c = (SolrClient)ctx.getBean("sClient");
+//        System.out.println("ClassPathXmlApplicationContext:"+c.getUrl());
+        
+        
+        AnnotationConfigApplicationContext ct = new AnnotationConfigApplicationContext(BeanConfig.class);
+        SolrClient sc = (SolrClient) ct.getBean("client");
+        System.out.println(sc.getUrl());
+        
+        ct.close();
+    }
+    
+//    @Test
+//    public void BeanConfig(@Qualifier("solrclient") SolrClient sc) {
+//    	System.out.println(sc.getUrl());
+//    }
+//    @Test
+//    @Validated
+//	public void testvalidate(){
+//		Order order = new Order();
+//		OrderItem item = new OrderItem();
+//		OrderItem item1 = null;
+//		order.setOrderNo(null);
+//        item.setProductName("productName");
+//        item.setProductCode("1000001");
+//        item.setPrice(new BigDecimal("8765.45"));
+//		order.setOrderItem(item1);
+//		System.out.println(JSON.toJSONString(order));
+//	}
+
+    
 }
 
 

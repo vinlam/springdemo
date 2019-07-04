@@ -7,6 +7,8 @@ public class CustomerService {
 
 	private String name;
 	private String url;
+	
+	private String sex;
 
 	public void setName(String name) {
 		this.name = name;
@@ -15,7 +17,16 @@ public class CustomerService {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
+	
+    public CustomerService() {
+		// TODO Auto-generated constructor stub
+	}
+    
+    public CustomerService(String sex) {
+		// TODO Auto-generated constructor stub
+    	this.sex = sex;
+	}
+    
 	public void printName() {
 		System.out.println("Customer name : " + this.name);
 	}
@@ -26,6 +37,14 @@ public class CustomerService {
 
 	public void printThrowException() {
 		throw new IllegalArgumentException();
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
 	}
 
 }

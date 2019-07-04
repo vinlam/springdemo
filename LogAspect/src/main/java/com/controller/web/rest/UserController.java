@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.define.annotation.Log;
 import com.define.annotation.Logs;
+import com.entity.MBUser;
 import com.entity.TestDTO;
 import com.entity.UserDTO;
 import com.service.UserService;
 
 @RestController
-@RequestMapping("/userController")
+@RequestMapping("/api/userController")
 public class UserController {
 
     @Autowired
@@ -35,6 +36,15 @@ public class UserController {
         String res = userService.addUser(userName, password);
         
         return res;
+    }
+    
+    @RequestMapping(value="/getMBUser",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @Logs(operationType="search:",operationName="查询用户")  
+    @Log(desc="test define annotation")  
+    public MBUser getMBUser(){        
+    	MBUser res = userService.findById("00000002002");
+    	
+    	return res;
     }
     
     @RequestMapping(value="/getPostUser",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)

@@ -59,7 +59,7 @@ public class UploadController {
 
 	@RequestMapping("/filesUpload")
 	public String filesUpload(@RequestParam("files") MultipartFile[] files) {
-		String path = "F:/upload/";
+		String path = "/Users/vinlam/upload/";
 		// 判断file数组不能为空并且长度大于0
 		if (files != null && files.length > 0) {
 			// 循环获取file数组中得文件
@@ -84,7 +84,7 @@ public class UploadController {
 		InputStream is = null;
 		try {
 			// 获取输出流
-			os = new FileOutputStream("F:/upload/" + new Date().getTime() + files.getOriginalFilename());
+			os = new FileOutputStream("/upload/" + new Date().getTime() + files.getOriginalFilename());
 			// 获取输入流 CommonsMultipartFile 中可以直接得到文件的流
 			is = files.getInputStream();
 			int temp;

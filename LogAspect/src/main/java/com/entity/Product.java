@@ -4,6 +4,21 @@ public class Product {
 	private long id;
 	private String productClass;
 	private String productId;
+	
+	private String price;
+	
+	private String detail;
+
+	public Product(String id, String name, String price, String detail) {
+		this.id = Long.valueOf(id);
+		this.name = name;
+		this.price = price;
+		this.detail = detail;
+	}
+
+	public Product() {
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -37,5 +52,22 @@ public class Product {
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
 
 }

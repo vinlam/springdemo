@@ -5,6 +5,7 @@ import java.util.Map;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class JsonUtil {
     /**
@@ -33,7 +34,7 @@ public class JsonUtil {
      */
     public static String beanToJson(Object object) {
         if (object != null) {
-            return JSON.toJSONString(object);
+            return JSON.toJSONString(object,SerializerFeature.IgnoreNonFieldGetter);
         } else {
             return null;
         }

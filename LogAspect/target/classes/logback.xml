@@ -4,14 +4,13 @@
 	debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
-	<property name="LOG_HOME" value="E:/logs/logback" />
+	<property name="LOG_HOME" value="/Users/vinlam/logs/logback" />
+	<!-- %.-1level 只显示信息级别的首字母,%-5level 左对齐显示信息级别全称 -->
+	<property name="PATTERN" value="[%date{yyyy-MM-dd HH:mm:ss}] [%X{Ip}] [%thread] [%X{requestId}] [%X{TraceId}] [%-5level] --%mdc{client} %msg%n"></property>
 	<!-- 控制台输出 -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<!-- %.-1level 只显示信息级别的首字母,%-5level 左对齐显示信息级别全称 -->
-			<Pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%thread] [%X{Ip}]
-				[%X{requestId}] [%-5level] --%mdc{client}
-				%msg%n</Pattern>
+			<Pattern>${PATTERN}</Pattern>
 		</encoder>
 	</appender>
 	<!-- 每天生成日志文件,文件大小超过50则新生成一个文件，同时将旧文件按${LOG_HOME}/logs/aa.%d{yyyy-MM-dd}.%i.log.zip格式压缩，文件保存30天 -->
@@ -28,10 +27,7 @@
 		</rollingPolicy>
 		<!-- encoder负责两件事，一是把日志信息转换成字节数组，二是把字节数组写入到输出流。 -->
 		<encoder>
-			<pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%thread] [%X{Ip}]
-				[%X{requestId}] [%-5level] [%logger:%line]
-				--%mdc{client} %msg%n
-			</pattern>
+			<pattern>${PATTERN}</pattern>
 		</encoder>
 		<!-- 过滤器，可以过滤掉不符合条件的日志，INFO及以上的日志被处理，其它的拒绝 -->
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -53,10 +49,7 @@
 			<totalSizeCap>1GB</totalSizeCap>
 		</rollingPolicy>
 		<encoder>
-			<pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%thread] [%X{Ip}]
-				[%X{requestId}] [%-5level] [%logger:%line]
-				--%mdc{client} %msg%n
-			</pattern>
+			<pattern>${PATTERN}</pattern>
 		</encoder>
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>INFO</level>
@@ -77,10 +70,7 @@
 			<totalSizeCap>1GB</totalSizeCap>
 		</rollingPolicy>
 		<encoder>
-			<pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%thread] [%X{Ip}]
-				[%X{requestId}] [%-5level] [%logger:%line]
-				--%mdc{client} %msg%n
-			</pattern>
+			<pattern>${PATTERN}</pattern>
 		</encoder>
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>INFO</level>
@@ -112,10 +102,7 @@
 		<file>${LOG_HOME}/error.log</file>
 		<append>false</append>
 		<encoder>
-			<pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%thread] [%X{Ip}]
-				[%X{requestId}] [%-5level] [%logger:%line]
-				--%mdc{client} %msg%n
-			</pattern>
+			<pattern>${PATTERN}</pattern>
 		</encoder>
 	</appender>
 
@@ -137,16 +124,16 @@
 	<!-- <logger name="error" > -->
 	<!-- <appender-ref ref="error" /> -->
 	<!-- </logger> -->
-	<logger name="com" level="ERROR" additivty="true">
-		<appender-ref ref="errorlog" />
-	</logger>
+<!-- 	<logger name="com" level="ERROR" additivty="true"> -->
+<!-- 		<appender-ref ref="errorlog" /> -->
+<!-- 	</logger> -->
 	<!-- 根日志,所有logger默认继承自root，打印信息向上级传递，所以以上logger所打印的日志默认被 STDOUT appender再处理一遍， 
 		也就是会被打印到控制台，可以再通过设置logger的additivity="false"，使得不再向上传递 -->
 	<!-- ALL < DEBUG < INFO < WARN < ERROR < FATAL < OFF -->
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="runtime" />
-<!-- 		<appender-ref ref="errorlog" /> -->
+		<appender-ref ref="errorlog" />
 	</root>
 
 </configuration>

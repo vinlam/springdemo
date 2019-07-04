@@ -17,12 +17,13 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.define.annotation.Log;
 import com.define.annotation.Logs;
 import com.util.IpUtil;
+import com.util.LogUtil;
 
 public class LogInterceptor extends HandlerInterceptorAdapter {
 
 	private NamedThreadLocal<Long> startTimeThreadLocal = new NamedThreadLocal<Long>("StopWatch-StartTime");
 	private final static String REQUEST_ID = "requestId";
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogInterceptor.class);
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
@@ -31,9 +32,11 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		String xForwardedForHeader = request.getHeader("X-Forwarded-For");
         String remoteIp = request.getRemoteAddr();
         String uuid = UUID.randomUUID().toString();
-        LOGGER.info("put requestId ({}) to logger", uuid);
-        LOGGER.info("request id:{}, client ip:{}, X-Forwarded-For:{}", uuid, remoteIp, xForwardedForHeader);
+        logger.info("put requestId ({}) to logger", uuid);
+        logger.info("request id:{}, client ip:{}, X-Forwarded-For:{}", uuid, remoteIp, xForwardedForHeader);
         MDC.put(REQUEST_ID, uuid);
+        String traceId = LogUtil.getTraceId();
+        MDC.put("TraceId", traceId);
         String ip = IpUtil.getIpAddr(request);
         MDC.put("Ip", ip);
 		return true;
@@ -46,7 +49,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 		super.postHandle(request, response, handler, modelAndView);
 		
 		String uuid = MDC.get(REQUEST_ID);
-        LOGGER.info("remove requestId ({}) from logger", uuid);
+        logger.info("remove requestId ({}) from logger", uuid);
         MDC.remove(REQUEST_ID);
 	}
 

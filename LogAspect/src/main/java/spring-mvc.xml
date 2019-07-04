@@ -27,9 +27,9 @@
 
 	<!-- 使用Annotation自动注册Bean,扫描@Controller和@ControllerAdvice -->
 	<!-- base-package 如果多个，用“,”分隔 -->
-	<context:component-scan base-package="com.*" use-default-filters="false">
+	<context:component-scan base-package="com.controller" use-default-filters="false">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
-		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+<!-- 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" /> -->
 		<!--控制器增强，使一个Contoller成为全局的异常处理类，类中用@ExceptionHandler方法注解的方法可以处理所有Controller发生的异常 -->
 		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
 	</context:component-scan>
@@ -53,7 +53,8 @@
 
 	<!-- mvc:view-controller可以在不需要Controller处理request的情况，转向到设置的View -->
 	<!-- 像下面这样设置，如果请求为/，则不通过controller，而直接解析为/index.jsp -->
-	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+<!-- 	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"> -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
@@ -92,11 +93,9 @@
 	<!-- <bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate"> -->
 	<!-- <constructor-arg ref="solrServer" /> -->
 	<!-- </bean> -->
-	<!-- <bean id="swaggerui" class="com.config.SwaggerConfig"></bean> -->
-	<!-- <mvc:resources order="-10" location="classpath:/META-INF/resources/" 
-		mapping="swagger-ui.html"/> -->
-	<!-- <mvc:resources order="-10" location="classpath:/META-INF/resources/webjars/" 
-		mapping="/webjars/**"/> -->
+	<bean id="swaggerui" class="com.config.SwaggerConfig"></bean>
+	<mvc:resources order="-10" location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>
+	<mvc:resources order="-10" location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>
 	<!-- <import resource="spring-redis.xml"/> -->
 	<!-- <import resource="memcache.xml"/> -->
 </beans>

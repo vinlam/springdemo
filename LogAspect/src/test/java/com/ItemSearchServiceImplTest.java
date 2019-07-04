@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -62,7 +63,7 @@ public class ItemSearchServiceImplTest {
     @Test
     public void add(){
         TbItem item=new TbItem();
-        item.setId(1L);
+        item.setId(1);
         item.setBrand("华为");
         item.setCategory("手机");
         item.setGoodsId(1L);
@@ -73,6 +74,7 @@ public class ItemSearchServiceImplTest {
     }
     
     @Autowired
+    //@Qualifier("sTemplate")
     private SolrTemplate solrTemplate;
     /**
      *  增加、修改
@@ -81,16 +83,20 @@ public class ItemSearchServiceImplTest {
     public void testAdd(){
     	long id = (long) (Math.random()*10000);
     	TbItem item=new TbItem();
-        item.setId(id+1L);
+        item.setId((int) (id+1));
         item.setBrand("华为");
         item.setCategory("智能手机");
         item.setGoodsId(1L);
         item.setSeller("华为官方专卖店");
-        item.setTitle("华为Mate20");
-        item.setPrice(new BigDecimal(4999.00));
+        item.setTitle("华为荣耀 P30");
+        item.setPrice(new BigDecimal("6799.99"));
         System.out.println(item.getId());
        // System.out.println(item.getPrice());
+        //solrTemplate.setSolrCore("itemcore");
+        System.out.println(solrTemplate.getSolrCore());
+
         solrTemplate.saveBean(item);
+        
         solrTemplate.commit();
     }
     
@@ -98,14 +104,14 @@ public class ItemSearchServiceImplTest {
     public void testAddList(){
         List<TbItem> list=new ArrayList<TbItem>();
         TbItem item = null;
-        for(int i=0;i<100;i++){
+        for(int i=0;i<10;i++){
         	item=new TbItem();
-            item.setId(i+1L);
-            item.setBrand("华为");
+            item.setId(i+1);
+            item.setBrand("小米");
             item.setCategory("手机");
             item.setGoodsId(1L);
-            item.setSeller("华为专卖店");
-            item.setTitle("华为Mate"+i);
+            item.setSeller("小米专卖店");
+            item.setTitle("小米"+i);
             item.setPrice(new BigDecimal(2000+i));
             list.add(item);
         }
