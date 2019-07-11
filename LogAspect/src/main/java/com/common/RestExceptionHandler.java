@@ -66,7 +66,7 @@ public class RestExceptionHandler {
 	@ResponseBody
 	public String iOExceptionHandler(IOException ex) {
 		//ex.printStackTrace();
-		logger.error("NullPointerException",ex);
+		logger.error("IOExceptionHandler",ex);
 		return ReturnFormat.retParam(1003, null);
 	}
 
@@ -92,7 +92,7 @@ public class RestExceptionHandler {
 	@ExceptionHandler({ HttpMessageNotReadableException.class })
 	@ResponseBody
 	public String requestNotReadable(HttpMessageNotReadableException ex) {
-		logger.error("400-IndexOutOfBoundsException",ex);
+		logger.error("400-HttpMessageNotReadableException",ex);
 		//ex.printStackTrace();
 		return ReturnFormat.retParam(400, null);
 	}
