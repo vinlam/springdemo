@@ -6,18 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.entity.Student;
 
 @Repository
 public class StudentDao{
- 
+	private static Logger logger  = LoggerFactory.getLogger(StudentDao.class);
     @Autowired
     private JdbcTemplate jdbcTemplate;
  
@@ -58,4 +63,28 @@ public class StudentDao{
 		Long e = System.currentTimeMillis();
 		System.out.println("total:"+((e - s)*0.001));
 	}
+    
+    
+    @Autowired
+	// @Qualifier("njdbcTemplate")
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    public int batchDelete(final List<Student> sList)
+    {
+        logger.info("batchDelete() begin, codeList.size="+sList.size());
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(sList.toArray());
+        Long s = System.currentTimeMillis();
+		
+        int[] updatedCountArray = namedParameterJdbcTemplate.batchUpdate("delete from student where id=:id", batch);
+        Long e = System.currentTimeMillis();
+		System.out.println("total:" + ((e - s)));
+		System.out.println("total:" + ((e - s) * 0.001));
+        int sumInsertedCount = 0;
+        for(int a: updatedCountArray)
+        {
+            sumInsertedCount+=a;
+        }
+        
+        logger.info("batchInsert() end, sList.size="+sList.size()+",success deleted "+sumInsertedCount+" records");
+        return sumInsertedCount;
+    }
 }

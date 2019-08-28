@@ -1,5 +1,7 @@
 package com.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,12 @@ public class StudentServiceImpl implements StudentService{
 	@Transactional
 	public void GoodBatchUpdate() {
 		studentDao.GoodBatchUpdate();
+	}
+	
+	@Override
+	@Transactional
+	public int DelBatchStudent(List<Student> sList) {
+		return studentDao.batchDelete(sList);
 	}
 
 }

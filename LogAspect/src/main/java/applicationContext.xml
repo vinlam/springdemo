@@ -224,7 +224,9 @@
 		</property>
 	</bean>
 
-
+<!--     <task:annotation-driven executor="asyncExecutor" /> -->
+<!--     <task:executor id="asyncExecutor" pool-size="100-10000" queue-capacity="10"/> -->
+      
 
 	<bean id="ky.httpClient" factory-bean="ky.httpClientBuilder"
 		factory-method="build" />

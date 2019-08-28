@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.common.gateway.RestClient;
+import com.entity.User;
 import com.entity.UserDTO;
+import com.util.JsonUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -67,5 +69,29 @@ public class RestTemplateController {
         postData.put("descp", "request for post");
         JSONObject json = RestClient.getClient().postForEntity(url, postData, JSONObject.class).getBody();
         return json.toJSONString();
+    }
+    
+    @PostMapping(value = "/restPostAction")
+    public User postJsonRest(@RequestBody User user) {
+    	User u = new User();
+    	u.setId(user.getId());
+    	u.setName(user.getName()+"-boy");
+    	u.setPassword(user.getPassword()+"123");
+    	return u;
+    }
+    
+    @GetMapping(value = "/restpostApi")
+    public Object testPostRest() {
+    	String url = "http://localhost:8080/LogAspect/api/restPostAction";
+    	UserDTO userDTO  = new UserDTO();
+    	User u = new User();
+    	u.setId(123);
+    	u.setName("jack");
+    	u.setPassword("pwd");
+    	// userDTO.setIds(ids);
+    	JSONObject postData = new JSONObject();
+    	postData.put("descp", "request for post");
+    	User user = RestClient.getClient().postForEntity(url, u, User.class).getBody();
+    	return JsonUtil.beanToJson(user);
     }
 }

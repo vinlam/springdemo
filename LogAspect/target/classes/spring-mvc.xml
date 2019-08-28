@@ -27,7 +27,7 @@
 
 	<!-- 使用Annotation自动注册Bean,扫描@Controller和@ControllerAdvice -->
 	<!-- base-package 如果多个，用“,”分隔 -->
-	<context:component-scan base-package="com.controller" use-default-filters="false">
+	<context:component-scan base-package="com.controller,com.common" use-default-filters="false">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 <!-- 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" /> -->
 		<!--控制器增强，使一个Contoller成为全局的异常处理类，类中用@ExceptionHandler方法注解的方法可以处理所有Controller发生的异常 -->

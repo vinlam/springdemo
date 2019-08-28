@@ -13,4 +13,8 @@ public interface MemCacheTestService {
     String updateStr(String param);
     
     int count();
+    
+    String mCache();
+    String mCacheupdate();
+    void mCacheDel();
 }

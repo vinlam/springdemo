@@ -39,7 +39,13 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
         MDC.put("TraceId", traceId);
         String ip = IpUtil.getIpAddr(request);
         MDC.put("Ip", ip);
-		return true;
+        //logger.info(request.getContextPath()+"/api/product/getList");
+        return true;
+        //拦截跳转
+        //response.sendRedirect(request.getContextPath()+"/api/product/getList");
+        //response.sendRedirect("http://www.baidu.com");
+        //return false;
+		
 	}
 
 	@Override

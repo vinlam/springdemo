@@ -16,6 +16,15 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
         Long timestamp = System.currentTimeMillis();
         return timestamp.toString();
     }
+	
+	@Override
+    @Cacheable(cacheNames="mCache",key="")
+	//@Cacheable("mCache")
+    public String mCache() {
+        Long timestamp = System.currentTimeMillis();
+        return "mCache:"+timestamp.toString();
+    }
+	
 	@Override
 	public int count() {
 		// TODO Auto-generated method stub
@@ -40,6 +49,20 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
 	@CacheEvict(cacheNames="mC",key="#param")
 	public void deleteOne(String param) {
 		// TODO Auto-generated method stub
+		System.out.println("delete");
+	}
+
+	@Override
+	@CachePut(cacheNames="mCache",key="")
+	public String mCacheupdate() {
+		// TODO Auto-generated method stub
+		Long timestamp = System.currentTimeMillis();
+        return "updatemCache:"+timestamp.toString();
+	}
+
+	@Override
+	@CacheEvict(cacheNames="mCache")
+	public void mCacheDel() {
 		System.out.println("delete");
 	}
 

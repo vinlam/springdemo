@@ -1,12 +1,16 @@
 package com;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -14,22 +18,30 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.beans.DocumentObjectBinder;
 import org.apache.solr.client.solrj.impl.CloudSolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.request.FieldAnalysisRequest;
 import org.apache.solr.client.solrj.request.QueryRequest;
+import org.apache.solr.client.solrj.response.AnalysisResponseBase.AnalysisPhase;
+import org.apache.solr.client.solrj.response.AnalysisResponseBase.TokenInfo;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.response.FieldAnalysisResponse;
+import org.apache.solr.client.solrj.response.FieldAnalysisResponse.Analysis;
 import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.TermsResponse.Term;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.AnalysisParams;
+import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.junit.Test;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 import com.entity.TbItem;
+import com.service.impl.StandardService;
 import com.util.JsonUtil;
 
 public class SolrCloudTest {
@@ -301,7 +313,7 @@ public class SolrCloudTest {
 	}
 
 	@Test
-	public void queryNewsType() {
+	public void queryFacet() {
 		SolrServer server = new HttpSolrServer(SOLR_PATH);
 		// CloudSolrServer solrServer = new
 		// CloudSolrServer("127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183");
@@ -376,5 +388,100 @@ public class SolrCloudTest {
 			server = null;
 		}
 		// return list;
+	}
+
+	private String qt = "title";
+
+	private String facetField = "title";
+
+	private String tokenizer = "com.chenlb.mmseg4j.analysis.MMSegTokenizer";
+
+
+	public String getFacetField() {
+		return facetField;
+	}
+
+	public void setFacetField(String facetField) {
+		this.facetField = facetField;
+	}
+
+	public String getQt() {
+		return qt;
+	}
+
+	public void setQt(String qt) {
+		this.qt = qt;
+	}
+
+	public String getTokenizer() {
+		return tokenizer;
+	}
+
+	public void setTokenizer(String tokenizer) {
+		this.tokenizer = tokenizer;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void fieldAnalysis() throws SolrServerException, IOException {
+		SolrServer solrServer = new HttpSolrServer(SOLR_PATH);
+		SolrQuery query = new SolrQuery();
+		query.add(CommonParams.QT, "/analysis/field"); // query type
+		query.add(AnalysisParams.FIELD_VALUE, "华为 mate pro 20");
+		//query.add(AnalysisParams.FIELD_TYPE, qt);
+		query.add(AnalysisParams.FIELD_TYPE, "text_cn");
+		//query.add("q", "*:*");
+		try {
+			// 对响应进行解析
+			QueryResponse response = solrServer.query(query);
+			//System.out.println(response.getResults());
+			NamedList<Object> analysis = (NamedList<Object>) response.getResponse().get("analysis");// analysis node
+			NamedList<Object> field_types = (NamedList<Object>) analysis.get("field_types");// field_types node
+			NamedList<Object> textSimple = (NamedList<Object>) field_types.get("text_cn");// textSimple node
+			NamedList<Object> index = (NamedList<Object>) textSimple.get("index");// index node
+			List<SimpleOrderedMap<String>> list = (ArrayList<SimpleOrderedMap<String>>) index.get("org.wltea.analyzer.lucene.IKTokenizer");// tokenizer
+			Set<String> wordSet = new HashSet<String>();
+			// 在每个词条中间加上空格，为每个词条进行或运算
+			if(list !=null && !list.isEmpty()) {
+				for (Iterator<SimpleOrderedMap<String>> iter = list.iterator(); iter.hasNext();) {
+					wordSet.add(iter.next().get("text"));
+				}
+				System.out.println(wordSet);
+			}
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+		}
+		SolrServer server = new HttpSolrServer(SOLR_PATH);
+		FieldAnalysisRequest request = new FieldAnalysisRequest();
+	 
+		request.setFieldNames(java.util.Collections.singletonList("title"));//这里可以设置多个fieldName，或者是fieldType，但是我们这里只是一个，用来作为例子
+		request.setFieldValue("华为 mate pro 20");//设置建立索引时的分词的内容
+		request.setQuery("华为 mate pro 20");//设置查询时的分词的内容
+//		request.setFieldValue("我来自中国山东 我们那里有很多好吃的");//设置建立索引时的分词的内容
+//		request.setQuery("我来自中国山东 我们那里有很多好吃的");//设置查询时的分词的内容
+		
+		FieldAnalysisResponse response = request.process(server);
+		Analysis sis = response.getFieldNameAnalysis("title");//指定要获得的域的名字，因为上面是setFieldNames，所以这里是getFieldNameAnalysis，如果上面是setFieldTypes，则这里就要调用getFieldTypeAnalysis
+			
+		// 获得fieldValue的分词结果
+		Iterator<AnalysisPhase> result = sis.getIndexPhases().iterator();
+		while(result.hasNext()){
+			AnalysisPhase pharse = result.next();
+			List<TokenInfo> list = pharse.getTokens();
+	        for (TokenInfo info : list) {
+	        	System.out.println(info.getText());//info还有很多的属性，这里没有设置
+	        }
+		}
+			
+		// 获得query的
+		result = sis.getQueryPhases().iterator();
+		while(result.hasNext()){
+	        AnalysisPhase pharse = result.next();
+			List<TokenInfo> list = pharse.getTokens();
+		       for (TokenInfo info : list) {
+		       	System.out.println(info.getText());
+		       }
+		}
 	}
 }
