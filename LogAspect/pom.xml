@@ -40,7 +40,7 @@
 		<activemq.pool.version>5.12.1</activemq.pool.version>
 		<hikaricp.version>3.3.1</hikaricp.version>
 		<jsoup.version>1.11.3</jsoup.version>
-		<jackson.version>2.9.9</jackson.version>
+		<jackson.version>2.10.0</jackson.version>
 		<fastjson.version>1.2.58</fastjson.version>
 		<elasticsearch.version>6.7.1</elasticsearch.version>
 		<elasticsearch.client.version>6.3.2</elasticsearch.client.version>
