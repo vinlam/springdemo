@@ -1,18 +1,35 @@
 package com.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class User {
-	private int Id;
+public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	//@JsonIgnore
+	@NotNull(message="Id不能为空")
+	private Integer Id;
+	@JsonIgnore
 	private String name;
+	
+	@NotBlank(message="密码不能为空")
 	private String password;
 	
-	public int getId() {
+	public Integer getId() {
 		return Id;
 	}
 	
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.Id = id;
 	}
 	

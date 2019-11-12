@@ -3,14 +3,15 @@ package com.service;
 import java.util.List;
 
 import com.entity.Product;
+import com.service.impl.Message;
 
 public interface ElasticService {
 
-	void addProduct(Product product);
+	Message addProduct(Product product);
 
-	void delProduct(String id);
+	Message delProduct(String id);
 
-	void updateProduct(Product product);
+	Message updateProduct(Product product);
 
 	List<Product> getProduct(String id);
 

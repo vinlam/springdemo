@@ -1,6 +1,8 @@
 package com.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +16,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +41,7 @@ import com.service.UserService;
 import com.service.impl.MemCacheTestServiceImpl;
 import com.service.impl.a.AutoInject;
 import com.service.impl.a.Inject;
+import com.util.JsonUtil;
 
 @Controller
 @RequestMapping("/t")
@@ -44,8 +49,9 @@ public class testcontroller {
 	private static final Logger logger = LoggerFactory.getLogger(testcontroller.class);
 
 	@RequestMapping(value = "/testget", method = RequestMethod.GET)
-	public String test() {
+	public String test(Model model,String name) {
 		System.out.println("test");
+		model.addAttribute("name",name);
 		return "success";
 	}
 
@@ -71,7 +77,7 @@ public class testcontroller {
 
 	//@RequestMapping(value = "/getPostUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@RequestMapping(value = "/getPostUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ModelAndView getPostUser(User user) {
+	public ModelAndView getPostUser(@RequestBody User user) {
 		//System.out.println(JSONObject.toJSON(userDTO));
 
 		ModelAndView mAndView = new ModelAndView("showUser");
@@ -100,12 +106,14 @@ public class testcontroller {
 
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
-        converters.add(new MappingJackson2HttpMessageConverter());
+        converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
         RestClient.getClient().setMessageConverters(converters);
-        //User json = RestClient.getClient().postForEntity(url, user, User.class).getBody();
-        //User json = RestClient.getClient().postForEntity(url,request, User.class).getBody();
-        JSONObject json = RestClient.getClient().postForEntity(url, postData, JSONObject.class).getBody();
-        System.out.println(json.toString());
+        String u = RestClient.getClient().postForEntity(url, user, String.class).getBody();
+        ////User json = RestClient.getClient().postForEntity(url,request, User.class).getBody();
+        //JSONObject json = RestClient.getClient().postForEntity(url, postData, JSONObject.class).getBody();
+        //String json = JsonUtil.beanToJson(u);
+        //System.out.println(json.toString());
+        System.out.println(u);
 		//return mAndView;
 	}
 

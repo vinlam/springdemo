@@ -30,7 +30,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         });
   </script>
   <body>
-
+	<span>${name}</span>
     <input type="button" id="modelTest" value="测试">
 
 

@@ -28,7 +28,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.alibaba.fastjson.JSON;
 import com.entity.Student;
+import com.entity.UserRoleDTO;
 import com.service.StudentService;
+import com.util.JsonMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -257,6 +259,22 @@ public class JDBCTest {
 
 		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(student);
 		namedParameterJdbcTemplate.update(sql, paramSource);
+	}
+	@Test
+	public void getData() {
+		String sql = "select r.id,r.role_name,r.remark,r.create_date ,ru.* from test.sys_role r left join test.sys_role_user ru on r.id = ru.role_id where r.id = ? and ru.user_id=? ";
+		Object[] args = new Object[] {"dcb0f642fe9611e7b472201a068c6482","1ec421975ffe45229b48d4b9d712ff4f"};
+		RowMapper<UserRoleDTO> rowMapper = new BeanPropertyRowMapper<>(UserRoleDTO.class);
+		UserRoleDTO ur = jdbcTemplate.queryForObject(sql, rowMapper, args);
+		System.out.println(JsonMapper.toJsonString(ur));
+	}
+	@Test
+	public void getStudentData() {
+		String sql = "select * from student s where s.student_name = ? ";
+		Object[] args = new Object[] {"100EE"};
+		RowMapper<Student> rowMapper = new BeanPropertyRowMapper<>(Student.class);
+		Student s = jdbcTemplate.queryForObject(sql, rowMapper, args);
+		System.out.println(JsonMapper.toJsonString(s));
 	}
 
 	public void main(String[] args) {

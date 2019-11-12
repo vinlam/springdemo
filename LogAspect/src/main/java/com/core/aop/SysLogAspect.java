@@ -244,7 +244,7 @@ public class SysLogAspect {
 
 		User user = new User();
 		user.setId(1);
-		user.setName("张三");
+		user.setName("");
 		String ip = IpUtil.getIpAddr(request);
 
 		String params = "";

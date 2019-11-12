@@ -44,7 +44,7 @@ import com.service.impl.a.AutoInject;
 //@TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
 @RunWith(SpringJUnit4ClassRunner.class)
 //@RunWith(SpringRunner.class)
-@WebAppConfiguration
+@WebAppConfiguration//整合springfox-swagger2后需加@WebAppConfiguration注解
 @ContextConfiguration(locations = { "classpath*:/applicationContext.xml" })
 //@ContextConfiguration({"file:src/main/java/applicationContext.xml"})
 public class testunit {

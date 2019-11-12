@@ -31,4 +31,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</table>
 	</div>
 </body>
+<script type="text/javascript">
+	console.log("${comment}");
+</script>
 </html>

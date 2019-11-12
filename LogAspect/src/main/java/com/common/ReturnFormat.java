@@ -1,14 +1,8 @@
 package com.common;
 
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
 import com.util.OutputJson;
 
 //格式化返回客户端数据格式（json）

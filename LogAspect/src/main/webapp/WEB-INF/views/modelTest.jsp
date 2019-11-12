@@ -25,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         $(function(){
             $("#modelTest").on("click",function(){
 
-                window.location.href="<%=request.getContextPath()%>/model/modelTest";
+                window.location.href="<%=request.getContextPath()%>/model/test";
             })
         });
   </script>

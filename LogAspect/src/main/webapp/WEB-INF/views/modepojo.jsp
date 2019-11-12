@@ -25,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   $(function(){
       $("#modelTest").on("click",function(){
 
-          window.location.href="<%=basePath%>model/modelpojo?userName="+encodeURI('小明')+"&sex="+encodeURI('男');
+          window.location.href="<%=basePath%>model/pojo?userName="+encodeURI('小明')+"&sex="+encodeURI('男');
       })
   });
 </script>

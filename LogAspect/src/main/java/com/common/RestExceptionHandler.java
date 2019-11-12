@@ -2,6 +2,10 @@ package com.common;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * 异常增强，以JSON的形式返回给客服端
@@ -33,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 
  */
 @ControllerAdvice
+//@RestControllerAdvice // RestControllerAdvice返回不需要加@ResponseBody注解
 public class RestExceptionHandler {
 	private final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 	// 运行时异常
@@ -114,8 +120,25 @@ public class RestExceptionHandler {
 		//ex.printStackTrace();
 		return ReturnFormat.retParam(400, null);
 	}
+	// 400拦截非法参数错误
+	@ExceptionHandler({ ConstraintViolationException.class })
+	@ResponseBody
+	public String requestConstainViolation(HttpServletRequest request,ConstraintViolationException cv) {
+		StringBuffer sb = new StringBuffer();
+		logger.error("400-requestConstainViolation请求参数非法",cv);
+		for(ConstraintViolation constraintViolation:cv.getConstraintViolations()) {
+			if(constraintViolation.getMessage() != null) {
+				sb.append(constraintViolation.getMessage());
+			}else {
+				return ReturnFormat.retParam(400, null);
+			}
+		}
+		//ex.printStackTrace();
+		return ReturnFormat.retParam(2010, sb.toString());
+		//throw cv;
+	}
 
-	// 405错误
+	// 405错误 
 	@ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
 	@ResponseBody
 	public String request405(HttpRequestMethodNotSupportedException ex) {
