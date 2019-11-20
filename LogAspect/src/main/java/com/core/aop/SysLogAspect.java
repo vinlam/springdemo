@@ -202,6 +202,8 @@ public class SysLogAspect {
 			log.setParams(null);
 			log.setCreateBy(user.getName());
 			log.setCreateDate(new Date());
+			
+			logger.info("param:"+JsonUtil.beanToJson(log));
 			// 保存数据库
 			sysLogServiceImp.insert(log);
 			logger.info("=====controller后置通知结束=====");
@@ -301,6 +303,7 @@ public class SysLogAspect {
 			log.setCreateBy(user.getName());
 			log.setCreateDate(new Date());
 			log.setRequestIp(ip);
+			logger.info("param:"+JsonUtil.beanToJson(log));
 			// 保存数据库
 			sysLogServiceImp.insertTest(log);
 			logger.info("=====异常通知结束=====");

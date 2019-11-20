@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.util.DateJsonDeserializer;
+import com.util.DateJsonSerializer;
 public class SysLog implements Serializable{
     /**
 	 * 
@@ -28,6 +32,8 @@ public class SysLog implements Serializable{
 
     private String createBy;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+//    @JsonDeserialize(using= DateJsonDeserializer.class)
+//	@JsonSerialize(using= DateJsonSerializer.class)
     private Date createDate;
 
     public String getId() {

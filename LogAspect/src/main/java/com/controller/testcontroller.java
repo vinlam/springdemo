@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -47,9 +48,11 @@ import com.util.JsonUtil;
 @RequestMapping("/t")
 public class testcontroller {
 	private static final Logger logger = LoggerFactory.getLogger(testcontroller.class);
-
+	@Autowired
+	private HttpServletRequest servletRequest;
 	@RequestMapping(value = "/testget", method = RequestMethod.GET)
 	public String test(Model model,String name) {
+		System.out.println(servletRequest.getRequestURL());
 		System.out.println("test");
 		model.addAttribute("name",name);
 		return "success";
@@ -58,10 +61,16 @@ public class testcontroller {
 	@RequestMapping("/rd")
 	public ModelAndView redirect(HttpServletResponse response) {
 		System.out.println("redirect");
+		System.out.println(servletRequest.getRequestURL());
 		// return "redirect:http://www.baidu.com";
-
+		try {
+			response.getWriter().write("http://www.baidu.com");;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ModelAndView mv = new ModelAndView("redirect:testget");
-		return mv;
+		return null;
 	}
 
 	@RequestMapping("/rd1")

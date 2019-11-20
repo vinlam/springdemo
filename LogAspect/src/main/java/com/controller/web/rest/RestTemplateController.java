@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +26,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.common.gateway.AsyncRestClient;
 import com.common.gateway.RestClient;
+import com.entity.BaiduIpResponse;
 import com.entity.User;
 import com.entity.UserDTO;
+import com.util.JsonMapper;
 import com.util.JsonUtil;
 
 @RestController
@@ -167,5 +172,66 @@ public class RestTemplateController {
 //        //HttpEntity
 //        String responseEntity = RestClient.getClient().getForObject(newurl, String.class);
 		return responseEntity;
+	}
+	
+	@RequestMapping(value = "/getbdip", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public BaiduIpResponse postbaiduipdata() {
+		String url = "https://api.map.baidu.com/location/ip?v=2.0&ak={ak}&ip={ip}&coor={coor}";
+
+		Map<String, Object> parammap = new HashMap<String, Object>();
+		parammap.put("ak", "Ff72OypnReCylnDvy0OBuEHLRRumZGX8");// RGl7YqMPBt1TWm4zNnFNO6wFkZleF2D0
+		parammap.put("ip", "183.129.210.50");
+		//parammap.put("coor", "bd09ll");
+		parammap.put("coor", "gcj02");//国测局
+		// HttpEntity
+		//String responseEntity = RestClient.getClient().getForObject(url, String.class, parammap);
+		BaiduIpResponse responseEntity = RestClient.getClient().postForObject(url, null,BaiduIpResponse.class,parammap);
+//        String newurl= "https://api.map.baidu.com/location/ip?v=2.0&ak=%s&ip=%s&coor=%s";
+//        String ak = "Ff72OypnReCylnDvy0OBuEHLRRumZGX8";
+//        String ip = "183.129.210.50";
+//        String coor = "bd09ll";
+//        newurl = String.format(newurl, ak,ip,coor);
+//        logger.info("baiduurl:",newurl);
+//        //HttpEntity
+//        String responseEntity = RestClient.getClient().getForObject(newurl, String.class);
+		return responseEntity;
+	}
+	
+	@RequestMapping(value = "/getbdipasync", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String postbaiduipdataasync() {
+		String url = "https://api.map.baidu.com/location/ip?v=2.0&ak={ak}&ip={ip}&coor={coor}";
+		
+		Map<String, Object> parammap = new HashMap<String, Object>();
+		parammap.put("ak", "Ff72OypnReCylnDvy0OBuEHLRRumZGX8");// RGl7YqMPBt1TWm4zNnFNO6wFkZleF2D0
+		parammap.put("ip", "183.129.210.50");
+		//parammap.put("coor", "bd09ll");
+		parammap.put("coor", "gcj02");//国测局
+		// HttpEntity
+		//String responseEntity = RestClient.getClient().getForObject(url, String.class, parammap);
+		
+		//调用完后立即返回（没有阻塞）
+        ListenableFuture<ResponseEntity<BaiduIpResponse>> forEntity = AsyncRestClient.getClient().getForEntity(url, BaiduIpResponse.class,parammap);
+        //异步调用后的回调函数
+        forEntity.addCallback(new ListenableFutureCallback<ResponseEntity<BaiduIpResponse>>() {
+            //调用失败
+            @Override
+            public void onFailure(Throwable ex) {
+                logger.error("=====rest response faliure======"+ex.getMessage());
+            }
+            //调用成功
+            @Override
+            public void onSuccess(ResponseEntity<BaiduIpResponse> result) {
+                logger.info("--->async rest response success----, result = "+JsonMapper.toJsonString(result.getBody()));
+            }
+        });
+//        String newurl= "https://api.map.baidu.com/location/ip?v=2.0&ak=%s&ip=%s&coor=%s";
+//        String ak = "Ff72OypnReCylnDvy0OBuEHLRRumZGX8";
+//        String ip = "183.129.210.50";
+//        String coor = "bd09ll";
+//        newurl = String.format(newurl, ak,ip,coor);
+//        logger.info("baiduurl:",newurl);
+//        //HttpEntity
+//        String responseEntity = RestClient.getClient().getForObject(newurl, String.class);
+		return "ok";
 	}
 }

@@ -2,6 +2,7 @@ package com;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,18 +19,30 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.common.component.AsyncTask;
+import com.common.component.NoAsyncTask;
+import com.common.gateway.RestClient;
 import com.common.solr.SolrClient;
 import com.config.BeanConfig;
 import com.dao.TB;
 import com.entity.Book;
 import com.entity.Order;
 import com.entity.OrderItem;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.service.BookService;
 import com.service.CustomerService;
 import com.service.EhCacheTestService;
@@ -39,6 +52,8 @@ import com.service.SysLogService;
 import com.service.UserService;
 import com.service.impl.MemCacheTestServiceImpl;
 import com.service.impl.a.AutoInject;
+import com.util.DateJsonDeserializer;
+import com.util.DateJsonSerializer;
 
 //@Transactional
 //@TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
@@ -58,6 +73,25 @@ public class testunit {
 	@Qualifier("AutoInjectB")
 	private IAutoInject inj;
 
+	//@JsonDeserialize(using= DateJsonDeserializer.class)
+	@JsonSerialize(using= DateJsonSerializer.class)
+	private Date time;
+	
+	@Test
+	public void testDate() {
+		time = new Date();
+		System.out.println("当前时间:");
+        System.out.println(time);
+        System.out.println();
+        DataEntity dataEntity = new DataEntity();
+        dataEntity.setDate(time);
+        System.out.println(JSONObject.toJSONString(dataEntity));
+        // 从1970年1月1日 早上8点0分0秒 开始经历的毫秒数
+        Date d2 = new Date(5000);
+        System.out.println("从1970年1月1日 早上8点0分0秒 开始经历了5秒的时间");
+        System.out.println(d2);
+	}
+	
 	@Test
 	public void test() {
 		autoInjecta.print();
@@ -341,7 +375,55 @@ public class testunit {
 //		order.setOrderItem(item1);
 //		System.out.println(JSON.toJSONString(order));
 //	}
+	
+	@Autowired
+    private AsyncTask task;
+ 
+    @Test
+    public void testAsync() throws Exception {
+ 
+//        for (int i = 0; i < 10000; i++) {
+//            task.doTaskOne();
+//            task.doTaskTwo();
+//            task.doTaskThree();
+// 
+//            if (i == 9999) {
+//                System.exit(0);
+//            }
+//        }
+        for (int i = 0; i < 10; i++) {
+        	task.doTaskOne();
+        	task.doTaskTwo();
+        	task.doTaskThree();
+        	
+        	if (i == 10) {
+        		System.exit(0);
+        	}
+        }
+    }
+    
+    @Autowired
+    private NoAsyncTask noTask;
+    @Test
+    public void testnoAsync() {
+    	noTask.noAsyncTask("no Task Test");
+    }
 
+    @Test
+    public void restTemplateWithCookie() {
+    	HttpHeaders headers = new HttpHeaders();
+    	List<String> cookies = new ArrayList<String>();
+    	cookies.add("b2b_auth=3b16AHu5Fhx0oT29a%2FB8OuF1yItVPmBVjDH9bPbR5FKGZY%2FJBiUq1D7Ih4OL4DTYeO4dgkNF4iZD6D59PiVRpzj2R5oPgDjeDD6KmVAh1QeQpaumiQpo854LcVm6niBcHPMMUNZlMxVGB4K%2FRSbBFZW9A68B7cC2P41OrvaftE3cLXucSdZv3iSUM4g7QZCwJw3nEX9NNyvuwSEroLUTDekSrfFdRhmfoHhNRcnaRD%2FY%2Fe38MPOpFKS2aFBdtNrhzkwRxPuOO6MoFx2afsTYTUcLgxIpZBsV9YtThcOLZyMy5LSl%2Brt2wnGB%2FDmrZegO9AvYrfgId8gkrifpCpeAUcqbZkoTgFaHVhyOdQSWcvsCvOr78F1seiGRkdPbwJ7NQBpE2c%2BCL0EGToa%2Fd%2FJlOaQXxVk1pk%2B90GdyZEGxn%2BUJnFJ1sP0");
+    	cookies.add("cpc_auth=c60dim5r%2BOBcdDCwOlEk4qOTHjG7onLJordyFupqOXEKbkp7qeWvJVI6wO8MkZK0q3tvUhdP9UIHHFgIAcVZ31%2BVZrUqb2143SL3sisdJEnV8xnKmCsgEx73U6yo6NhyBqG9QGyhPxORiEAp0e6ryM9FAhvSzKqwRX1eJRgzUVI%2BX9iI05%2Fz21%2FP0G2vPtCXmYRbmSMFDOkr4sePC2EVRd9o7%2FS6H80%2F2FhIpRFQthwwTkis4ciGGKtozEt%2BA1A39mzVeoiWymY%2FJQvJ49sfmvY243Tx5KfoqtiVFRINSSB%2BJbzNAEBL4GGCjleDUFRfeIZQuxGCBATWPAlq1VA0fbZgzgeEaU3FvgYnKhTpEwqc3622tzm7AyeU2MX6qFouEcqNB5wZmCznB7fuSWw9jI2KDYkXL4mnhuE1%2Bxr4XHgFKQccorR4TVbHaEFJH9pIfqdZnd0sUZk76VRtDaYgIAA7BclnDBLAl3EsX3uj9XfBbqT%2FSbLvS8EwtUc49Z3e1LWamhMsGVw7lxbMwd%2BkVyzC0vXk1kcgyU48qWjlyA8vjfrNzYAiJ9NFNX%2BFQa%2BhI8p%2FkYLwfM2%2Bg%2BoU4JnyltYT5q3mvQ2qU5%2F3WLtu6b%2B0omeoSNSQkS29WiHZrCtpAwdT5RkPYvi7%2F5WurzsbNE8izAL%2BP3W%2F%2BokjFOiytyY2KTupZuJ9LGdAxsSqIXKxm%2BqYg0zglNPxbTIquAPRMlIsEDAmwP5yZ3fg7DEaXl4mhlUWRXvq6igMWtaR%2Brd8G34S95xf5nwkTzsi2JasYkTq6H2qMbcjrSdJ4%2F6NGUrBLgRoTxX1MPGwaWPIxQhw0alDmLgpwG1jrEtrXpCX3Gl%2Byfe593y2n%2FbXn6JArNHukPakZ2Lnz9qBaxfO01DBKVFwP3Ol0WuVdoxWQTXE5vFiRd6ha%2BSGAMOxd%2B%2BXg9H96KD6Uk73hTkpWXI23sxrNNYkqUL00Oak4QtftWLrnbfr%2FwpNBZhvVgf5xzNpcoHfHbHYldffrOSmdgUYUVqo5QxcJxd8jet2yf8x7pIrR96a2qkOHk0%2FQsCZdO99rdpese0K9yOt5tVrF9UD4vC9SHucpo4hCeSs7vRiRtJgzvzcjDH3uh5lp4VOx%2FJsXwLrZ5KO9De3esGWsiKbgAO7N5cXLTVTdFpO2mA0B0%2BifN4p8AhLOOebwPio6Mcg6aYiA2wEMR9sMrel4MrIun4%2F4OboyJ9nxJLZd4wC4dA%2Fa4KZ9xTnk25hFrcV9ZI3tpsPhxdQS0o");
+    	headers.put(HttpHeaders.COOKIE, cookies);
+    	MultiValueMap<String,String> map = new LinkedMultiValueMap<String,String>();
+    	
+    	HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<MultiValueMap<String,String>>(map,headers);
+    	String url = "http://***.***.com/***/api/***/buy/cart/count";
+    	//ResponseEntity<String> response = RestClient.getClient().postForEntity(url, request, String.class);
+    	ResponseEntity<String> response = RestClient.getClient().exchange(url, HttpMethod.GET, request, String.class);
+    	System.out.println(response.getBody());
+    }
 }
 
 class MyThead implements Runnable {

@@ -1,5 +1,7 @@
 package com.controller.web.rest;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.entity.User;
+import com.service.GreetingService;
 import com.service.IAutoInject;
 import com.service.SaveDataService;
 import com.util.JsonMapper;
@@ -169,5 +172,14 @@ public class RestApiTestController {
 		System.out.println(u.getId());
 		return u;
 	}
+    
+    @Autowired
+    private GreetingService greetingService;
+    @RequestMapping(value="/aopproxy/expose",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+    public String returnString(@RequestParam("userName") String userName,@RequestParam("password") String password) throws UnsupportedEncodingException {
+        greetingService.sayMessage("xiaoming ");
+        //对于get中文乱码 js对中文进行两次encodeURI(encodeURI('张三'))
+        return "hello return string 这是中文" + URLDecoder.decode(userName,"UTF-8") + "-" + password;
+    }
     
 }

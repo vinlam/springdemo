@@ -2,7 +2,7 @@ package com.event;
 
 import com.entity.User;
 
-public class FaceEvent extends BaseEvent{
+public class FaceEvent extends BaseEvent<User>{
 	/**
 	 * 
 	 */
