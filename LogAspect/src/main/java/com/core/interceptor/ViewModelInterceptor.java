@@ -20,7 +20,7 @@ public class ViewModelInterceptor extends HandlerInterceptorAdapter {
 		String blogName = (String) request.getAttribute("blogName");
 		// We are adding some modelAndView objects here and will use it in view jsp.
 		modelAndView.addObject("blogName", blogName);
-		modelAndView.addObject("authorName", "vvv");
+		modelAndView.addObject("authorName", "vin");
 	}
 
 	@Override
