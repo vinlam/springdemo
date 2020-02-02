@@ -61,7 +61,7 @@
 	</bean>
 
 	<mvc:default-servlet-handler />
-
+    <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>
 	<mvc:cors>
 		<mvc:mapping path="/**" allow-credentials="true" allowed-headers="*" allowed-origins="*"
 			allowed-methods="GET,POST,DELETE,PUT" />
@@ -85,6 +85,10 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/activity/**" />
 			<bean class="com.core.interceptor.AccessLimitInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/t/**" />
+			<bean class="com.core.interceptor.ViewModelInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
 	<!-- solr服务器地址 -->

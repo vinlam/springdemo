@@ -47,7 +47,7 @@ public class SysLogServiceImp implements SysLogService {
     @Override
     //@CachePut(value="myCache")
     //@CacheEvict(value="myCache",allEntries=true,beforeInvocation=true)
-    @CacheEvict(value="myCache",key="0",beforeInvocation=true)
+    //@CacheEvict(value="myCache",key="0",beforeInvocation=true)
     public int insertTest(SysLog record) {
         
         return SysLogMapper.insert(record);

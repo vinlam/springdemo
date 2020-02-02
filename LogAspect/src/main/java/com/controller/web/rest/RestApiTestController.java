@@ -6,8 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.entity.Person;
 import com.entity.User;
 import com.service.GreetingService;
 import com.service.IAutoInject;
@@ -31,6 +40,7 @@ import com.util.JsonMapper;
 
 @RestController
 @RequestMapping(value="/api")
+@Validated
 public class RestApiTestController {
 	private static final Logger logger = LoggerFactory.getLogger(RestApiTestController.class);
 
@@ -57,8 +67,6 @@ public class RestApiTestController {
 		return JsonMapper.toJsonString(map);
 	}
 	
-	
-	
 	@RequestMapping(value = "/getSaveData/{uid}",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
 	//@ResponseBody
 	public User getSaveData(@PathVariable(required = true) int uid) {
@@ -74,33 +82,58 @@ public class RestApiTestController {
 	}
 	
 	@RequestMapping(value="/getdata",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	public String getData() throws InterruptedException{
-		//String cache = "2222";
-//		Thread.sleep(1000);
-//		System.out.println(cache);
-//		Thread.sleep(11000);
-//		System.out.println("11秒："+cache);
+	public String getData(){
 		return "ok";
 	}
 	
+	@GetMapping(value="gettest/user",produces=MediaType.APPLICATION_JSON_VALUE)
+	public User getTestUser(@Validated User u) {
+		return u;
+	}
+	
+	@GetMapping(value="gettest/v/{str}",produces=MediaType.APPLICATION_JSON_VALUE)
+	@Validated
+	public String gettest(@PathVariable("str") String str,@NotBlank(message = "str notBlank") @RequestParam String param,@RequestParam @Min(1) @Max(7) Integer dayOfWeek){
+		return str+"-"+dayOfWeek;
+	}
+	
+	@GetMapping(value="/valid-name/{name}",produces=MediaType.APPLICATION_JSON_VALUE)
+	@Validated
+	public void createUsername(@PathVariable("name") @NotBlank @Size(max = 10) String username) {
+		logger.info("valid:"+username);
+	}
+	
+	//http://localhost:8080/LogAspect/api/addPerson?id=123123&name=weiyihaoge&sex=nan&age=30&email=test%40163.com&phone=13800138000&hostUrl=http%3A%2F%2Flocalhost%3A80&isnull=112312&hasJob=true
+	//http://localhost:8080/LogAspect/api/addPerson?name=weiyihaoge&age=30&hasJob=true&sex=nan
+	@GetMapping(value="addPerson",produces=MediaType.APPLICATION_JSON_VALUE)
+    public Person addPerson(@Validated final Person person){
+        return person;
+    }
+	
 	@RequestMapping(value="/deldata/{id}",method=RequestMethod.DELETE,produces=MediaType.APPLICATION_JSON_VALUE)
-	public String delData(@PathVariable Long id) throws InterruptedException{
+	public String delData(@PathVariable Long id){
 		System.out.println("del:"+ id);
-		//String cache = "2222";
-//		Thread.sleep(1000);
-//		System.out.println(cache);
-//		Thread.sleep(11000);
-//		System.out.println("11秒："+cache);
 		return id.toString();
+	}
+	@RequestMapping(value="/del/{id}",method=RequestMethod.DELETE,produces=MediaType.APPLICATION_JSON_VALUE)
+	public void del(@PathVariable Long id){
+		System.out.println("del:"+ id);
+	}
+	
+	@RequestMapping(value="/testput/{id}",method=RequestMethod.PUT,produces=MediaType.APPLICATION_JSON_VALUE)
+	public String testPut(@PathVariable Long id,@RequestParam(defaultValue = "0") String type){
+		logger.info("testput:"+ id+"-----"+type);
+		return id+"-----"+type;
+	}
+	
+	@RequestMapping(value="/testputreq/{type}",method=RequestMethod.PUT,produces=MediaType.APPLICATION_JSON_VALUE)
+	public String testPutReq(@PathVariable String type,@RequestParam @Pattern(regexp = "^([0|1])$",message = "类型不正确") String id,HttpServletRequest request,HttpServletResponse response){
+		logger.info("testput:"+ id+"-----"+type);
+		return id+"-----"+type;
 	}
 	
 	@RequestMapping(value="/postdata",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
 	public Integer addData(@RequestBody User u){
-		//String cache = "2222";
-//		Thread.sleep(1000);
-//		System.out.println(cache);
-//		Thread.sleep(11000);
-//		System.out.println("11秒："+cache);
 		System.out.println(u.getId());
 		return u.getId();
 	}
@@ -108,19 +141,12 @@ public class RestApiTestController {
 	@RequestMapping(value="/updatedata",method=RequestMethod.PUT,produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Integer> updatedata(){
 		int cache = 2222;
-//		Thread.sleep(1000);
-//		System.out.println(cache);
-//		Thread.sleep(11000);
-//		System.out.println("11秒："+cache);
 		return ResponseEntity.ok(cache);
 	}
+	
 	@RequestMapping(value="/deldata",method=RequestMethod.DELETE,produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Integer> deleteData(){
 		int cache = 2222;
-//		Thread.sleep(1000);
-//		System.out.println(cache);
-//		Thread.sleep(11000);
-//		System.out.println("11秒："+cache);
 		return ResponseEntity.ok(cache);
 	}
 	
@@ -131,7 +157,6 @@ public class RestApiTestController {
     	return ids;
     }
 	
-
     @RequestMapping(value="/getIds",method = RequestMethod.GET)
     // @Logs(operationType="add操作:",operationName="添加用户")  
     //@Log(desc="test define annotation")  
@@ -164,11 +189,6 @@ public class RestApiTestController {
     @RequestMapping(value="/testpostdata",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
     //@RequestMapping(value="/testpostdata",method=RequestMethod.POST,produces=MediaType.ALL_VALUE)
 	public User testData(@Valid @RequestBody User u){
-		//String cache = "2222";
-//		Thread.sleep(1000);
-//		System.out.println(cache);
-//		Thread.sleep(11000);
-//		System.out.println("11秒："+cache);
 		System.out.println(u.getId());
 		return u;
 	}

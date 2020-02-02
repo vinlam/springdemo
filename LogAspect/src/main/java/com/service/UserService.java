@@ -1,5 +1,7 @@
 package com.service;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,21 @@ public class UserService {
 	
 	public MBUser findById(String id) {
 		return userDao.findOneById(id);
+	}
+
+	public Set<String> findUserRoleNames(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Set<String> findUserPermNames(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public User findUserByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 //	@Autowired 

@@ -10,12 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.core.NamedThreadLocal;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.define.annotation.Log;
 import com.define.annotation.Logs;
+import com.service.UserService;
 import com.util.IpUtil;
 import com.util.LogUtil;
 
@@ -27,6 +29,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
+		
 		long beginTime = System.currentTimeMillis();
 		startTimeThreadLocal.set(beginTime);
 		String xForwardedForHeader = request.getHeader("X-Forwarded-For");
@@ -39,6 +42,13 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
         MDC.put("TraceId", traceId);
         String ip = IpUtil.getIpAddr(request);
         MDC.put("Ip", ip);
+//        try {
+//        	UserService s = null;
+//        	s.getUser("a");
+//        }catch(Exception e) {
+////        throw new NullPointerException();
+//        throw new HttpRequestMethodNotSupportedException("");
+//        }
         //logger.info(request.getContextPath()+"/api/product/getList");
         return true;
         //拦截跳转

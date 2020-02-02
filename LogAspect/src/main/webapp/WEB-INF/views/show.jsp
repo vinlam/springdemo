@@ -25,6 +25,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<tr>
 				<td>留言：</td><td>${comment}</td>
 			</tr>
+			<tr>
+				<td>留言：</td><td>${con.data}</td>
+			</tr>
 			<!-- <tr>
 				<td><img alt="x" src=${comment}></td>
 			</tr> -->

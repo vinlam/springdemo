@@ -96,20 +96,21 @@
 
 <!-- 	<mvc:annotation-driven validator="validator" /> -->
 
-	<bean id="validator"
-		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-		<property name="providerClass"
-			value="org.hibernate.validator.HibernateValidator" />
-		<!--不设置则默认为classpath下的ValidationMessages.properties -->
-		<property name="validationMessageSource"
-			ref="validatemessageSource" />
-	</bean>
-	<bean id="validatemessageSource"
-		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basename" value="classpath*:validatemessages" />
-		<property name="fileEncodings" value="utf-8" />
-		<property name="cacheSeconds" value="120" />
-	</bean>
+	<!--不设置validationMessageSource则默认为classpath下的ValidationMessages.properties -->
+<!-- 	<bean id="validator" -->
+<!-- 		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"> -->
+<!-- 		<property name="providerClass" -->
+<!-- 			value="org.hibernate.validator.HibernateValidator" /> -->
+		
+<!-- 		<property name="validationMessageSource" -->
+<!-- 			ref="validatemessageSource" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="validatemessageSource" -->
+<!-- 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"> -->
+<!-- 		<property name="basename" value="classpath*:validatemessages" /> -->
+<!-- 		<property name="fileEncodings" value="utf-8" /> -->
+<!-- 		<property name="cacheSeconds" value="120" /> -->
+<!-- 	</bean> -->
 	<!-- 配置Jdbc模板 -->
 	<bean id="jdbcTemplate"
 		class="org.springframework.jdbc.core.JdbcTemplate">

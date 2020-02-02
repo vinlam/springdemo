@@ -24,6 +24,9 @@
 	    <input type="button" value="mvcpost" id="mvcPost">
 	    <input type="button" value="tmvpost" id="tmvPost">
 	    <input type="button" value="del" id="deldata">
+	    <input type="button" value="delnotreturn" id="delbtn">
+	    <input type="button" value="testput" id="putbtn">
+	    <input type="button" value="putPathVariable" id="putvbtn">
 	    <input type="button" value="dellistids" id="dellistids">
 	    <input type="button" value="get" id="getdata">
 		<img src="http://localhost:8080/LogAspect/api/getCodeByte" />
@@ -39,6 +42,8 @@
 		<input type="button" value="ShowData" id="showdata">
 		<span>输入用户ID：</span>
 		<input type="text" id="inpid">
+		<span>Type：</span>
+		<input type="text" id="typeid">
 		<textarea id="txt"></textarea>
 	</div>
 </body>
@@ -382,6 +387,86 @@
 			});
        	}
        	
+       	function del(){
+       		var uid = 111222;
+       		$.ajax({
+               	url : "<%=request.getContextPath()%>/api/del/"+uid,
+				type : 'delete',
+				//async:true, 
+				dataType : "text",//默认不设置或者设置text--不返回设置，
+				//dataType : "json",
+				contentType : "application/json",
+				//traditional: true, 
+				//data : JSON.stringify(param),
+				success : function(result) {
+						alert("删除数据");
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					//异常处理；
+					alert("ajaxerror: " + JSON.stringify(XMLHttpRequest)
+							+ " textStatus: " + XMLHttpRequest.statusText);
+				}
+			});
+       	}
+       	
+       	
+       	function put(){
+       		var uid = 111222;
+       		var param={
+       				type:"1"
+       		}
+       		$.ajax({
+<%--                	url : "<%=request.getContextPath()%>/api/testput/"+uid+"?type=1", --%>
+               	url : "<%=request.getContextPath()%>/api/testput/"+uid,
+				type : 'put',
+				//async:true, 
+				dataType : "text",//默认不设置或者设置text--不返回设置，
+				//dataType : "json",
+				//contentType : "application/json",
+				//traditional: true, 
+				//data : JSON.stringify(param),
+				success : function(result) {
+						alert("数据更新了");
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					//异常处理；
+					alert("ajaxerror: " + JSON.stringify(XMLHttpRequest)
+							+ " textStatus: " + XMLHttpRequest.statusText);
+				}
+			});
+       	}
+       	
+       	function putreq(){
+       		var uid = $("#inpid").val()?$("#inpid").val():"";
+       		var type = $("#typeid").val()?$("#typeid").val():"";
+       		var requrl = "<%=request.getContextPath()%>/api/testputreq/";
+       		if(uid != null && uid != ""){
+       			requrl = requrl+uid;
+       			if(type != null && type != ""){
+       				requrl = requrl + "?type="+type;
+       			}
+       		}
+       		$.ajax({
+               	url : requrl,
+<%--                	url : "<%=request.getContextPath()%>/api/testputreq/"+uid, --%>
+				type : 'put',
+				//async:true, 
+				dataType : "text",//默认不设置或者设置text--不返回设置，
+				//dataType : "json",
+				//contentType : "application/json",
+				//traditional: true, 
+				//data : JSON.stringify(param),
+				success : function(result) {
+						alert("数据更新了");
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					//异常处理；
+					alert("ajaxerror: " + JSON.stringify(XMLHttpRequest)
+							+ " textStatus: " + XMLHttpRequest.statusText);
+				}
+			});
+       	}
+       	
        	function delListWithIds(){
        	 var ids=[11111111,1231234234,56456456]
        		$.ajax({
@@ -466,6 +551,9 @@
 		$("#subdata").off("click").on("click", sendData);
 		$("#showdata").off("click").on("click", showData);
 		$("#deldata").off("click").on("click", delData);
+		$("#delbtn").off("click").on("click", del);
+		$("#putbtn").off("click").on("click", put);
+		$("#putvbtn").off("click").on("click", putreq);
 		$("#dellistids").off("click").on("click", delListWithIds);
 		$("#getdata").off("click").on("click", getData);
 		

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequestMapping("/view")
@@ -15,5 +14,11 @@ public class AdviceVController {
     public String adviceshow() {
         return "show";
     }
+	
+	@GetMapping("/conadviceshow")
+	public String conadviceshow(@ModelAttribute(value = "con") Map<String, String> con){
+		System.out.println(con.get("data"));
+		return "show";
+	}
 
 }

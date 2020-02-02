@@ -6,12 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,7 +31,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import com.util.FileUploadUtil;
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/api/upload")
 public class UploadController {
 	// 通过Spring的autowired注解获取spring默认配置的request
 
@@ -38,66 +41,94 @@ public class UploadController {
 	 * @param file
 	 * @return
 	 */
-	private boolean saveFile(MultipartFile file, String path) {
+	private String saveFile(MultipartFile file, String path) {
 		// 判断文件是否为空
 		if (!file.isEmpty()) {
 			try {
-				File filepath = new File(path);
-				if (!filepath.exists())
-					filepath.mkdirs();
+				
+				String fileName = file.getOriginalFilename();
 				// 文件保存路径
-				String savePath = path + file.getOriginalFilename();
+				//String savePath = path + file.getOriginalFilename();
+				
+				String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());//文件后缀
+		        fileName=new Date().getTime()+"_"+new Random().nextInt(1000)+fileType;//新的文件名
+
+		        
+		        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		        String fileAdd = sdf.format(new Date());
+		        File targetFile=null;
+		        
+		        //获取文件夹路径
+	            File newfilepath =new File(path+"/"+fileAdd);
+	            
+	            if(!newfilepath.exists()  && !newfilepath.isDirectory()){       
+	            	newfilepath.mkdirs();  
+	            }
+		        targetFile = new File(newfilepath, fileName);
 				// 转存文件
-				file.transferTo(new File(savePath));
-				return true;
+				file.transferTo(targetFile);
+				return fileAdd+"/"+fileName;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		return false;
+		return "";
 	}
 
 	@RequestMapping("/filesUpload")
-	public String filesUpload(@RequestParam("files") MultipartFile[] files) {
+	public String filesUpload(@RequestParam("files") MultipartFile[] files,HttpServletRequest request,HttpServletResponse response) {
 		String path = "/Users/vinlam/upload/";
+		
+		String returnUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() +"/resources/upload/imgs/";//存储路径
+        path = request.getSession().getServletContext().getRealPath("resources/upload/imgs"); //文件存储位置
+        
+        List<String> listPath = new ArrayList<String>();
 		// 判断file数组不能为空并且长度大于0
 		if (files != null && files.length > 0) {
+			String rturl = "";
 			// 循环获取file数组中得文件
 			for (int i = 0; i < files.length; i++) {
 				MultipartFile file = files[i];
 				// 保存文件
-				saveFile(file, path);
+				rturl = saveFile(file, path);
+				rturl = returnUrl+rturl;
+				listPath.add(rturl);
 			}
 		}
-		return "success";
+		System.out.println(listPath.toString());
+		return "success:"+listPath.toString();
 		// 重定向
 		// return "redirect:/list.html";
 	}
 
-	@RequestMapping("/cmfileUpload")
-	public String fileUpload(@RequestParam("files") CommonsMultipartFile files) throws IOException {
-
+	@RequestMapping("/streamfileupload")
+	public String fileUpload(@RequestParam("files") CommonsMultipartFile files,HttpServletRequest request) throws IOException {
+		String path = request.getSession().getServletContext().getRealPath("resources/upload/imgs"); //文件存储位置
 		// 用来检测程序运行时间
 		long startTime = System.currentTimeMillis();
 		System.out.println("fileName：" + files.getOriginalFilename());
 		OutputStream os = null;
 		InputStream is = null;
 		try {
-			// 获取输出流
-			os = new FileOutputStream("/upload/" + new Date().getTime() + files.getOriginalFilename());
-			// 获取输入流 CommonsMultipartFile 中可以直接得到文件的流
-			is = files.getInputStream();
-			int temp;
-			// 一个一个字节的读取并写入
-			while ((temp = is.read()) != (-1)) {
-				os.write(temp);
+			if(!files.isEmpty()) {
+				File newfilepath =new File(path);
+				if(!newfilepath.exists()  && !newfilepath.isDirectory()){       
+	            	newfilepath.mkdirs();  
+	            }
+				// 获取输出流
+				os = new FileOutputStream(newfilepath.getAbsolutePath() + new Date().getTime() + files.getOriginalFilename());
+				// 获取输入流 CommonsMultipartFile 中可以直接得到文件的流
+				is = files.getInputStream();
+				int temp;
+				// 一个一个字节的读取并写入
+				while ((temp = is.read()) != (-1)) {
+					os.write(temp);
+				}
+			}else {
+				return "请选择上传文件";
 			}
-//			os.flush();
-//			os.close();
-//			is.close();
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
 			if(os != null) {

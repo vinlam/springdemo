@@ -48,7 +48,7 @@
 		<javax.servlet.version>3.1.0</javax.servlet.version>
 		<servlet-api.version>3.0-alpha-1</servlet-api.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		<shiro.version>1.2.3</shiro.version>
+		<shiro.version>1.3.2</shiro.version>
 		<logback.version>1.2.3</logback.version>
 		<swagger.version>2.7.0</swagger.version>
 		<junit.version>4.12</junit.version>
@@ -75,15 +75,21 @@
 		<mmseg4j-analysis.version>1.9.1</mmseg4j-analysis.version>
 		<retry.version>1.2.2.RELEASE</retry.version>
 		<jwt.version>0.9.0</jwt.version>
+		<thumbnailator.version>0.4.8</thumbnailator.version>
+		<jetty.version>9.4.16.v20190411</jetty.version>
 	</properties>
 	<dependencies>
-	<!-- https://mvnrepository.com/artifact/com.chenlb.mmseg4j/mmseg4j-analysis -->
-<dependency>
-    <groupId>com.chenlb.mmseg4j</groupId>
-    <artifactId>mmseg4j-analysis</artifactId>
-    <version>${mmseg4j-analysis.version}</version>
-</dependency>
-	
+		<!-- https://mvnrepository.com/artifact/com.chenlb.mmseg4j/mmseg4j-analysis -->
+		<dependency>
+			<groupId>com.chenlb.mmseg4j</groupId>
+			<artifactId>mmseg4j-analysis</artifactId>
+			<version>${mmseg4j-analysis.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -205,12 +211,12 @@
 			<artifactId>cglib</artifactId>
 			<version>${cglib.version}</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.springframework.retry</groupId>
-            <artifactId>spring-retry</artifactId>
-            <version>${retry.version}</version>
-        </dependency>
+			<groupId>org.springframework.retry</groupId>
+			<artifactId>spring-retry</artifactId>
+			<version>${retry.version}</version>
+		</dependency>
 		<!-- end -->
 
 		<dependency>
@@ -550,13 +556,20 @@
 			<version>${drools.version}</version>
 		</dependency>
 		<!-- Drools规则引擎包 end -->
-		
+
 		<!-- Jwt -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>${jwt.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<version>${thumbnailator.version}</version>
+		</dependency>
+
 	</dependencies>
 
 

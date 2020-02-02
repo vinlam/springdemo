@@ -28,6 +28,7 @@ import org.apache.solr.client.solrj.response.FieldAnalysisResponse;
 import org.apache.solr.client.solrj.response.FieldAnalysisResponse.Analysis;
 import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.TermsResponse;
 import org.apache.solr.client.solrj.response.TermsResponse.Term;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -40,8 +41,10 @@ import org.junit.Test;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
+import com.alibaba.fastjson.JSONArray;
 import com.entity.TbItem;
 import com.service.impl.StandardService;
+import com.util.JsonMapper;
 import com.util.JsonUtil;
 
 public class SolrCloudTest {
@@ -484,4 +487,122 @@ public class SolrCloudTest {
 		       }
 		}
 	}
+	
+	
+	private static String NEW_SOLR_PATH = "http://127.0.0.1:9080/solr/testcore";
+	@Test
+	public void TestTerms() throws Exception{
+		//http://localhost:9080/solr/testcore/terms?terms.fl=category&terms.prefix=%E5%A5%B3%E8%A3%85
+        //[1]获取连接
+		SolrServer solrServer = new HttpSolrServer(NEW_SOLR_PATH);
+        //[2]创建SolrQuery
+        SolrQuery query = new SolrQuery();
+        //[3]设置参数
+        query.setRequestHandler("/terms");//设置requestHandler
+        query.setTerms(true);//开启terms
+        query.setTermsLimit(10);//设置每页返回的条目数量
+        query.setTermsLower("女装");// 可选的. 这个term开始。如果不指定,使用空字符串,这意味着从头开始的。
+        query.setTermsPrefix("女装");//可选的. 限制匹配，设置terms前缀是以什么开始的。
+        query.addTermsField("category");//必须的. 统计的字段
+        query.setTermsMinCount(1);//可选的. 设置最小统计个数
+        //[4]创建QueryRequest 获取 TermsResponse 
+        QueryRequest request = new QueryRequest(query);
+        QueryResponse process = request.process(solrServer);
+        TermsResponse termsResponse = process.getTermsResponse();
+        //[5]遍历结果
+        List<Term> terms = termsResponse.getTerms("category");
+        for (Term term : terms) {
+            System.out.println(term.getTerm() + ":\t"+ term.getFrequency());
+        }
+    }
+	
+	/**
+     * terms词频统计测试2
+     * @throws Exception 
+     */
+    @Test
+    public void TestTerms2() throws Exception{
+        //[1]实例化HttpSolrClient，以获取与HttpSolrClient的连接
+    	SolrServer solrServer = new HttpSolrServer(NEW_SOLR_PATH);
+    	//[2]创建SolrQuery
+        SolrQuery query = new SolrQuery();
+        //[3]设置查询参数  
+        query.set("q", "*:*");  
+        query.set("qt","/terms");//设置requestHandler
+        
+        // parameters settings for terms requesthandler  
+        // 参考 http://wiki.apache.org/solr/termscomponent  
+        query.set("terms","true");//开启terms
+        query.set("terms.fl", "name");//必须的. 统计的字段  
+        
+        //指定下限  
+        // query.set("terms.lower", ""); // term lower bounder开始的字符  ，// 可选的. 这个term开始。如果不指定,使用空字符串,这意味着从头开始的。
+        // query.set("terms.lower.incl", "true");  
+        // query.set("terms.mincount", "1");//可选的. 设置最小统计个数  
+        // query.set("terms.maxcount", "100"); //可选的. 设置最大统计个数   
+        
+        //http://localhost:8983/solr/terms?terms.fl=text&terms.prefix=家//  
+        //using for auto-completing   //自动完成  
+        //query.set("terms.prefix", "家");//可选的. 限制匹配，设置terms前缀是以什么开始的。  
+        query.set("terms.regex", "家+.*");  
+        query.set("terms.regex.flag", "case_insensitive");  
+         
+        //query.set("terms.limit", "20"); //设置每页返回的条目数量 
+        //query.set("terms.upper", ""); //结束的字符  
+        //query.set("terms.upper.incl", "false");  
+        //query.set("terms.raw", "true");  
+        
+        query.set("terms.sort", "count");//terms.sort={count|index} -如果count，各种各样的条款术语的频率（最高计数第一）。 如果index，索引顺序返回条款。默认是count     
+        
+        // 查询并获取结果  
+        QueryResponse response = solrServer.query(query);  
+        // 获取相关的查询结果  
+        if (response != null) {  
+            TermsResponse termsResponse = response.getTermsResponse();  
+            if (termsResponse != null) {  
+                Map<String, List<TermsResponse.Term>> termsMap = termsResponse.getTermMap();  
+                for (Map.Entry<String, List<TermsResponse.Term>> termsEntry : termsMap.entrySet()) {  
+                    //System.out.println("Field Name: " + termsEntry.getKey());  
+                    List<TermsResponse.Term> termList = termsEntry.getValue();  
+                    for (TermsResponse.Term term : termList) {  
+                        System.out.println(term.getTerm() + " : "+ term.getFrequency());  
+                    }  
+                }  
+            }  
+        }  
+    }
+    
+    public static String getSerchTerms(String keywords) throws Exception {
+    	SolrServer solrServer = new HttpSolrServer(NEW_SOLR_PATH);
+        // 创建查询参数以及设定的查询参数  
+        SolrQuery query = new SolrQuery();  
+        query.set("q", "*:*");  
+        query.set("qt", "/terms");  
+        query.set("terms", "true");  
+        query.set("terms.fl", "name");  
+        //tomcat8之前默认是ISO8859-1,tomcat8及以后，是UTF-8,自己百度一下解决办法
+        //推荐学习地址： https://www.w3cschool.cn/regexp/tfua1pq5.html
+        query.set("terms.regex", keywords+"+.*"); 
+        query.set("terms.regex.flag", "case_insensitive");  
+        query.set("terms.sort", "count");//terms.sort={count|index} -如果count，各种各样的条款术语的频率（最高计数第一）。 如果index，索引顺序返回条款。默认是count  
+        // 查询并获取相应的结果！  
+        QueryResponse response = solrServer.query(query);  
+        // 获取相关的查询结果  
+        List<TermsResponse.Term> termList=null;
+        if (response != null) { 
+          TermsResponse termsResponse = response.getTermsResponse();  
+           if (termsResponse != null) {
+              Map<String, List<TermsResponse.Term>> termsMap = termsResponse.getTermMap();  
+                for (Map.Entry<String, List<TermsResponse.Term>> termsEntry : termsMap.entrySet()) {  
+                    // System.out.println("Field Name: " + termsEntry.getKey());  
+                    termList = termsEntry.getValue();  
+                    for (TermsResponse.Term term : termList) {  
+                        System.out.println(term.getTerm() + " : "+ term.getFrequency());  
+                    }  
+                }  
+            }  
+        }
+      String jsonstr =JsonMapper.toJsonString(termList);
+      return jsonstr;  
+    } 
 }

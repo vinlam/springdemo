@@ -1,6 +1,7 @@
 package com.common;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -10,8 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -21,6 +29,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
 /**
  * 异常增强，以JSON的形式返回给客服端
@@ -37,7 +46,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * MissingServletRequestParameterException 400 (Bad Request)
  * 
  */
-@ControllerAdvice
+@ControllerAdvice(annotations = RestController.class)
+@Order(Ordered.HIGHEST_PRECEDENCE)//值越小，优先级越高
 //@RestControllerAdvice // RestControllerAdvice返回不需要加@ResponseBody注解
 public class RestExceptionHandler {
 	private final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
@@ -111,31 +121,63 @@ public class RestExceptionHandler {
 		//ex.printStackTrace();
 		return ReturnFormat.retParam(400, null);
 	}
+	
+	// 2029错误
+	@ExceptionHandler({ BindException.class })
+	@ResponseBody
+	public String bindExceptionHandler(BindException ex) {
+		logger.error("2010-bindExceptionHandler参数检验不通过",ex);
+		StringBuilder sb = new StringBuilder();
+		for(FieldError fieldError:ex.getBindingResult().getFieldErrors()) {
+			if(fieldError.getField() != null) {
+				sb.append(fieldError.getObjectName());
+				sb.append(fieldError.getField());
+				sb.append(fieldError.getDefaultMessage());
+			}else {
+				return ReturnFormat.retParam(2029, "Bind参数检验不通过");
+			}
+		}
+		return ReturnFormat.retParam(2029, sb.toString());
+	}
 
-	// 400错误
+	// 2010错误
 	@ExceptionHandler({ MissingServletRequestParameterException.class })
 	@ResponseBody
 	public String requestMissingServletRequest(MissingServletRequestParameterException ex) {
 		logger.error("400-MissingServletRequestParameter缺少请求参数",ex);
 		//ex.printStackTrace();
-		return ReturnFormat.retParam(400, null);
+		return ReturnFormat.retParam(2010, ex.getParameterName()+ex.getMessage());
 	}
-	// 400拦截非法参数错误
+	//2029拦截非法参数错误
 	@ExceptionHandler({ ConstraintViolationException.class })
 	@ResponseBody
 	public String requestConstainViolation(HttpServletRequest request,ConstraintViolationException cv) {
 		StringBuffer sb = new StringBuffer();
-		logger.error("400-requestConstainViolation请求参数非法",cv);
-		for(ConstraintViolation constraintViolation:cv.getConstraintViolations()) {
+		logger.error("2029-requestConstainViolation请求参数非法",cv);
+		for(@SuppressWarnings("rawtypes") ConstraintViolation constraintViolation:cv.getConstraintViolations()) {
 			if(constraintViolation.getMessage() != null) {
 				sb.append(constraintViolation.getMessage());
 			}else {
-				return ReturnFormat.retParam(400, null);
+				return ReturnFormat.retParam(2029, null);
 			}
 		}
 		//ex.printStackTrace();
-		return ReturnFormat.retParam(2010, sb.toString());
+		return ReturnFormat.retParam(2029, sb.toString());
 		//throw cv;
+	}
+	
+	@ExceptionHandler({ MethodArgumentTypeMismatchException.class })
+	public String handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, WebRequest request) {
+		logger.error("400-MethodArgumentTypeMismatchException请求参数非法",ex);
+	    String error = ex.getCause().getMessage()+ " should be of type " + ex.getLocalizedMessage();
+	    return ReturnFormat.retParam(2029, error);
+	}
+	
+	@ExceptionHandler({ MethodArgumentNotValidException.class })
+	public String handleMethodArgumentTypeMismatch(MethodArgumentNotValidException ex, WebRequest request) {
+		logger.error("400-MethodArgumentNotValidException请求参数非法",ex);
+		String error = ex.getCause().getMessage()+ " should be of type " + ex.getLocalizedMessage();
+		return error;
 	}
 
 	// 405错误 
@@ -144,7 +186,7 @@ public class RestExceptionHandler {
 	public String request405(HttpRequestMethodNotSupportedException ex) {
 		//System.out.println("405...请求方法不允许");
 		logger.error("405-RequestMethodNotSupported请求方法不被允许数",ex);
-		return ReturnFormat.retParam(405, null);
+		return ReturnFormat.retParam(405, ex.getMessage());
 	}
 
 	// 406错误
