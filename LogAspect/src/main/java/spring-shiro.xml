@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/aop
+        	http://www.springframework.org/schema/aop/spring-aop.xsd"
+	default-lazy-init="true"><!-- 懒加载 default-lazy-init="true" -->
+
+
+	<mvc:default-servlet-handler />
+	
+	<!-- 自定义Realm -->
+	<bean id="myAuthenRealm" class="com.shiro.realm.MyAuthenRealm"/>  
+	<bean id="myAuthorRealm" class="com.shiro.realm.MyAuthorRealm"/>  
+	
+	<!-- 自定义的登陆过滤器  /home=authc,userSession -->
+	<bean id="userSessionFilter" class="com.shiro.filter.UserSessionFilter"/>
+	
+<!-- 	AtLeastOneSuccessfulStrategy（默认）：只要有一个Realm验证成功即可，和FirstSuccessfulStrategy不同，返回所有Realm身份验证成功的认证信息； -->
+<!-- 	FirstSuccessfulStrategy：只要有一个Realm验证成功即可，只返回第一个Realm身份验证成功的认证信息，其他的忽略； -->
+<!-- 	AllSuccessfulStrategy：所有Realm验证成功才算成功，且返回所有Realm身份验证成功的认证信息，如果有一个失败就失败了。 -->
+	<bean id="authentization" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+		<property name="realms">
+			<list>
+				<ref bean=myAuthenRealm/>
+				<ref bean=""/>
+			</list>
+		</property>
+		<property name="auth"></property>
+	</bean>
+	
+	
+	<bean id="authorization" class="org.apache.shiro.authz.ModularRealmAuthorizer">
+		<property name="realms">
+			<list>
+				<ref bean="myAuthorRealm"/>
+				<ref bean=""/>
+			</list>
+		</property>
+		
+	</bean>
+	 
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">  
+<!--   	  <property name="realm" ref="myRealm"/>   -->
+  	  <property name="authentization" ref="authentization"/>  
+  	  <property name="authorization" ref="authorization"/>  
+	</bean>  
+	
+	<!-- Shiro过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">  
+	    <!-- Shiro的核心安全接口,这个属性是必须的 -->  
+	    <property name="securityManager" ref="securityManager"/>
+	    <!-- 身份认证失败，则跳转到登录页面的配置 -->  
+	    <property name="loginUrl" value="/login"/>
+	    <!-- 权限认证失败，则跳转到指定页面 -->  
+	    <property name="unauthorizedUrl" value="/unauthorized"/>  
+		
+		<!-- 自定义的访问控制filter -->
+		<property name="filters">
+	        <util:map>
+	            <entry key="userSession" value-ref="userSessionFilter"/>
+	            
+	        </util:map>
+	    </property>
+	    
+	    <property name="filterChainDefinitions">  
+	        <value>  
+                 /resources/**=anon
+	             /login=anon
+	             /home=authc,userSession
+                 /logout=logout
+                 /student/**=roles[student]
+                 /teacher/**=perms[teacher:find]
+				 /**=authc
+	        </value>  
+	    </property>
+	</bean>  
+	
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->  
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>  
+	
+	<!-- 开启Shiro的权限注解 -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>  
+
+  	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">  
+  	  <property name="securityManager" ref="securityManager"/>  
+    </bean>  
+</beans>
