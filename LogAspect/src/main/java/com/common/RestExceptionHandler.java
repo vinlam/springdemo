@@ -56,7 +56,7 @@ public class RestExceptionHandler {
 	@ResponseBody
 	public String runtimeExceptionHandler(RuntimeException ex) {
 		logger.error("RuntimeException",ex);
-		return ReturnFormat.retParam(1000, null);
+		return ReturnFormat.retParam(1000, ex.getMessage());
 	}
 
 	// 空指针异常

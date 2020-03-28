@@ -31,6 +31,9 @@
 	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
 		<property name="connectionFactory" ref="connectionFactory" />
 	</bean>
+	<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+	</bean>
 	
 <!-- 	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"> -->
 <!-- 		<property name="maxIdle" value="1" /> -->

@@ -53,14 +53,14 @@
 	<!-- <cache:annotation-driven cache-manager="ehcacheManager" /> -->
 
 	<!-- cacheManager工厂类，指定ehcache.xml的位置 -->
-	<!-- <bean id="ehcacheManagerFactory" -->
-	<!-- class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"> -->
-	<!-- <property name="configLocation" value="classpath:ehcache.xml" /> -->
-	<!-- </bean> -->
+	<bean id="ehcacheManagerFactory"
+	class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+	<property name="configLocation" value="classpath:ehcache.xml" />
+	</bean>
 
-	<!-- <bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager"> -->
-	<!-- <property name="cacheManager" ref="ehcacheManagerFactory" /> -->
-	<!-- </bean> -->
+	<bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+	<property name="cacheManager" ref="ehcacheManagerFactory" />
+	</bean>
 	<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
 	<!-- <property name="jndiName"> -->
 	<!-- <value>jdbc/ds</value> -->

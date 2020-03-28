@@ -1,6 +1,10 @@
 package com.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -12,11 +16,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jasper.tagplugins.jstl.core.Redirect;
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -34,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.common.gateway.RestClient;
@@ -42,6 +50,7 @@ import com.dao.TC;
 import com.entity.Country;
 import com.entity.User;
 import com.entity.UserDTO;
+import com.entity.UserVo;
 import com.service.EhCacheTestService;
 import com.service.MemCacheTestService;
 import com.service.SysLogService;
@@ -49,6 +58,10 @@ import com.service.UserService;
 import com.service.impl.MemCacheTestServiceImpl;
 import com.service.impl.a.AutoInject;
 import com.service.impl.a.Inject;
+import com.util.JsonMapper;
+
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 @Controller
 @RequestMapping("/t")
@@ -64,6 +77,13 @@ public class testcontroller {
 		model.addAttribute("name", name);
 		return "success";
 	}
+	@RequestMapping(value = "/route", method = RequestMethod.GET)
+	public ModelAndView route(Model model, String name) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("r", "#a=123");
+		mv.setViewName("success");
+		return mv;
+	}
 
 	@RequestMapping("/rd")
 	public ModelAndView redirect(HttpServletResponse response) {
@@ -72,13 +92,49 @@ public class testcontroller {
 		// return "redirect:http://www.baidu.com";
 		try {
 			response.getWriter().write("http://www.baidu.com");
-			;
+			//return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ModelAndView mv = new ModelAndView("redirect:testget");
-		return null;
+		return mv;
+	}
+	//https://localhost/LogAspect/t/testget?msg=%E6%AC%A2%E8%BF%8E%E8%AE%BF%E9%97%AE+hangge.com&blogName=java2blog&authorName=vin
+	//https://localhost/LogAspect/t/myrd
+	@RequestMapping("/myrd")
+	public ModelAndView mvredirect(HttpServletResponse response) {
+		System.out.println("redirect");
+		System.out.println(servletRequest.getHeader("X-Forwarded-Proto")+"\n"+servletRequest.getRequestURL());
+		Log.info("Proto:"+servletRequest.getHeader("X-Forwarded-Proto")+servletRequest.getServerName()+" Port:"+servletRequest.getHeader("X-Real-Port")+"\n"+servletRequest.getRequestURL());
+		// return "redirect:http://www.baidu.com";
+//		try {
+//			response.getWriter().write("http://www.baidu.com");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		ModelAndView mv = new ModelAndView();
+		mv.setView(new RedirectView("/t/testget", true, false, true));
+		//mv.setView(new RedirectView("/t/testget"));
+		return mv;
+	}
+	
+	@RequestMapping("/rv")
+	public ModelAndView gorestview(HttpServletResponse response) {
+		System.out.println("redirect");
+		System.out.println(servletRequest.getScheme()+"\n"+servletRequest.getRequestURL());
+		// return "redirect:http://www.baidu.com";
+//		try {
+//			response.getWriter().write("http://www.baidu.com");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		ModelAndView mv = new ModelAndView();
+		//mv.setView(new RedirectView("/testget", true, false, true));
+		mv.setView(new RedirectView("../restview/test"));
+		return mv;
 	}
 
 	@RequestMapping("/rd1")
@@ -135,10 +191,26 @@ public class testcontroller {
 
 		return mAndView;
 	}
+	
+	@RequestMapping(value = "/getPostUser1", method = RequestMethod.POST,produces = MediaType.APPLICATION_XML_VALUE)
+	@ResponseBody
+	public User getPostUser1(User user) {
+		// System.out.println(JSONObject.toJSON(userDTO));
+		
+		return user;
+	}
+	@RequestMapping(value = "/postUser", method = RequestMethod.POST)//application/xml;charset=UTF-8,
+	@ResponseBody
+	public User pUser(User user) {
+		// System.out.println(JSONObject.toJSON(userDTO));
+		
+		return user;
+	}
 
-	@RequestMapping(value = "/postUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public void postUser(User user) {
-		String url = "http://localhost:8080/LogAspect/t/getPostUser";
+	@RequestMapping(value = "/restclientformpost", method = RequestMethod.POST)
+	@ResponseBody
+	public String restclientformpost(User user) {
+		String url = "http://localhost:8080/LogAspect/t/getPostUser1";
 		List<User> users = new ArrayList<User>();
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUsers(users);
@@ -147,23 +219,78 @@ public class testcontroller {
 		postData.put("name", "request for post");
 		postData.put("Id", "12345");
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);//produces = MediaType.APPLICATION_XML_VALUE
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("email", "first.last@example.com");
+		MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+		//map.add("email", "first.last@example.com");
+		map.add("name", "123post");
+//		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+//		UserVo vo  = mapperFactory.getMapperFacade().map(user, UserVo.class);
+//		//System.out.println(vo.toString());
+//		logger.info("vo:"+JsonMapper.toJsonString(vo));
+		HttpEntity<MultiValueMap<String, Object>> requestmap = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
+		//String u = RestClient.getClient().postForEntity(url, requestmap, String.class).getBody();
+		
+		//String u = RestClient.getClient().exchange(url,HttpMethod.POST, requestmap,String.class).getBody();//headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);//produces = MediaType.APPLICATION_XML_VALUE
+		User uu = RestClient.getClient().exchange(url,HttpMethod.POST, requestmap,User.class).getBody();//headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);//produces = MediaType.APPLICATION_XML_VALUE
+		//System.out.println(u);
+		return JsonMapper.toJsonString(uu);
+	}
+	
+	@RequestMapping(value = "/returnpostUser", method = RequestMethod.POST)
+	public String returnpostUser(User user) {
+		String url = "http://localhost:8080/LogAspect/t/postUser";
+		List<User> users = new ArrayList<User>();
+		UserDTO userDTO = new UserDTO();
+		userDTO.setUsers(users);
+		// userDTO.setIds(ids);
+		JSONObject postData = new JSONObject();
+		postData.put("name", "request for post");
+		postData.put("Id", "12345");
+		HttpHeaders headers = new HttpHeaders();
 
+		MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+		//map.add("email", "first.last@example.com");
+		map.add("name", "123post");
+		
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<User> request = new HttpEntity<User>(user, headers);
-		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
-		converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
-		RestClient.getClient().setMessageConverters(converters);
-		String u = RestClient.getClient().postForEntity(url, user, String.class).getBody();
-		//// User json = RestClient.getClient().postForEntity(url,request,
-		//// User.class).getBody();
-		// JSONObject json = RestClient.getClient().postForEntity(url, postData,
-		//// JSONObject.class).getBody();
-		// String json = JsonUtil.beanToJson(u);
-		// System.out.println(json.toString());
+//		String u = RestClient.getClient().exchange(url,HttpMethod.POST, request,String.class).getBody();
+		
+		HttpEntity<MultiValueMap<String, Object>> requestmap = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
+//		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
+//		converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+//		RestClient.getClient().setMessageConverters(converters);
+		//String u = RestClient.getClient().postForEntity(url, user, String.class).getBody();
+		String u = RestClient.getClient().exchange(url,HttpMethod.POST, request,String.class).getBody();
+		
+		
+		//String u = RestClient.getClient().exchange(url,HttpMethod.POST, requestmap,String.class).getBody();//headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);//produces = MediaType.APPLICATION_XML_VALUE
 		System.out.println(u);
+		return u;
+		//User json = RestClient.getClient().postForEntity(url,request,User.class).getBody();
+		//JSONObject json = RestClient.getClient().postForEntity(url, postData,JSONObject.class).getBody();
+		//String json = JsonUtil.beanToJson(u);
+		//System.out.println(json.toString());
+		
+//		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//		
+//		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+//		map.add("email", "first.last@example.com");
+//		
+//		HttpEntity<User> request = new HttpEntity<User>(user, headers);
+////		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
+////		converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+////		RestClient.getClient().setMessageConverters(converters);
+//		//String u = RestClient.getClient().postForEntity(url, user, String.class).getBody();
+//		String u = RestClient.getClient().exchange(url,HttpMethod.POST, request,String.class).getBody();
+//		//// User json = RestClient.getClient().postForEntity(url,request,
+//		//// User.class).getBody();
+//		// JSONObject json = RestClient.getClient().postForEntity(url, postData,
+//		//// JSONObject.class).getBody();
+//		// String json = JsonUtil.beanToJson(u);
+//		// System.out.println(json.toString());
+//		System.out.println(u);
 		// return mAndView;
 	}
 
@@ -268,6 +395,28 @@ public class testcontroller {
 
 		return JSONObject.toJSON(userDTO).toString();
 	}
+	
+	//curl -X POST --header 'Content-Type: application/x-www-form-urlencoded' -d 'Id=120&name=jack&password=string' 'https://localhost/LogAspect/t/postformdata' -k 
+    @RequestMapping(value="/postformdata",method=RequestMethod.POST)
+    @ResponseBody
+    public User postformdata(User u,HttpServletRequest request){
+    //public User postformdata(User u){
+    	try {
+    		InputStreamReader inputStreamReader = new InputStreamReader(servletRequest.getInputStream());
+			BufferedReader br = new BufferedReader(inputStreamReader);
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			logger.info("param:"+sb);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    	System.out.println("getParameter:"+request.getParameter("Id"));
+    	System.out.println(u.getId());
+    	return u;
+    }
 
 	@RequestMapping(value = "/getUser1", method = RequestMethod.GET, produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	// @Logs(operationType="add操作:",operationName="添加用户")
@@ -307,7 +456,7 @@ public class testcontroller {
 	}
 
 	@ModelAttribute
-	public Country getCountry(@RequestParam String countryName, @RequestParam long population) {
+	public Country getCountry(@RequestParam(required = false) String countryName, @RequestParam(required = false,defaultValue = "1") long population) {
 		Country country = new Country();
 		country.setCountryName(countryName);
 		country.setPopulation(population);

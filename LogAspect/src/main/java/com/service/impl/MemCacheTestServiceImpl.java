@@ -1,14 +1,20 @@
 package com.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.entity.User;
 import com.service.MemCacheTestService;
+import com.util.JsonMapper;
+import com.util.JsonUtil;
 
 @Service("MemCacheTestService")
 public class MemCacheTestServiceImpl implements MemCacheTestService {
+	private final static Logger log = LoggerFactory.getLogger(MemCacheTestService.class);
 
 	@Override
     @Cacheable(cacheNames="mC",key="#param")
@@ -64,6 +70,56 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
 	@CacheEvict(cacheNames="mCache")
 	public void mCacheDel() {
 		System.out.println("delete");
+	}
+
+	@Override
+	@Cacheable(cacheNames="mCache",key="#u.id")
+	public User cacheUser(User u) {
+	    return u;
+	}
+	
+	@Override
+	@Cacheable(cacheNames="mCache",key="#u.id")
+	public User cache(User u) {
+	    return u;
+	}
+	
+	@Override
+	@Cacheable(cacheNames="mCache",key="#id")
+	public User cacheJson(int id,String s) {
+		User u = (User) JsonMapper.fromJsonString(s,User.class);
+	    return u;
+	}
+	@Override
+	@Cacheable(cacheNames="mCache",key="#id")
+	public String cacheJsonStr(int id,String s) {
+		//User u = (User) JsonMapper.fromJsonString(s,User.class);
+		return s;
+	}
+	
+	@Override
+	@CachePut(cacheNames="mCache",key="#u.id")
+	public User cacheUpdateUser(User u) {
+		log.info(JsonUtil.beanToJson(u));
+		return u;
+	}
+	
+	@Override
+	@Cacheable(cacheNames="mCache",key="#id")
+	public User getcacheUser(int id) {
+		return new User();
+	}
+	
+	@Override
+	@Cacheable(cacheNames="mCache",key="#key")
+	public String cacheStr(String key,String value) {
+		return value;
+	}
+	
+	@Override
+	@Cacheable(cacheNames="mCache",key="#key")
+	public String getCacheStr(String key) {
+		return "";
 	}
 
 }

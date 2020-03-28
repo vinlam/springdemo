@@ -8,7 +8,7 @@ import com.service.EhCacheTestService;
 @Service
 public class EhCacheTestServiceImpl implements EhCacheTestService {
 
-    @Cacheable(value="myCache",key="#param")
+    @Cacheable(value="myECache",key="#param")
     public String getTimestamp(String param) {
         Long timestamp = System.currentTimeMillis();
         return timestamp.toString();

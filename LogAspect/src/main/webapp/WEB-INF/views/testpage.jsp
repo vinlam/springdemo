@@ -13,6 +13,7 @@
 </head>
 <body>
 	<div>
+		<input type="button" value="postformdata" id="postformdata"> 
 		<input type="button" value="testget" id="sendGet"> 
 		<input type="button" value="testgetview" id="sendGetview"> 
 		<input type="button" value="testgetids List&lt;Long&gt;" id="sendGetIds">
@@ -21,7 +22,8 @@
 		<input type="button" value="delids" id="delids"> 
 	    <input type="button" value="testpost" id="sendPost">
 	    <input type="button" value="testpostData" id="sendTestPost">
-	    <input type="button" value="mvcpost" id="mvcPost">
+	    <input type="button" value="restclientformpost" id="restclientformpost">
+	    <input type="button" value="returnpostUser" id="returnpostUser">
 	    <input type="button" value="tmvpost" id="tmvPost">
 	    <input type="button" value="del" id="deldata">
 	    <input type="button" value="delnotreturn" id="delbtn">
@@ -74,6 +76,30 @@
 					}
 			});
 		}
+       
+       function postformdata(){
+    	   var param = {
+        		   id:123,
+        		   name:"jack",
+        		   password:"112233"
+           }
+    	   $.ajax({
+              	url : "<%=request.getContextPath()%>/t/postformdata",
+				type : 'post',
+				//async:true, 
+				dataType : "json",
+				//contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+				//traditional: true, 
+				data : param,
+				//data : JSON.stringify(param),
+				success : function(result) {
+					alert(JSON.stringify(result));
+				},error : function(XMLHttpRequest, textStatus, errorThrown) {
+					//异常处理；
+					alert("ajaxerror: " + JSON.stringify(XMLHttpRequest) + " textStatus: " + XMLHttpRequest.statusText);
+				}
+		});
+       }
        
        function testgetview(){
            $.ajax({
@@ -236,7 +262,45 @@
 			});
 		}
        
-       	function mvcpost(){
+       	function returnpostUser(){
+    	   var users = [];
+    	   var user1={
+    		   Id:11111,
+    		   name:"jack",
+    		   password:"123456"
+    	   }
+    	   var user2={
+    		   Id:22222,
+    		   name:"tom",
+    		   password:"654321"
+    	   }
+    	   users.push(user1);
+    	   users.push(user2);
+           var param = {
+        		   ids:[11111111,22222222],
+                   users:users
+           }
+           $.ajax({
+                url : "<%=request.getContextPath()%>/t/returnpostUser",
+				type : 'post',
+				//async:true, 
+				dataType : "json",
+				//contentType : "application/json",
+				contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+				//traditional: true, 
+				data : user2,
+				success : function(result) {
+					alert(JSON.stringify(result));
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					//异常处理；
+					alert("ajaxerror: " + JSON.stringify(XMLHttpRequest)
+							+ " textStatus: " + XMLHttpRequest.statusText);
+				}
+			});
+		}
+       	
+       	function restclientformpost(){
     	   var users = [];
     	   var user1={
     		   Id:11111,
@@ -256,7 +320,7 @@
            }
            $.ajax({
                 //url : "<%=request.getContextPath()%>/t/getPostUser",
-                url : "<%=request.getContextPath()%>/t/postUser",
+                url : "<%=request.getContextPath()%>/t/restclientformpost",
 				type : 'post',
 				//async:true, 
 				dataType : "json",
@@ -538,6 +602,7 @@
 			});
        	}
 
+		$("#postformdata").off("click").on("click", postformdata);
 		$("#sendGet").off("click").on("click", testget);
 		$("#sendGetview").off("click").on("click", testgetview);
 		$("#sendGetIds").off("click").on("click", testgetIds);
@@ -546,7 +611,8 @@
 		$("#delids").off("click").on("click", testdelids);
 		$("#sendPost").off("click").on("click", testpost);
 		$("#sendTestPost").off("click").on("click", testpostdata);
-		$("#mvcPost").off("click").on("click", mvcpost);
+		$("#restclientformpost").off("click").on("click", restclientformpost);
+		$("#returnpostUser").off("click").on("click", returnpostUser);
 		$("#tmvPost").off("click").on("click", tmvpost);
 		$("#subdata").off("click").on("click", sendData);
 		$("#showdata").off("click").on("click", showData);

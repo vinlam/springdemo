@@ -1,7 +1,11 @@
 package com.controller.web.rest;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +18,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +37,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.define.annotation.CacheLock;
+import com.define.annotation.CacheParam;
+import com.define.annotation.LocalLock;
 import com.entity.Person;
 import com.entity.User;
 import com.service.GreetingService;
@@ -38,12 +47,17 @@ import com.service.IAutoInject;
 import com.service.SaveDataService;
 import com.util.JsonMapper;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping(value="/api")
 @Validated
 public class RestApiTestController {
 	private static final Logger logger = LoggerFactory.getLogger(RestApiTestController.class);
-
+	@Autowired
+	private HttpServletRequest servletRequest;
 	@Autowired
 	@Qualifier("AutoInjectB")
 	private IAutoInject autoInjectb;
@@ -193,6 +207,35 @@ public class RestApiTestController {
 		return u;
 	}
     
+    @RequestMapping(value="/testgetdata",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+    public User testgetdata(User u) throws IOException{
+    	System.out.println(u.getId());
+//    	InputStreamReader inputStreamReader = new InputStreamReader(servletRequest.getInputStream());
+//		BufferedReader br = new BufferedReader(inputStreamReader);
+//		String line = null;
+//		StringBuilder sb = new StringBuilder();
+//		while ((line = br.readLine()) != null) {
+//			sb.append(line);
+//		}
+//		logger.info("param:"+sb);
+    	return u;
+    }
+   
+    @RequestMapping(value="/getUsers",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+    public List<User> getUsers(@RequestParam(required = false) String name){
+    	User u = new User();
+    	List<User> list = new ArrayList<User>();
+    	if(StringUtils.isNotBlank(name)) {
+    		u.setName(name);
+    		list.add(u);
+    	}else {
+    		//return null;
+    	}
+    	
+    	
+    	return list;
+    }
+    
     @Autowired
     private GreetingService greetingService;
     @RequestMapping(value="/aopproxy/expose",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
@@ -202,4 +245,38 @@ public class RestApiTestController {
         return "hello return string 这是中文" + URLDecoder.decode(userName,"UTF-8") + "-" + password;
     }
     
+    
+    @PostMapping(value ="/localLock")
+    @ApiOperation(value="重复提交验证测试--使用本地缓存锁")
+    @ApiImplicitParams( {@ApiImplicitParam(paramType="query", name = "token", value = "token", dataType = "String")})
+    @LocalLock(key = "localLock:test:arg[0]")
+    public String localLock(String token){
+
+        return "sucess====="+token;
+    }
+    
+    @PostMapping(value ="/cacheLock")
+    @ApiOperation(value="重复提交验证测试--使用redis锁")
+    @ApiImplicitParams( {@ApiImplicitParam(paramType="query", name = "token", value = "token", dataType = "String")})
+    @CacheLock()
+    public String cacheLock(String token){
+        return "sucess====="+token;
+    }
+
+    @PostMapping(value ="/cacheLock1")
+    @ApiOperation(value="重复提交验证测试--使用redis锁")
+    @ApiImplicitParams( {@ApiImplicitParam(paramType="query", name = "token", value = "token", dataType = "String")})
+    @CacheLock(prefix = "redisLock.test",expire = 20)
+    public String cacheLock1(String token){
+        return "sucess====="+token;
+    }
+
+    @PostMapping(value ="/cacheLock2")
+    @ApiOperation(value="重复提交验证测试--使用redis锁")
+    @ApiImplicitParams( {@ApiImplicitParam(paramType="query", name = "token", value = "token", dataType = "String")})
+    //@CacheLock
+    @CacheLock(prefix = "redisLock.test",expire = 20)
+    public String cacheLock2(@CacheParam(name = "token") String token){
+        return "sucess====="+token;
+    }
 }

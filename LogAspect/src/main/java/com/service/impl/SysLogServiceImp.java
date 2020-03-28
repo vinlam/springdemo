@@ -32,7 +32,7 @@ public class SysLogServiceImp implements SysLogService {
     }
 
     @Override
-    @Cacheable(value="myCache",key="#id")
+    @Cacheable(value="myECache",key="#id")
     public SysLog selectSysLog(String id) {
         
         return SysLogMapper.selectByPrimaryKey(id);
@@ -45,16 +45,16 @@ public class SysLogServiceImp implements SysLogService {
     }
 
     @Override
-    //@CachePut(value="myCache")
-    //@CacheEvict(value="myCache",allEntries=true,beforeInvocation=true)
-    //@CacheEvict(value="myCache",key="0",beforeInvocation=true)
+    //@CachePut(value="myECache")
+    //@CacheEvict(value="myECache",allEntries=true,beforeInvocation=true)
+    //@CacheEvict(value="myECache",key="0",beforeInvocation=true)
     public int insertTest(SysLog record) {
         
         return SysLogMapper.insert(record);
     }
     
     @Override
-    @Cacheable(value="myCache",key="0")
+    @Cacheable(value="myECache",key="0")
     public int count() {
            int num = (int) System.currentTimeMillis();
            return num;

@@ -11,27 +11,24 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class User implements Serializable {
+public class UserVo implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	//@JsonIgnore
-	@NotNull(message="Id不能为空")
-	private int Id;
+	//@NotNull(message="Id不能为空")
+	private Integer Id;
 	//@JsonIgnore
 	private String name;
 	
-	//@JsonIgnore
-	@NotBlank(message="密码不能为空")
-	private String password;
-	//@NotNull(message="age不能为空")
-	private int age;
-	public int getId() {
+	private String sex;
+	
+	public Integer getId() {
 		return Id;
 	}
 	
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.Id = id;
 	}
 	
@@ -41,19 +38,13 @@ public class User implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
+
+	public String getSex() {
+		return sex;
 	}
 
-	public int getAge() {
-		return age;
-	}
-
-	public void setAge(int age) {
-		this.age = age;
+	public void setSex(String sex) {
+		this.sex = sex;
 	}
 	
 }
