@@ -41,7 +41,9 @@ import com.define.annotation.CacheLock;
 import com.define.annotation.CacheParam;
 import com.define.annotation.LocalLock;
 import com.entity.Person;
+import com.entity.TestDTO;
 import com.entity.User;
+import com.entity.UserDTO;
 import com.service.GreetingService;
 import com.service.IAutoInject;
 import com.service.SaveDataService;
@@ -198,6 +200,15 @@ public class RestApiTestController {
     	System.out.println(JSONObject.toJSON(ids));
     	
     	return ids;
+    }
+    
+    @RequestMapping(value="/getUserEntity",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    // @Logs(operationType="add操作:",operationName="添加用户")  
+    //@Log(desc="test define annotation")  
+    public TestDTO getUser( TestDTO tDTO){        
+    	System.out.println(JSONObject.toJSON(tDTO));
+    	
+    	return tDTO;
     }
  
     @RequestMapping(value="/testpostdata",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
