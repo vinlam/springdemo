@@ -66,7 +66,7 @@ public class TestExcel {
         cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
         cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
         cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        cellStyle.setWrapText(true);//自动换行
+        //cellStyle.setWrapText(true);//自动换行 没生效
         cellStyle.setFont(font);
 		/* 初始化head，填值标题行（第一行） */
 		Row row0 = sheet.createRow(0);
@@ -227,7 +227,7 @@ public class TestExcel {
 		//list.add(map);
 		//list.add(map);
 		//list.add(map);
-		String[] regions = new String[] { "单位名称", "IP", "IP分类", "危险程度" };
+		String[] regions = new String[] { "单位名称", "IP", "IP分类" };
 		System.out.println(createExcel(headers, list, regions));
 	}
 }
