@@ -227,7 +227,7 @@ public class TestExcel {
 		//list.add(map);
 		//list.add(map);
 		//list.add(map);
-		String[] regions = new String[] { "单位名称", "IP", "IP分类" };
+		String[] regions = new String[] { "单位名称", "IP", "IP分类", "危险程度" };
 		System.out.println(createExcel(headers, list, regions));
 	}
 }
