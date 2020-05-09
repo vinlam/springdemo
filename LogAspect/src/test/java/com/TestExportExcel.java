@@ -109,8 +109,8 @@ public final class TestExportExcel {
 		// 合并单元格
 		CellRangeAddress region2 = new CellRangeAddress(2, // first row
 				3, // last row
-				2, // first column
-				0 // last column
+				3, // first column
+				3 // last column
 				);
 		sheet.addMergedRegion(region);
 		sheet.addMergedRegion(region1);

@@ -10,11 +10,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.entity.PoiModel;
@@ -37,17 +43,42 @@ public class TestExcel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		CellStyle cellStyle = workbook.createCellStyle();
 
+		// 设置头部样式
+        cellStyle = workbook.createCellStyle();
+        // 设置字体大小 位置
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        // 生成一个字体
+        Font font = workbook.createFont();
+        //设置字体
+        //font.setFontName("微软雅黑");
+        //字体颜色
+        font.setColor(HSSFColor.BLACK.index);// HSSFColor.VIOLET.index
+        font.setFontHeightInPoints((short) 12);
+        //font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD); // 字体增粗
+        cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 上下居中
+        cellStyle.setFillForegroundColor(HSSFColor.WHITE.index);//背景白色
+        cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        cellStyle.setFont(font);
 		/* 初始化head，填值标题行（第一行） */
 		Row row0 = sheet.createRow(0);
 		for (int i = 0; i < headers.length; i++) {
 			/* 创建单元格，指定类型 */
 			Cell cell_1 = row0.createCell(i, Cell.CELL_TYPE_STRING);
 			cell_1.setCellValue(headers[i]);
+			cell_1.setCellStyle(cellStyle);
 		}
 
 		List<PoiModel> poiModels = new ArrayList<PoiModel>();
 		Iterator<Map<String, String>> iterator = dataset.iterator();
+		
+		
 		int index = 1; // 这里1是从excel的第二行开始，第一行已经塞入标题了
 		while (iterator.hasNext()) {
 			Row row = sheet.createRow(index);
@@ -120,14 +151,23 @@ public class TestExcel {
 						}
 					}
 				}
+				// 创建表格之后设置行高与列宽
+				row.setHeightInPoints(14);
+				
+	            
+	            
+	           
+	            
+				
 				Cell cell = row.createCell(i, Cell.CELL_TYPE_STRING);
 				cell.setCellValue(value);
+				cell.setCellStyle(cellStyle);
 				// 在每一个单元格处理完成后，把这个单元格内容设置为old内容
 				poiModels.get(i).setOldContent(old);
 			}
 			index++;
 		}
-
+		
 		/* 生成临时文件 */
 		FileOutputStream out = null;
 		String localPath = null;
@@ -168,16 +208,16 @@ public class TestExcel {
 		map.put("IP分类", "主机IP2");
 		map.put("危险程度", "高危");
 		list.add(map);
-		list.add(map);
+		//list.add(map);
 		map = new HashMap<String, String>();
 		map.put("单位名称", "test111");
 		map.put("IP", "10.130.138.96");
 		map.put("IP分类", "主机IP");
 		map.put("危险程度", "高危");
 		list.add(map);
-		list.add(map);
-		list.add(map);
-		list.add(map);
+		//list.add(map);
+		//list.add(map);
+		//list.add(map);
 		String[] regions = new String[] { "单位名称", "IP", "IP分类", "危险程度" };
 		System.out.println(createExcel(headers, list, regions));
 	}
