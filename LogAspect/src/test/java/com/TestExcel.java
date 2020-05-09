@@ -24,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.entity.PoiModel;
+import com.util.MSExcelUtil;
 
 public class TestExcel {
 	/**
@@ -65,6 +66,7 @@ public class TestExcel {
         cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
         cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
         cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        cellStyle.setWrapText(true);//自动换行
         cellStyle.setFont(font);
 		/* 初始化head，填值标题行（第一行） */
 		Row row0 = sheet.createRow(0);
@@ -154,11 +156,6 @@ public class TestExcel {
 				// 创建表格之后设置行高与列宽
 				row.setHeightInPoints(14);
 				
-	            
-	            
-	           
-	            
-				
 				Cell cell = row.createCell(i, Cell.CELL_TYPE_STRING);
 				cell.setCellValue(value);
 				cell.setCellStyle(cellStyle);
@@ -166,6 +163,9 @@ public class TestExcel {
 				poiModels.get(i).setOldContent(old);
 			}
 			index++;
+		}
+		for (int j = 0; j < headers.length; j++) {
+			sheet.setColumnWidth(j, pixel2WidthUnits(160));
 		}
 		
 		/* 生成临时文件 */
@@ -190,6 +190,15 @@ public class TestExcel {
 			}
 		}
 		return localPath;
+	}
+	
+	public static final short EXCEL_COLUMN_WIDTH_FACTOR = 256;
+	public static final int UNIT_OFFSET_LENGTH = 7;
+	public static final int[] UNIT_OFFSET_MAP = new int[] { 0, 36, 73, 109, 146, 182, 219 };
+	public static short pixel2WidthUnits(int pxs) {
+		short widthUnits = (short) (EXCEL_COLUMN_WIDTH_FACTOR * (pxs / UNIT_OFFSET_LENGTH));
+		widthUnits += UNIT_OFFSET_MAP[(pxs % UNIT_OFFSET_LENGTH)];
+		return widthUnits;
 	}
 
 	public static void main(String[] args) throws IOException {
