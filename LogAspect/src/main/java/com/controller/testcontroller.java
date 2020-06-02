@@ -13,9 +13,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jasper.tagplugins.jstl.core.Redirect;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
@@ -69,6 +71,8 @@ public class testcontroller {
 	private static final Logger logger = LoggerFactory.getLogger(testcontroller.class);
 	@Autowired
 	private HttpServletRequest servletRequest;
+	@Autowired
+	private HttpServletResponse servletResponse;
 
 	@RequestMapping(value = "/testget", method = RequestMethod.GET)
 	public String test(Model model, String name) {
@@ -79,11 +83,31 @@ public class testcontroller {
 	}
 	@RequestMapping(value = "/route", method = RequestMethod.GET)
 	public ModelAndView route(Model model, String name) {
+		String schema = servletRequest.getScheme();
+		int port = servletRequest.getServerPort();
+		String path = servletRequest.getContextPath();
+		String severName = servletRequest.getServerName();
+		logger.info(schema+"://"+severName+":"+port+path);
+		Cookie[] cookies = servletRequest.getCookies();
+		if(cookies !=null)
+		for(Cookie cookie: cookies) {
+			if(cookie!=null&&StringUtils.isNotBlank(cookie.getName())) {
+				logger.info("cookieName:"+cookie.getName() + " - cookieVal:" + cookie.getValue());
+			}
+		}
+		logger.info("schema:"+schema);
+		
+		Cookie c = new Cookie("name", "cookie");
+		c.setDomain(".test.com");
+		//c.setPath("/");
+		//if HttpOnly
+		c.setPath(";Path=/;HttpOnly;");
+	    servletResponse.addCookie(c);
 		ModelAndView mv = new ModelAndView();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("k","v=123");
 		map.put("a","123");
-		mv.addObject("r", "#a=123");
+		mv.addObject("r", "#a=123"+schema);
 		mv.addObject("m", map);
 		mv.setViewName("success");
 		return mv;
