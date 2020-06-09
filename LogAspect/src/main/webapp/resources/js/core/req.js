@@ -1,8 +1,8 @@
 (function($, undefined) {
 	$.req = $.req || {};
-	var serverUrl = "http://mall.ccb.com/ecp/api/";
+	var serverUrl = "/api/";
 	
-	var hostname="http://mall.ccb.com/";
+	var hostname="/";
 	localStorage.setItem('hostname',hostname);
 	var tokenRegex = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
 	var csrf_token = tokenRegex && tokenRegex.length >1 ? tokenRegex[1] : null;
