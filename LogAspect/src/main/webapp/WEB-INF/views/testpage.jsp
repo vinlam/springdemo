@@ -31,6 +31,7 @@
 	    <input type="button" value="putPathVariable" id="putvbtn">
 	    <input type="button" value="dellistids" id="dellistids">
 	    <input type="button" value="get" id="getdata">
+	    <input type="button" value="tempData" id="tempdata">
 		<img src="http://localhost:8080/LogAspect/api/getCodeByte" />
 		<form action="<%=request.getContextPath()%>/t/rd1" method="post">
 			<input type="submit" value="formsub" id="subbtn">
@@ -51,7 +52,30 @@
 </body>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.min.js"></script>
 <script type="text/javascript">
-       function testget(){
+		$("#tempdata").off("click").on("click",getPostData);
+		function getPostData(){
+			var param = {};
+			param = JSON.parse($("#txt").val());
+			$.ajax({
+               	url : "<%=request.getContextPath()%>/api/tempData",
+				type : 'post',
+				//async:true, 
+				dataType : "json",
+				contentType : "application/json",
+				//contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+				//traditional: true, 
+				//data : param,
+				data : JSON.stringify(param),
+				success : function(result) {
+					alert(JSON.stringify(result));
+				},error : function(XMLHttpRequest, textStatus, errorThrown) {
+					//异常处理；
+					alert("ajaxerror: " + JSON.stringify(XMLHttpRequest) + " textStatus: " + XMLHttpRequest.statusText);
+				}
+			});
+		}
+		
+        function testget(){
     	   var arr =['11111111','222222222'];
            var param = {
         		   ids:arr.toString(),
@@ -122,7 +146,7 @@
        
 		function testgetIds(){
     	   	var param = {
-    				ids:[11111111,22222222]
+    				ids:[3333333,11111111,22222222]
     	   	}
            	$.ajax({
                    	url : "<%=request.getContextPath()%>/api/getIds",

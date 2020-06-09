@@ -9,7 +9,7 @@ import com.core.security.protection.service.Protective;
 public class SQLProtect implements Protective{
 	private static final  Logger logger = LoggerFactory.getLogger(SQLProtect.class);
 	
-	private static final String XSS_SQL_STR = "('.+--)|(--)|(%7C)";
+	private static final String XSS_SQL_STR = "and|or|select|update|delete|drop|truncate|%20|=|-|--|;|'|%|#|+|,|//|/| |\\\\|!=|(|)|('.+--)|(--)|(%7C)";
 	@Override
 	public String protect(String raw) {
 		if(raw == null) {

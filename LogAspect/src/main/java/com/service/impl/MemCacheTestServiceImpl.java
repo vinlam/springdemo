@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import com.entity.User;
@@ -22,6 +23,12 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
         Long timestamp = System.currentTimeMillis();
         return timestamp.toString();
     }
+	@Override
+	@Cacheable(cacheNames="mCapi",key="#param")
+	public String gettime(String param) {
+		Long timestamp = System.currentTimeMillis();
+		return timestamp.toString();
+	}
 	
 	@Override
     @Cacheable(cacheNames="mCache",key="")
@@ -39,7 +46,7 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
 	
 	@Override
 	//@CacheEvict(cacheNames="mC",allEntries=true)
-	@CacheEvict(cacheNames="mC",beforeInvocation=true,allEntries=true)
+	@CacheEvict(cacheNames="mC",beforeInvocation=true,allEntries=true)//beforeInvocation意为是否在执行对应方法之前删除缓存
 	public void clearAll() {
 		// TODO Auto-generated method stub
 		System.out.println("clear all");
@@ -120,6 +127,13 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
 	@Cacheable(cacheNames="mCache",key="#key")
 	public String getCacheStr(String key) {
 		return "";
+	}
+
+	@Override
+	@Caching(evict={@CacheEvict(value="mC"),@CacheEvict(value="mCache",allEntries = true)})
+	public void delMutilKey() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

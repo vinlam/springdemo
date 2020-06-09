@@ -35,4 +35,8 @@ public interface MemCacheTestService {
 	User cacheJson(int id,String s);
 
 	String cacheJsonStr(int id, String s);
+	
+	void delMutilKey();
+
+	String gettime(String param);
 }

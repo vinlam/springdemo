@@ -1,17 +1,30 @@
 package com;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.util.JsonMapper;
 
 public class JacksonDemo {
 	public static void main(String[] args) throws IOException {
+		String str="[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
+		
+		ObjectMapper mapper1 = new ObjectMapper();
+		List<JsonDTO> jsonDTOs = mapper1.readValue(str,new TypeReference<List<JsonDTO>>(){});
+		JavaType javaType = JsonMapper.getInstance().createCollectionType(List.class, JsonDTO.class);
+		List<JsonDTO> jsonDTO = JsonMapper.getInstance().fromJson(str,javaType);
+		System.out.println(JsonMapper.toJsonString(jsonDTO));
+		System.out.println(JsonMapper.toJsonString(jsonDTOs));
+		System.out.println(javaType.hasRawClass(List.class));//true
 		String s = "{\"id\": 1,\"name\": \"小明\",\"array\": [\"1\", \"2\"]}";
 		ObjectMapper mapper = new ObjectMapper();
 		// Json映射为对象
