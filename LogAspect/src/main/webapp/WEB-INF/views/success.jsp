@@ -8,5 +8,6 @@
 <script type="text/javascript">
 	console.log(window.location.href);
 	console.log(window.location.href+"${r}");
+	console.log("${m.k}"+"---------------"+"${m.a}")
 </script>
 </html>

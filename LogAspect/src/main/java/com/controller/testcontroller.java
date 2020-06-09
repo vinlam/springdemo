@@ -80,7 +80,11 @@ public class testcontroller {
 	@RequestMapping(value = "/route", method = RequestMethod.GET)
 	public ModelAndView route(Model model, String name) {
 		ModelAndView mv = new ModelAndView();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("k","v=123");
+		map.put("a","123");
 		mv.addObject("r", "#a=123");
+		mv.addObject("m", map);
 		mv.setViewName("success");
 		return mv;
 	}
