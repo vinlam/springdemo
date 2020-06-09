@@ -39,6 +39,28 @@
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
 				<constructor-arg value="UTF-8" />
 			</bean>
+<!-- 			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"> -->
+<!-- 				<property name="objectMapper"> -->
+<!-- 					<bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean"> -->
+<!-- 						<property name="deserializers"> -->
+<!-- 							<bean class="com.util.InputJsonDataDeserializer"> -->
+<!-- 								<property name="includePath" value="#{'${protect.filter.include}'.split(',')}"/> -->
+<!-- 								<property name="excludePath" value="#{'${protect.filter.exclude}'.split(',')}"/> -->
+<!-- 								<property name="protects"> -->
+<!-- 									<array> -->
+<!-- 										<bean class="com.core.security.protection.service.impl.SQLProtect"/> -->
+<!-- 										<bean class="com.core.security.protection.service.impl.XSSProtect"/> -->
+<!-- 									</array> -->
+<!-- 								</property> -->
+<!-- 							</bean> -->
+<!-- 						</property> -->
+<!-- 						<property name="serializers"> -->
+<!-- 							<bean class="com.util.OutputJsonDataSerializer"> -->
+<!-- 							</bean> -->
+<!-- 						</property> -->
+<!-- 					</bean> -->
+<!-- 				</property> -->
+<!-- 			</bean> -->
 <!-- 			<bean class="org.springframework.http.converter.FormHttpMessageConverter"/> -->
 		</mvc:message-converters>
 	</mvc:annotation-driven>

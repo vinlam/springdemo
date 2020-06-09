@@ -1,24 +1,19 @@
 package com;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import javax.validation.Validator;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
@@ -31,23 +26,21 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.common.component.AsyncTask;
+import com.common.component.MyRunnable;
 import com.common.component.NoAsyncTask;
 import com.common.gateway.RestClient;
+import com.common.memcached.MemcachedCacheManager;
 import com.common.solr.SolrClient;
 import com.config.BeanConfig;
 import com.dao.TB;
 import com.entity.Book;
-import com.entity.Order;
-import com.entity.OrderItem;
 import com.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.service.BookService;
 import com.service.CustomerService;
@@ -58,10 +51,12 @@ import com.service.SysLogService;
 import com.service.UserService;
 import com.service.impl.MemCacheTestServiceImpl;
 import com.service.impl.a.AutoInject;
-import com.util.DateJsonDeserializer;
 import com.util.DateJsonSerializer;
 import com.util.JsonMapper;
 import com.util.JsonUtil;
+
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.exception.MemcachedException;
 
 //@Transactional
 //@TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
@@ -88,6 +83,19 @@ public class testunit {
 	@Autowired
 	// @Qualifier("redisTemplate")
 	private StringRedisTemplate stringRedisTemplate; // 使用RedisTemplate操作redis
+	
+	@Autowired
+    private MyRunnable threadRunnable;
+
+    @Test
+    public void testthread() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(10);
+        for (int i = 0; i < 11; i++) {
+            threadRunnable.executeThread("架构师成长之路", latch);
+        }
+        latch.await();
+        System.out.println("执行完毕了吗！");
+    }
 
 	@Test
 	public void testRedisSerializer() {
@@ -368,16 +376,51 @@ public class testunit {
 		Thread.sleep(11000);
 		System.out.println("m再过11秒之后调用：" + memCacheTestService.mCache());
 	}
+	
+	@Autowired
+	private MemcachedCacheManager memcachedCacheManager ;
+	@Autowired
+	private MemcachedClient memcachedClient ;
 
 	@Test
 	public void mCacheDel() throws InterruptedException {
-		// System.out.println("第一次调用：" + memCacheTestServiceImpl.getTimestamp("param"));
+		System.out.println("第一次调用：" + memCacheTestServiceImpl.getTimestamp("time"));
+		System.out.println("第一次调用mCapi：" + memCacheTestServiceImpl.gettime("t"));
 		System.out.println("m第一次调用：" + memCacheTestService.mCache());
 		Thread.sleep(2000);
 		memCacheTestService.mCacheDel();
-		// Thread.sleep(11000);
+		memcachedCacheManager.getCache("mC").put("t","asd");
+		System.out.println(memcachedCacheManager.getCache("mC").get("t",String.class));
+		try {
+			//memcachedClient.flushAll();//清除所有；
+			memCacheTestService.delMutilKey();
+			System.out.println("调用delMutilKey 后mCapi：" + memCacheTestServiceImpl.gettime("t"));
+			System.out.println("调用delMutilKey：" + memCacheTestService.mCache());
+			memcachedCacheManager.getCache("mC").put("test","test cache");
+			System.out.println(memcachedCacheManager.getCache("mC").get("test",String.class));
+			memcachedClient.delete("mC_test");
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MemcachedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("mC_time:"+memcachedCacheManager.getCache("mC").get("time",String.class));
+		System.out.println(memcachedCacheManager.getCache("mC").get("test",String.class));
 		System.out.println("del之后调用：" + memCacheTestService.mCache());
+		
+		System.out.println(memcachedCacheManager.getCache("mC").get("t",String.class));
+		System.out.println("第2次调用：" + memCacheTestServiceImpl.getTimestamp("time"));
 	}
+	
+
+	@Test
+	public void mc(){
+
+		System.out.println(memcachedCacheManager.getCache("mC").get("t",String.class));
+	}
+	
 
 	@Test
 	public void mCacheUser() throws InterruptedException {

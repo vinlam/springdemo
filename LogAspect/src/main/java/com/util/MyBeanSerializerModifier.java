@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
@@ -51,8 +52,10 @@ public class MyBeanSerializerModifier extends BeanSerializerModifier {
     }
 
     protected boolean isIntegerType(BeanPropertyWriter writer) {
-        Class<?> clazz = writer.getPropertyType();
-        return clazz.equals(Integer.class) || clazz.equals(int.class);
+//        Class<?> clazz = writer.getPropertyType();
+//        return clazz.equals(Integer.class) || clazz.equals(int.class);
+        JavaType javaType = writer.getType();
+        return javaType.hasRawClass(Integer.class) || javaType.hasRawClass(int.class);
     }
 
     protected JsonSerializer<Object> defaultNullArrayJsonSerializer() {

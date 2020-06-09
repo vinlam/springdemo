@@ -1,21 +1,14 @@
 package com.common.memcached;
 
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import net.rubyeye.xmemcached.KeyIterator;
-import net.rubyeye.xmemcached.MemcachedClient;
-import net.rubyeye.xmemcached.exception.MemcachedException;
-import net.rubyeye.xmemcached.utils.AddrUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.exception.MemcachedException;
 
 public class MemCache {
 
@@ -61,8 +54,7 @@ public class MemCache {
 		}
 	}
 
-	public void clear() throws TimeoutException, InterruptedException,
-			MemcachedException {
+	public void clear() throws TimeoutException, InterruptedException, MemcachedException {
 		if (keySet != null && !keySet.isEmpty()) {
 			for (String key : keySet) {
 				try {
@@ -80,7 +72,6 @@ public class MemCache {
 
 	}
 
-
 	public void delete(String key) {
 		try {
 			key = this.getKey(key);
@@ -92,7 +83,7 @@ public class MemCache {
 		}
 	}
 
-	private String getKey(String key) {
+	private String getKey(Object key) {
 		return name + "_" + key;
 	}
 }
