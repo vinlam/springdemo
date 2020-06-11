@@ -371,9 +371,19 @@ public class testunit {
 	public void mCacheUpdate() throws InterruptedException {
 		// System.out.println("第一次调用：" + memCacheTestServiceImpl.getTimestamp("param"));
 		System.out.println("m第一次调用：" + memCacheTestService.mCacheupdate());
+		User u3 = new User();
+		u3.setId(222);
+		u3.setName("vv");
+		u3.setPassword("asdf1234");
+		String s = JsonUtil.beanToJson(u3);
+		//System.out.println("m第0次调用：" + memCacheTestService.cacheJsonStr(u3.getId(), s));
 		// Thread.sleep(2000);
 		System.out.println("m2秒之后调用：" + memCacheTestService.mCache());
+		System.out.println("cacheNoKey秒之后调用：" + memCacheTestService.cacheNoKey());
+		System.out.println("cacheStr调用：" + memCacheTestService.cacheStr("1","mCache_1"));
 		Thread.sleep(11000);
+		System.out.println("cacheNoKey 11秒之后调用：" + memCacheTestService.cacheNoKey());
+		
 		System.out.println("m再过11秒之后调用：" + memCacheTestService.mCache());
 	}
 	

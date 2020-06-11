@@ -31,7 +31,7 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
 	}
 	
 	@Override
-    @Cacheable(cacheNames="mCache",key="")
+    @Cacheable(cacheNames="mCache")
 	//@Cacheable("mCache")
     public String mCache() {
         Long timestamp = System.currentTimeMillis();
@@ -134,6 +134,12 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
 	public void delMutilKey() {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	@Cacheable(cacheNames="myCache")
+	public String cacheNoKey() {
+		
+		return String.valueOf(System.currentTimeMillis());
 	}
 
 }
