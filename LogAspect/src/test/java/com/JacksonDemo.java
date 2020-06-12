@@ -17,9 +17,12 @@ import com.util.JsonMapper;
 public class JacksonDemo {
 	public static void main(String[] args) throws IOException {
 		String str="[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
-		
+		String ob = "{\"name\":\"jack\",\"age\":18}";
 		ObjectMapper mapper1 = new ObjectMapper();
 		List<JsonDTO> jsonDTOs = mapper1.readValue(str,new TypeReference<List<JsonDTO>>(){});
+		
+		JsonDTO j = mapper1.readValue(ob,JsonDTO.class);
+		System.out.println(JsonMapper.toJsonString(j));
 		JavaType javaType = JsonMapper.getInstance().createCollectionType(List.class, JsonDTO.class);
 		List<JsonDTO> jsonDTO = JsonMapper.getInstance().fromJson(str,javaType);
 		System.out.println(JsonMapper.toJsonString(jsonDTO));
