@@ -141,5 +141,11 @@ public class MemCacheTestServiceImpl implements MemCacheTestService {
 		
 		return String.valueOf(System.currentTimeMillis());
 	}
+	@Override
+	@Cacheable(cacheNames="myCache",key="#key")
+	public String cacheKey(String key) {
+		
+		return "myCache:"+key;
+	}
 
 }

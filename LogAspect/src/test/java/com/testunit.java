@@ -378,13 +378,16 @@ public class testunit {
 		String s = JsonUtil.beanToJson(u3);
 		//System.out.println("m第0次调用：" + memCacheTestService.cacheJsonStr(u3.getId(), s));
 		// Thread.sleep(2000);
-		System.out.println("m2秒之后调用：" + memCacheTestService.mCache());
-		System.out.println("cacheNoKey秒之后调用：" + memCacheTestService.cacheNoKey());
-		System.out.println("cacheStr调用：" + memCacheTestService.cacheStr("1","mCache_1"));
+		//System.out.println("m2秒之后调用：" + memCacheTestService.mCache());
+		//System.out.println("cacheStr调用：" + memCacheTestService.cacheStr("1","mCache_1"));
+		System.out.println("cacheNoKey调用：" + memCacheTestService.cacheNoKey());
+		System.out.println("cacheKey调用：" + memCacheTestService.cacheKey("cache key"));
+		
 		Thread.sleep(11000);
+		System.out.println("cacheKey11秒之后调用：" + memCacheTestService.cacheKey("cache key"));
 		System.out.println("cacheNoKey 11秒之后调用：" + memCacheTestService.cacheNoKey());
 		
-		System.out.println("m再过11秒之后调用：" + memCacheTestService.mCache());
+		//System.out.println("m再过11秒之后调用：" + memCacheTestService.mCache());
 	}
 	
 	@Autowired
