@@ -22,6 +22,7 @@ public interface MemCacheTestService {
     
     String mCacheupdate();
     String cacheNoKey();
+    String cacheKey(String key);
     void mCacheDel();
 
 	User getcacheUser(int id);
