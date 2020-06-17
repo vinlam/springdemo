@@ -28,7 +28,7 @@ public class JacksonDemo {
 		JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
 		List<JsonDTO> jsonDTO = JsonMapper.getInstance().fromJson(str,javaType);
 		JsonDTO<NewUser> jDTO = JsonMapper.getInstance().fromJson(ob,jType);
-		//JsonDTO<NewUser> jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class);
+		//JsonDTO<NewUser> jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class); 
 		JsonDTO jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class);
 		System.out.println("jn:"+JsonMapper.toJsonString(jn));
 		System.out.println(JsonMapper.toJsonString(jDTO));
