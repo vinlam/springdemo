@@ -3,8 +3,8 @@ package com;
 public class JsonDTO<T> {
 	private String name;
 	private String age;
-	
 	private T data;
+	
 	public String getName() {
 		return name;
 	}

@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.util.JsonMapper;
 
 public class JacksonDemo {
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws IOException {
 		String str="[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
 		String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\"}}";

@@ -7,7 +7,7 @@ public class NewUser {
 	//例1:String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\"}}";
 	//例2:String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"Name\":\"tom\",\"age\":10,\"sex\":\"Man\"}}";
 	//JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
-	@JsonProperty("Name")//通过泛型反射此时注意对应数据key的大小写，如例1数据中为小写则数据为空name:""，如例2跟此定义一致则输出对应数据Name:tom
+	@JsonProperty("Name")//通过泛型反射此时注意对应数据key的大小写，如例1数据中为小写则数据为空name:""，如例2跟此定义一致则输出对应数据Name:tom,別名不一致也无法得到数据
 	//@JsonProperty("name")//JsonProperty别名
 	private String name;
 	private String sex;
