@@ -17,24 +17,38 @@ import com.util.JsonMapper;
 public class JacksonDemo {
 	public static void main(String[] args) throws IOException {
 		String str="[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
-		String ob = "{\"name\":\"jack\",\"age\":18}";
+		String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\"}}";
 		ObjectMapper mapper1 = new ObjectMapper();
 		List<JsonDTO> jsonDTOs = mapper1.readValue(str,new TypeReference<List<JsonDTO>>(){});
 		
 		JsonDTO j = mapper1.readValue(ob,JsonDTO.class);
 		System.out.println(JsonMapper.toJsonString(j));
 		JavaType javaType = JsonMapper.getInstance().createCollectionType(List.class, JsonDTO.class);
+		JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
 		List<JsonDTO> jsonDTO = JsonMapper.getInstance().fromJson(str,javaType);
+		JsonDTO<NewUser> jDTO = JsonMapper.getInstance().fromJson(ob,jType);
+		System.out.println(JsonMapper.toJsonString(jDTO));
 		System.out.println(JsonMapper.toJsonString(jsonDTO));
 		System.out.println(JsonMapper.toJsonString(jsonDTOs));
+		
+		JsonDTO<NewUser> json = new JsonDTO<NewUser>();
+		json.setAge("20");
+		json.setName("Zhang");
+		
+		NewUser data = new NewUser();
+		data.setAge(15);
+		data.setName("Li");
+		data.setSex("F");
+		json.setData(data);
+		System.out.println(JsonMapper.toJsonString(json));
 		System.out.println(javaType.hasRawClass(List.class));//true
 		String s = "{\"id\": 1,\"name\": \"小明\",\"array\": [\"1\", \"2\"]}";
 		ObjectMapper mapper = new ObjectMapper();
 		// Json映射为对象
 		Student student = mapper.readValue(s, Student.class);
 		// 对象转化为Json
-		String json = mapper.writeValueAsString(student);
-		System.out.println(json);
+		String jsonstr = mapper.writeValueAsString(student);
+		System.out.println(jsonstr);
 		System.out.println(student.toString());
 		treemodel();
 	}
