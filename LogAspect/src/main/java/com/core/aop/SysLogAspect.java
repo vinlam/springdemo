@@ -97,7 +97,7 @@ public class SysLogAspect {
 //	}
 
 	/**
-	 * 后置通知 用于拦截Controller层记录用户的操作
+	 * 环绕通知 用于拦截Controller层记录用户的操作
 	 * 
 	 * @param joinPoint
 	 *            切点

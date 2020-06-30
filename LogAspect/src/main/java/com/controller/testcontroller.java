@@ -50,6 +50,7 @@ import com.common.gateway.RestClient;
 import com.dao.TB;
 import com.dao.TC;
 import com.entity.Country;
+import com.entity.PojoTest;
 import com.entity.User;
 import com.entity.UserDTO;
 import com.entity.UserVo;
@@ -103,13 +104,32 @@ public class testcontroller {
 		//if HttpOnly
 		c.setPath(";Path=/;HttpOnly;");
 	    servletResponse.addCookie(c);
+	    
+	    List<User> users = new ArrayList<User>();
+	    
+	    User user = new User();
+	    user.setAge(10);
+	    user.setName("jack");
+	    user.setPassword("000000");
+	    users.add(user);
+	    user = new User();
+	    user.setAge(12);
+	    user.setName("tom");
+	    user.setPassword("111111");
+	    users.add(user);
+	    
 		ModelAndView mv = new ModelAndView();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("k","v=123");
 		map.put("a","123");
 		mv.addObject("r", "#a=123"+schema);
 		mv.addObject("m", map);
+		mv.addObject("users",users);
+		mv.addObject("u",user);
 		mv.setViewName("success");
+		
+	    PojoTest pojo=new PojoTest("小明", "男");
+	    model.addAttribute("pojo", pojo);
 		return mv;
 	}
 
