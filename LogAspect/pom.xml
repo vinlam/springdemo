@@ -70,7 +70,7 @@
 		<httpclient.version>4.5.3</httpclient.version>
 		<httpcore.version>4.4.9</httpcore.version>
 		<sp.data.redis.version>1.7.1.RELEASE</sp.data.redis.version>
-<!-- 		<sp.data.redis.version>2.0.0.RELEASE</sp.data.redis.version> -->
+		<!-- <sp.data.redis.version>2.0.0.RELEASE</sp.data.redis.version> -->
 		<ikanalyzer.version>2012_u6</ikanalyzer.version>
 		<spring.data.solr.version>1.5.5.RELEASE</spring.data.solr.version>
 		<mmseg4j-analysis.version>1.9.1</mmseg4j-analysis.version>
@@ -79,6 +79,7 @@
 		<thumbnailator.version>0.4.8</thumbnailator.version>
 		<jetty.version>9.4.16.v20190411</jetty.version>
 		<sigar.version>1.6.4</sigar.version>
+		<useragent.version>1.20</useragent.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.chenlb.mmseg4j/mmseg4j-analysis -->
@@ -572,11 +573,16 @@
 			<version>${thumbnailator.version}</version>
 		</dependency>
 		<dependency>
-    　　　　<groupId>org.fusesource</groupId>
-    　　　　　　<artifactId>sigar</artifactId>
-   　　　　　　 <version>${sigar.version}</version>
-　　　　</dependency>
-
+			<groupId>org.fusesource</groupId>
+			<artifactId>sigar</artifactId>
+			<version>${sigar.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/eu.bitwalker/UserAgentUtils -->
+		<dependency>
+			<groupId>eu.bitwalker</groupId>
+			<artifactId>UserAgentUtils</artifactId>
+			<version>${useragent.version}</version>
+		</dependency>
 	</dependencies>
 
 
