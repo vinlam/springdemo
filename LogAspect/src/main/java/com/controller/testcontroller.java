@@ -184,6 +184,22 @@ public class testcontroller {
 		mv.setView(new RedirectView("../restview/test"));
 		return mv;
 	}
+	@RequestMapping("/rvphp")
+	public ModelAndView rvphp(HttpServletResponse response) {
+		System.out.println("redirect");
+		System.out.println(servletRequest.getScheme()+"\n"+servletRequest.getRequestURL());
+		// return "redirect:http://www.baidu.com";
+//		try {
+//			response.getWriter().write("http://www.baidu.com");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		ModelAndView mv = new ModelAndView();
+		//mv.setView(new RedirectView("/testget", true, false, true));
+		mv.setView(new RedirectView("/arr.php"));
+		return mv;
+	}
 
 	@RequestMapping("/rd1")
 	public void redirect1(HttpServletResponse response) {
