@@ -80,6 +80,7 @@
 		<jetty.version>9.4.16.v20190411</jetty.version>
 		<sigar.version>1.6.4</sigar.version>
 		<useragent.version>1.20</useragent.version>
+		<truelicense.version>1.33</truelicense.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.chenlb.mmseg4j/mmseg4j-analysis -->
@@ -583,6 +584,11 @@
 			<artifactId>UserAgentUtils</artifactId>
 			<version>${useragent.version}</version>
 		</dependency>
+		<dependency>
+      <groupId>de.schlichtherle.truelicense</groupId>
+      <artifactId>truelicense-core</artifactId>
+      <version>${truelicense.version}</version>
+</dependency>
 	</dependencies>
 
 

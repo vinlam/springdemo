@@ -63,6 +63,7 @@ import com.service.impl.a.AutoInject;
 import com.service.impl.a.Inject;
 import com.util.JsonMapper;
 
+import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
@@ -117,15 +118,28 @@ public class testcontroller {
 	    user.setName("tom");
 	    user.setPassword("111111");
 	    users.add(user);
-	    
+	    User user1 = new User();
+	    user1.setAge(19);
+	    user1.setName("kk");
+	    user1.setPassword("222222");
 		ModelAndView mv = new ModelAndView();
 		Map<String,Object> map = new HashMap<String,Object>();
+		List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 		map.put("k","v=123");
 		map.put("a","123");
+		mapList.add(map);
+		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+
+		mapperFactory.classMap(User.class, Map.class).byDefault();
+		MapperFacade mapper = mapperFactory.getMapperFacade();
+		Map<String,Object> mapuser = mapper.map(user1, Map.class);
+		logger.info(mapuser.toString());
 		mv.addObject("r", "#a=123"+schema);
 		mv.addObject("m", map);
 		mv.addObject("users",users);
-		mv.addObject("u",user);
+		mv.addObject("u",user1);
+		mv.addObject("list",mapList);
+		mv.addObject("mapuser",mapuser);
 		mv.setViewName("success");
 		
 	    PojoTest pojo=new PojoTest("小明", "男");

@@ -2,6 +2,7 @@ package com;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -42,6 +43,8 @@ import com.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.license.LicenseCreator;
+import com.license.LicenseCreatorParam;
 import com.service.BookService;
 import com.service.CustomerService;
 import com.service.EhCacheTestService;
@@ -664,6 +667,30 @@ public class testunit {
 		ResponseEntity<String> response = RestClient.getClient().exchange(url, HttpMethod.GET, request, String.class);
 		System.out.println(response.getBody());
 	}
+	
+    @Test
+    public void licenseCreate() {
+        // 生成license需要的一些参数
+        LicenseCreatorParam param = new LicenseCreatorParam();
+        param.setSubject("ioserver");
+        param.setPrivateAlias("privatekey");
+        param.setKeyPass("123456");
+        param.setStorePass("123456");
+        param.setLicensePath("/Users/vinlam/license.lic");
+        param.setPrivateKeysStorePath("/Users/vinlam/work/gitproject/springdemo/LogAspect/src/main/java/privateKeys.keystore");
+        Calendar issueCalendar = Calendar.getInstance();
+        param.setIssuedTime(issueCalendar.getTime());
+        Calendar expiryCalendar = Calendar.getInstance();
+        expiryCalendar.set(2020, Calendar.DECEMBER, 31, 23, 59, 59);
+        param.setExpiryTime(expiryCalendar.getTime());
+        param.setConsumerType("user");
+        param.setConsumerAmount(1);
+        param.setDescription("测试");
+        LicenseCreator licenseCreator = new LicenseCreator(param);
+        // 生成license
+        licenseCreator.generateLicense();
+    }
+
 }
 
 class MyThead implements Runnable {
