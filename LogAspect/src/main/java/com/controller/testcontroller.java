@@ -1,12 +1,9 @@
 package com.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jasper.tagplugins.jstl.core.Redirect;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +24,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -53,7 +47,6 @@ import com.entity.Country;
 import com.entity.PojoTest;
 import com.entity.User;
 import com.entity.UserDTO;
-import com.entity.UserVo;
 import com.service.EhCacheTestService;
 import com.service.MemCacheTestService;
 import com.service.SysLogService;
@@ -62,6 +55,7 @@ import com.service.impl.MemCacheTestServiceImpl;
 import com.service.impl.a.AutoInject;
 import com.service.impl.a.Inject;
 import com.util.JsonMapper;
+import com.util.LoggerUtil;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -71,6 +65,7 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
 @RequestMapping("/t")
 public class testcontroller {
 	private static final Logger logger = LoggerFactory.getLogger(testcontroller.class);
+	private static org.apache.log4j.Logger log = LoggerUtil.getLog(testcontroller.class);
 	@Autowired
 	private HttpServletRequest servletRequest;
 	@Autowired
@@ -98,6 +93,7 @@ public class testcontroller {
 			}
 		}
 		logger.info("schema:"+schema);
+		log.info("mylogutil:"+ schema);
 		
 		Cookie c = new Cookie("name", "cookie");
 		c.setDomain(".test.com");

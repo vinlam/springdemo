@@ -5,20 +5,28 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.util.JsonMapper;
 
@@ -27,8 +35,60 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 public class TestDemo {
+	//private static Logger log = LoggerFactory.getLogger("MyLog");
+	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(TestDemo.class);
+	private static org.apache.log4j.Logger mylog = org.apache.log4j.Logger.getLogger("myLogger");
+	static {
+		try {
+			System.setProperty("hostName", InetAddress.getLocalHost().getHostName());
+			System.setProperty("ct", DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMddHHmmssSSS"));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public TestDemo() {
+		System.setProperty("st", DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMddHHmmssSSS"));
+	}	
+	
+	private static ApplicationContext applicationContext = null;
+	
+	public static ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+	
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
+		
+		System.out.println(System.getProperty("hostName"));
+		System.out.println(System.getProperty("ct"));
+		System.out.println(System.getProperty("user.dir"));
+		String classPath = "applicationContext-test.xml";
+		//applicationContext = new ClassPathXmlApplicationContext(classPath);
+		//加载config文件夹下的log4j.properties
+	    String log4jPath=System.getProperty("user.dir")+"/log4j.xml";
+	    log4jPath=System.getProperty("user.dir")+"/src/test/java/log4j.properties";
+	    PropertyConfigurator.configure(log4jPath);
+//		Log4jConfigurer.initLogging("");
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			private int count = 5;
 
+			public void run() {
+				if (count > 0) {
+					//doWorkPerSecond();
+					System.out.println(System.getProperty("ct"));
+					System.out.println(System.getProperty("st"));
+					logger.info("log4j count:"+count);
+					mylog.info("mylog log4j count:"+count);
+					
+					count--;
+				} else {
+					//doWorkEnd();
+					cancel();
+				}
+			}
+		};
+		timer.scheduleAtFixedRate(task, 2000L, 2000L);
 		String str = "thi is a test 这是一个测试";
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<persons>\n" + " <person id=\"23\">\n"
 				+ " <name>张 三</name>\n" + " <age>26</age>\n" + "</person>\n" + " <person id=\"22\">\n"
@@ -113,6 +173,17 @@ public class TestDemo {
 			StringBuilder sb = new StringBuilder("18698587234");
 			sb.replace(3, 7, str);
 			System.err.println("========" + sb.toString());// ========186****7234
+		}
+		String[] d = { "ab", "cd", "ef" };
+		List<String> listd = new ArrayList<String>();
+		Collections.addAll(listd, d);
+		int pos = listd.indexOf("ef");
+		StringBuilder ds = new StringBuilder("000");
+		String dsd = String.valueOf(ds.charAt(pos));
+		if ("0".equals(dsd)) {
+			System.out.println("endpos:"+(pos + 1));
+			ds.replace(pos, pos + 1, "1");
+			System.out.println(ds.toString());
 		}
 	}
 
@@ -238,10 +309,10 @@ public class TestDemo {
 		List<String> list2 = new ArrayList<String>();
 		list2.add("B");
 		list2.add("C");
-		test(list1,list2);
-		test1(list1,list2);
-		test2(list1,list2);
-		test3(list1,list2);
+		test(list1, list2);
+		test1(list1, list2);
+		test2(list1, list2);
+		test3(list1, list2);
 	}
 
 //0.求差集
@@ -331,6 +402,7 @@ public class TestDemo {
 		System.out.println(list1);
 	}
 //结果：[B]
+
 
 //在上面2的实验过程中，我们知道batchRemove(Collection,true)也是求交集，所以猜想  retainAll 内部应该是调用 batchRemove(Collection,true)，查看ArrayList的源码如下:
 //	public boolean retainAll(Collection<?> c) {

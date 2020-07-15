@@ -8,6 +8,9 @@
 	<conversionRule conversionWord="hostName"
 		converterClass="com.util.LogHostNameConfig" />
 
+	<timestamp key="bySecond" datePattern="yyyyMMdd-HHmmss"/> 
+    <contextName>${bySecond}</contextName> 
+
 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
 	<property name="LOG_HOME" value="/Users/vinlam/logs/logback" />
 	<!-- %.-1level 只显示信息级别的首字母,%-5level 左对齐显示信息级别全称 -->
@@ -24,7 +27,7 @@
 		<layout class="com.util.MyLogPatternLayout">
 			<!-- <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %ip [%thread] %-5level %logger{36} 
 				-%msg%n</Pattern> -->
-			<Pattern>[%HostName][%date{yyyy-MM-dd HH:mm:ss.SSS}] [%X{Ip}]
+			<Pattern>[${bySecond}][%HostName][%date{yyyy-MM-dd HH:mm:ss.SSS}] [%X{Ip}]
 				[%thread] [%X{requestId}] [%X{TraceId}] [%method] [%line] [%-5level]
 				[%logger{36}] --%mdc{client} %msg%n"</Pattern>
 		</layout>
@@ -33,21 +36,22 @@
 	<appender name="runtime"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<!-- 日志名称 -->
-		<!-- <file>${LOG_HOME}/runtime.${HostName}.${NowDate}.log</file> -->
+		<file>${LOG_HOME}/logs/${HostName}.log</file>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> -->
 
-			<fileNamePattern>${LOG_HOME}/logs/runtime.${HostName}.%d{yyyyMMdd}.log
+			<fileNamePattern>${LOG_HOME}/logs/${HostName}.%d{yyyyMMddHHmm}.log
 			</fileNamePattern>
+
 			<!-- 原来前面路径中的%d{}中需要加一个aux，来表明它是用来辅助的，最后配成了这个样子实现了原来的目的 -->
 			<!-- <fileNamePattern>${LOG_HOME}/%d{yyyy-MM-dd,aux}/xxx.%d{yyyy-MM-dd_HH}.%i.log</fileNamePattern> -->
 			<!-- <fileNamePattern>${LOG_HOME}/logs/runtime.%d{yyyy-MM-dd}.%i.log.zip -->
 			<!-- </fileNamePattern> -->
+<!-- 			每1分钟生成一个文件 -->
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="com.common.component.MyTimeBasedFileNamingAndTriggeringPolicy">
-<!-- 				每两分钟生成一个文件 -->
-				<multiple>2</multiple>
+				<multiple>1</multiple>
 			</timeBasedFileNamingAndTriggeringPolicy>
 			<maxFileSize>50MB</maxFileSize>  <!-- 日志文件过大会使的编辑器打开非常慢，因此设置日志最大50MB -->
 			<maxHistory>30</maxHistory>  <!-- 保存30天 -->
@@ -78,7 +82,12 @@
 		<file>${LOG_HOME}/info.log</file>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_HOME}/logs/info.%d{yyyy-MM-dd}.%i.log.zip
+			<!-- 索引最小值，标识%i从1开始 -->
+<!-- 			<minIndex>1</minIndex> -->
+			<!-- 索引最大值，标识%i到5结束，始终保留了5个归档文件 -->
+<!-- 			<maxIndex>5</maxIndex> -->
+<!-- 			<fileNamePattern>${LOG_HOME}/logs/info.%d{yyyy-MM-dd}.%i.log.zip -->
+			<fileNamePattern>${LOG_HOME}/logs/info.%d{yyyy-MM-dd}.log.zip
 			</fileNamePattern>
 			<maxFileSize>50MB</maxFileSize>
 			<maxHistory>30</maxHistory>
@@ -99,7 +108,7 @@
 		<file>${LOG_HOME}/update.log</file>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_HOME}/logs/update.%d{yyyy-MM-dd}.%i.log.zip
+			<fileNamePattern>${LOG_HOME}/logs/update.%d{yyyy-MM-dd}.log.zip
 			</fileNamePattern>
 			<maxFileSize>50KB</maxFileSize>
 			<maxHistory>7</maxHistory>
@@ -130,7 +139,7 @@
 		</filter>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_HOME}/logs/error.%d{yyyy-MM-dd}.%i.log.zip
+			<fileNamePattern>${LOG_HOME}/logs/error.%d{yyyy-MM-dd}.log.zip
 			</fileNamePattern>
 			<maxFileSize>50KB</maxFileSize>
 			<maxHistory>7</maxHistory>
