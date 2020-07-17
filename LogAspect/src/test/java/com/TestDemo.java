@@ -12,8 +12,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
@@ -144,7 +146,25 @@ public class TestDemo {
 		// System.arraycopy(newlist, 0, list, 0, newlist.size());
 		System.out.println(JsonMapper.toJsonString(list));
 		System.out.println(JsonMapper.toJsonString(newlist));
-		String[] s = "1|12|4|5".split("\\|");
+		str = "1|12|4|5";
+		String[] s = str.split("\\|");
+		StringTokenizer stringTokenizer = new StringTokenizer(str, "\\|");
+		List<String> sl = new ArrayList<String>();
+		while(stringTokenizer.hasMoreTokens()) {
+			sl.add(stringTokenizer.nextToken());
+		}
+		for(String c: sl) {
+			System.out.println("list foreach:"+c);
+		}
+		
+		for(int i=0;i<sl.size();i++) {
+			System.out.println("list for:"+sl.get(i));
+		}
+		
+		Iterator<String> itreator = sl.iterator();  
+		while(itreator.hasNext()){  
+		    System.out.println("list itreator:"+itreator.next());  
+		}  
 		for (String n : s) {
 			if (Long.valueOf(n).longValue() == 1L) {
 				System.out.println(n);
@@ -185,6 +205,8 @@ public class TestDemo {
 			ds.replace(pos, pos + 1, "1");
 			System.out.println(ds.toString());
 		}
+		
+		m();
 	}
 
 	public static <T> List<T> deepCopy(List<T> src) throws IOException, ClassNotFoundException {
@@ -313,6 +335,27 @@ public class TestDemo {
 		test1(list1, list2);
 		test2(list1, list2);
 		test3(list1, list2);
+		
+		List<String> mlist1 = new ArrayList<String>();
+		mlist1.add("A");
+		mlist1.add("D");
+		mlist1.add("B");
+		mlist1.add("C");
+
+		List<String> mlist2 = new ArrayList<String>();
+		mlist2.add("C");
+		mlist2.add("B");
+//		mlist2.add("E");
+		//mlist1.removeAll(mlist2);
+		
+		List<String> mlist3 = new ArrayList<String>();
+		mlist3 = mlist1;
+		//mlist2.addAll(mlist1);
+		//mlist2.addAll(mlist1);
+		mlist2.retainAll(mlist1);//交集
+		mlist1.removeAll(mlist2);//删除交集
+		mlist2.addAll(mlist1);//用排序后的数据添加删除交集后剩下的数据 结果应为：CBAD
+		System.out.println("mlist求并集(去重):"+mlist2);
 	}
 
 //0.求差集
@@ -409,4 +452,97 @@ public class TestDemo {
 //		Objects.requireNonNull(c);
 //		return batchRemove(c, true);
 //	}
+	
+//	java 与 或 非 异或 & | ~ ^
+//	1．与运算符 &
+//	两个操作数中位都为1，结果才为1，否则结果为0
+//	
+//	2．或运算符 |
+//	两个位只要有一个为1，那么结果就是1，否则就为0
+//
+//	3．非运算符 ~
+//	如果位为0，结果是1，如果位为1，结果是0
+//
+//	4．异或运算符 ^
+//	两个操作数的位中，相同则结果为0，不同则结果为1
+	private static void m() {
+//		一.原码
+//		1>.正数的原码就是它的本身
+//		　　假设使用一个字节存储整数，整数10的原码是：0000 1010
+//
+//		2>.负数用最高位是1表示负数
+//		　　假设使用一个字节存储整数，整数-10的原码是：1000 1010
+//
+//		二.反码
+//		1>.正数的反码跟原码一样
+//		　　假设使用一个字节存储整数，整数10的反码是：0000 1010
+//
+//		2>.负数的反码是负数的原码按位取反（0变1,1变0），符号位不变
+//		　　假设使用一个字节存储整数，整数-10的反码是：1111 0101
+//
+//		三.补码（再次强调，整数的补码才是在计算机中的存储形式。）
+//		1>.正数的补码和原码一样
+//		　　假设使用一个字节存储整数，整数10的补码是：0000 1010（第三次强调：这一串是10这个整数在计算机中存储形式）
+//
+//		2>.负数的补码是负数的反码加1
+//		　　假设使用一个字节存储整数，整数-10的补码是：1111 0110（第三次强调：这一串是-10这个整数在计算机中存储形式）
+//
+//		四.在计算机中，为什么不用原码和反码，而是用补码呢？
+//		　　因为在使用原码，反码在计算时不准确，使用补码计算时才准确。
+//
+//		1>.使用原码计算10-10
+//		　　　    0000 1010　　（10的原码）
+//		　   +   1000 1010 　 （-10的原码）
+//		------------------------------------------------------------
+//		　　　　   1001 0100　　（结果为：-20，很显然按照原码计算答案是否定的。）
+//
+//		2>.使用反码计算10-10
+//		　　　　　　0000 1010　　（10的反码）
+//		　　　+　  1111 0101　　（-10的反码）
+//		------------------------------------------------------------
+//		　　　　　　1111 1111　　（计算的结果为反码，我们转换为原码的结果为：1000 0000，最终的结果为：-0，很显然按照反码计算答案也是否定的。）
+//
+//		3>.使用补码计算10-10
+//		　　　　　　0000 1010　　（10的补码）
+//		　　　+　　 1111  0110　　（-10的补码）
+//		------------------------------------------------------------
+//		　　　　  1 0000 0000　　（由于我们这里使用了的1个字节存储，因此只能存储8位，最高位（第九位）那个1没有地方存，就被丢弃了。因此，结果为：0）
+//
+//		五.小试牛刀
+//		　　有了上面的案例，接下来，我们来做几个小练习吧，分别计算以下反码表示的十进制数字是多少呢？
+//		1>.0b0000 1111
+//		　　相信这个数字大家异口同声的就能说出它的答案是：15（因为正数的补码和原码一样）
+//
+//		2>.0b1111 1111
+//		　　计算过程：0b1111 1111（补码）------>0b1111 1110（反码）------>0b1000 0001（原码）
+//		　　将其换算成原码之后就可以得到最后的结果为：-1
+//
+//		3>.0b1111 0000
+//		　　计算过程：0b1111 0000（补码）------>0b1110 1111（反码）------>0b10010000(原码)
+//		　　将其换算成原码之后就可以得到最后的结果为：-16
+//
+//		4>.0b1000 0001
+//		　　计算过程：0b1000 0001（补码）------>0b1000 0000（反码）------->0b1111 1111（原码）
+//		　　将其换算成原码之后就可以得到最后的结果为：-127
+		int a=128;
+		int b=129;
+		System.out.println(a&b);//128;a 的值是129，转换成二进制就是10000001，而b 的值是128，转换成二进制就是10000000。根据与运算符的运算规律，只有两个位都是1，结果才是1，可以知道结果就是10000000，即128。
+		System.out.println(a|b);//129;a 的值是129，转换成二进制就是10000001，而b 的值是128，转换成二进制就是10000000，根据或运算符的运算规律，只有两个位有一个是1，结果才是1，可以知道结果就是10000001，即129。
+		a=2;//0010 
+		//变量a的二进制数形式：        00000000 00000000 00000000 00000010
+		//逐位取反后，等于十进制的-3：  11111111 11111111 11111111 11111101 变成负数
+		//补码 10000000 00000000 00000000 00000010 | 00000000 00000000 00000000 00000001 | 100000000 00000000 00000000 00000011
+		
+		System.out.println("a 非的结果是："+(~a));	//-3
+		a=10;//1010
+		//00000000 00000000 00000000 00001010
+		//11111111 11111111 11111111 11110101
+		//10000000 00000000 00000000 00001010 | 00000000 00000000 00000000 00000001 | 10000000 00000000 00000000 00001011
+		
+		System.out.println("a 非的结果是："+(~a));	//-11
+		
+		a=15;
+		b=2;
+		System.out.println("a 与 b 异或的结果是："+(a^b));//a 与 b 异或的结果是：13 分析上面的程序段：a 的值是15，转换成二进制为1111，而b 的值是2，转换成二进制为0010，根据异或的运算规律，可以得出其结果为1101 即13。
+	}
 }

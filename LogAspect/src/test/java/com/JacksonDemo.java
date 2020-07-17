@@ -2,6 +2,7 @@ package com;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,22 +15,43 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.util.JsonMapper;
 
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
+
 public class JacksonDemo {
+	private static MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws IOException {
 		String str="[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
-		String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\"}}";
+		String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
 		ObjectMapper mapper1 = new ObjectMapper();
 		List<JsonDTO> jsonDTOs = mapper1.readValue(str,new TypeReference<List<JsonDTO>>(){});
 		
 		JsonDTO j = mapper1.readValue(ob,JsonDTO.class);
 		System.out.println(JsonMapper.toJsonString(j));
 		JavaType javaType = JsonMapper.getInstance().createCollectionType(List.class, JsonDTO.class);
+		//JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
 		JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
 		List<JsonDTO> jsonDTO = JsonMapper.getInstance().fromJson(str,javaType);
 		JsonDTO<NewUser> jDTO = JsonMapper.getInstance().fromJson(ob,jType);
 		//JsonDTO<NewUser> jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class); 
 		JsonDTO jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class);
+		JsonInDTO jsonInDTO = JsonMapper.getInstance().fromJson(ob, JsonInDTO.class);
+		//mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class).byDefault();
+		mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class)
+		.field("name","name")
+		.field("age","age")
+		.field("data", "newUser")//或者单个设置如下面四个field
+//		.field("data.name", "newUser.name")
+//	    .field("data.sex", "newUser.sex")
+//	    .field("data.age", "newUser.age")
+//	    .field("data.newUserData", "newUser.newUserData")
+	    .register();;
+		MapperFacade mapperFacade = mapperFactory.getMapperFacade();
+		
+		JsonOutDTO newDto =mapperFacade.map(jsonInDTO, JsonOutDTO.class);
+		System.out.println("newDto:"+JsonMapper.toJsonString(newDto));
 		System.out.println("jn:"+JsonMapper.toJsonString(jn));
 		System.out.println(JsonMapper.toJsonString(jDTO));
 		System.out.println(JsonMapper.toJsonString(jsonDTO));
