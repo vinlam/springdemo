@@ -690,7 +690,20 @@ public class testunit {
         // 生成license
         licenseCreator.generateLicense();
     }
-
+    @Autowired
+    private TypeStrategyContext typeStrategy;
+    @Test
+    public void testStrategy() {
+    	try {
+			String[] types = {"pc1","mobile"};
+			//types = null;
+			String key = "TypePc";//TypeMobile
+			String res = typeStrategy.getRes(types,key);
+			System.out.println(res);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+    }
 }
 
 class MyThead implements Runnable {

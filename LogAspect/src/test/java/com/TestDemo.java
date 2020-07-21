@@ -2,31 +2,39 @@ package com;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.UnknownHostException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.log4j.PropertyConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -37,7 +45,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 public class TestDemo {
-	//private static Logger log = LoggerFactory.getLogger("MyLog");
+	// private static Logger log = LoggerFactory.getLogger("MyLog");
 	private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(TestDemo.class);
 	private static org.apache.log4j.Logger mylog = org.apache.log4j.Logger.getLogger("myLogger");
 	static {
@@ -49,43 +57,85 @@ public class TestDemo {
 			e.printStackTrace();
 		}
 	}
+
 	public TestDemo() {
 		System.setProperty("st", DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMddHHmmssSSS"));
-	}	
-	
+	}
+
 	private static ApplicationContext applicationContext = null;
-	
+
 	public static ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
-	
+
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
-		
+
 		System.out.println(System.getProperty("hostName"));
 		System.out.println(System.getProperty("ct"));
 		System.out.println(System.getProperty("user.dir"));
 		String classPath = "applicationContext-test.xml";
+		//
+		// 加载config文件夹下的log4j.properties
+		String log4jPath = System.getProperty("user.dir") + "/src/test/java/log4j.xml";
+		String path = System.getProperty("user.dir") + "/src/test/java/servlet-api.jar";
+		File file = new File(path);// jar包的路径
+		URL url = file.toURI().toURL();
+		ClassLoader loader1 = new URLClassLoader(new URL[] { url });// 创建类加载器
+		Set<Class<?>> classes = new LinkedHashSet<Class<?>>();// 所有的Class对象
+		Map<Class<?>, Annotation[]> classAnnotationMap = new HashMap<Class<?>, Annotation[]>();// 每个Class对象上的注释对象
+		Map<Class<?>, Map<Method, Annotation[]>> classMethodAnnoMap = new HashMap<Class<?>, Map<Method, Annotation[]>>();// 每个Class对象中每个方法上的注释对象
+		try {
+			JarFile jarFile = new JarFile(new File(path));
+			// URL url = new URL("file:" + path);
+			ClassLoader loader = new URLClassLoader(new URL[] { url });// 自己定义的classLoader类，把外部路径也加到load路径里，使系统去该路经load对象
+			Enumeration<JarEntry> es = jarFile.entries();
+			while (es.hasMoreElements()) {
+				JarEntry jarEntry = (JarEntry) es.nextElement();
+				String name = jarEntry.getName();
+				if (name != null && name.endsWith(".class")) {// 只解析了.class文件，没有解析里面的jar包
+					// 默认去系统已经定义的路径查找对象，针对外部jar包不能用
+					// Class<?> c =  Thread.currentThread().getContextClassLoader().loadClass(name.replace("/",".").substring(0,name.length() - 6));
+					Class<?> c = loader.loadClass(name.replace("/", ".").substring(0, name.length() - 6));// 自己定义的loader路径可以找到
+					System.out.println(c);
+					classes.add(c);
+					Annotation[] classAnnos = c.getDeclaredAnnotations();
+					classAnnotationMap.put(c, classAnnos);
+					Method[] classMethods = c.getDeclaredMethods();
+					Map<Method, Annotation[]> methodAnnoMap = new HashMap<Method, Annotation[]>();
+					for (int i = 0; i < classMethods.length; i++) {
+						Annotation[] a = classMethods[i].getDeclaredAnnotations();
+						methodAnnoMap.put(classMethods[i], a);
+					}
+					classMethodAnnoMap.put(c, methodAnnoMap);
+				}
+			}
+			System.out.println(classes.size());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		// Http
+		// log4jPath=System.getProperty("user.dir")+"/src/test/java/log4j.properties";
+		// PropertyConfigurator.configure(log4jPath);
+		DOMConfigurator.configure(TestDemo.class.getResource("/log4j.xml"));// 从class路径加载
+		//Log4jConfigurer.initLogging(TestDemo.class.getResource("/log4j.xml"));
 		//applicationContext = new ClassPathXmlApplicationContext(classPath);
-		//加载config文件夹下的log4j.properties
-	    String log4jPath=System.getProperty("user.dir")+"/log4j.xml";
-	    log4jPath=System.getProperty("user.dir")+"/src/test/java/log4j.properties";
-	    PropertyConfigurator.configure(log4jPath);
-//		Log4jConfigurer.initLogging("");
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 			private int count = 5;
 
 			public void run() {
 				if (count > 0) {
-					//doWorkPerSecond();
-					System.out.println(System.getProperty("ct"));
-					System.out.println(System.getProperty("st"));
-					logger.info("log4j count:"+count);
-					mylog.info("mylog log4j count:"+count);
-					
+					// doWorkPerSecond();
+					System.out.println("static:" + System.getProperty("ct"));
+					System.out.println("construct:" + System.getProperty("st"));
+					logger.info("log4j count:" + count);
+					mylog.info("mylog log4j count:" + count);
+
 					count--;
 				} else {
-					//doWorkEnd();
+					// doWorkEnd();
 					cancel();
 				}
 			}
@@ -150,21 +200,21 @@ public class TestDemo {
 		String[] s = str.split("\\|");
 		StringTokenizer stringTokenizer = new StringTokenizer(str, "\\|");
 		List<String> sl = new ArrayList<String>();
-		while(stringTokenizer.hasMoreTokens()) {
+		while (stringTokenizer.hasMoreTokens()) {
 			sl.add(stringTokenizer.nextToken());
 		}
-		for(String c: sl) {
-			System.out.println("list foreach:"+c);
+		for (String c : sl) {
+			System.out.println("list foreach:" + c);
 		}
-		
-		for(int i=0;i<sl.size();i++) {
-			System.out.println("list for:"+sl.get(i));
+
+		for (int i = 0; i < sl.size(); i++) {
+			System.out.println("list for:" + sl.get(i));
 		}
-		
-		Iterator<String> itreator = sl.iterator();  
-		while(itreator.hasNext()){  
-		    System.out.println("list itreator:"+itreator.next());  
-		}  
+
+		Iterator<String> itreator = sl.iterator();
+		while (itreator.hasNext()) {
+			System.out.println("list itreator:" + itreator.next());
+		}
 		for (String n : s) {
 			if (Long.valueOf(n).longValue() == 1L) {
 				System.out.println(n);
@@ -197,15 +247,15 @@ public class TestDemo {
 		String[] d = { "ab", "cd", "ef" };
 		List<String> listd = new ArrayList<String>();
 		Collections.addAll(listd, d);
-		int pos = listd.indexOf("ef");
+		int pos = listd.indexOf("ef1");
 		StringBuilder ds = new StringBuilder("000");
 		String dsd = String.valueOf(ds.charAt(pos));
 		if ("0".equals(dsd)) {
-			System.out.println("endpos:"+(pos + 1));
+			System.out.println("endpos:" + (pos + 1));
 			ds.replace(pos, pos + 1, "1");
 			System.out.println(ds.toString());
 		}
-		
+
 		m();
 	}
 
@@ -335,7 +385,7 @@ public class TestDemo {
 		test1(list1, list2);
 		test2(list1, list2);
 		test3(list1, list2);
-		
+
 		List<String> mlist1 = new ArrayList<String>();
 		mlist1.add("A");
 		mlist1.add("D");
@@ -346,16 +396,16 @@ public class TestDemo {
 		mlist2.add("C");
 		mlist2.add("B");
 //		mlist2.add("E");
-		//mlist1.removeAll(mlist2);
-		
+		// mlist1.removeAll(mlist2);
+
 		List<String> mlist3 = new ArrayList<String>();
 		mlist3 = mlist1;
-		//mlist2.addAll(mlist1);
-		//mlist2.addAll(mlist1);
-		mlist2.retainAll(mlist1);//交集
-		mlist1.removeAll(mlist2);//删除交集
-		mlist2.addAll(mlist1);//用排序后的数据添加删除交集后剩下的数据 结果应为：CBAD
-		System.out.println("mlist求并集(去重):"+mlist2);
+		// mlist2.addAll(mlist1);
+		// mlist2.addAll(mlist1);
+		mlist2.retainAll(mlist1);// 交集
+		mlist1.removeAll(mlist2);// 删除交集
+		mlist2.addAll(mlist1);// 用排序后的数据添加删除交集后剩下的数据 结果应为：CBAD
+		System.out.println("mlist求并集(去重):" + mlist2);
 	}
 
 //0.求差集
@@ -446,13 +496,12 @@ public class TestDemo {
 	}
 //结果：[B]
 
-
 //在上面2的实验过程中，我们知道batchRemove(Collection,true)也是求交集，所以猜想  retainAll 内部应该是调用 batchRemove(Collection,true)，查看ArrayList的源码如下:
 //	public boolean retainAll(Collection<?> c) {
 //		Objects.requireNonNull(c);
 //		return batchRemove(c, true);
 //	}
-	
+
 //	java 与 或 非 异或 & | ~ ^
 //	1．与运算符 &
 //	两个操作数中位都为1，结果才为1，否则结果为0
@@ -524,25 +573,30 @@ public class TestDemo {
 //		4>.0b1000 0001
 //		　　计算过程：0b1000 0001（补码）------>0b1000 0000（反码）------->0b1111 1111（原码）
 //		　　将其换算成原码之后就可以得到最后的结果为：-127
-		int a=128;
-		int b=129;
-		System.out.println(a&b);//128;a 的值是129，转换成二进制就是10000001，而b 的值是128，转换成二进制就是10000000。根据与运算符的运算规律，只有两个位都是1，结果才是1，可以知道结果就是10000000，即128。
-		System.out.println(a|b);//129;a 的值是129，转换成二进制就是10000001，而b 的值是128，转换成二进制就是10000000，根据或运算符的运算规律，只有两个位有一个是1，结果才是1，可以知道结果就是10000001，即129。
-		a=2;//0010 
-		//变量a的二进制数形式：        00000000 00000000 00000000 00000010
-		//逐位取反后，等于十进制的-3：  11111111 11111111 11111111 11111101 变成负数
-		//补码 10000000 00000000 00000000 00000010 | 00000000 00000000 00000000 00000001 | 100000000 00000000 00000000 00000011
-		
-		System.out.println("a 非的结果是："+(~a));	//-3
-		a=10;//1010
-		//00000000 00000000 00000000 00001010
-		//11111111 11111111 11111111 11110101
-		//10000000 00000000 00000000 00001010 | 00000000 00000000 00000000 00000001 | 10000000 00000000 00000000 00001011
-		
-		System.out.println("a 非的结果是："+(~a));	//-11
-		
-		a=15;
-		b=2;
-		System.out.println("a 与 b 异或的结果是："+(a^b));//a 与 b 异或的结果是：13 分析上面的程序段：a 的值是15，转换成二进制为1111，而b 的值是2，转换成二进制为0010，根据异或的运算规律，可以得出其结果为1101 即13。
+		int a = 128;
+		int b = 129;
+		System.out.println(a & b);// 128;a 的值是129，转换成二进制就是10000001，而b
+									// 的值是128，转换成二进制就是10000000。根据与运算符的运算规律，只有两个位都是1，结果才是1，可以知道结果就是10000000，即128。
+		System.out.println(a | b);// 129;a 的值是129，转换成二进制就是10000001，而b
+									// 的值是128，转换成二进制就是10000000，根据或运算符的运算规律，只有两个位有一个是1，结果才是1，可以知道结果就是10000001，即129。
+		a = 2;// 0010
+		// 变量a的二进制数形式： 00000000 00000000 00000000 00000010
+		// 逐位取反后，等于十进制的-3： 11111111 11111111 11111111 11111101 变成负数
+		// 补码 10000000 00000000 00000000 00000010 | 00000000 00000000 00000000 00000001
+		// | 100000000 00000000 00000000 00000011
+
+		System.out.println("a 非的结果是：" + (~a)); // -3
+		a = 10;// 1010
+		// 00000000 00000000 00000000 00001010
+		// 11111111 11111111 11111111 11110101
+		// 10000000 00000000 00000000 00001010 | 00000000 00000000 00000000 00000001 |
+		// 10000000 00000000 00000000 00001011
+
+		System.out.println("a 非的结果是：" + (~a)); // -11
+
+		a = 15;
+		b = 2;
+		System.out.println("a 与 b 异或的结果是：" + (a ^ b));// a 与 b 异或的结果是：13 分析上面的程序段：a 的值是15，转换成二进制为1111，而b
+														// 的值是2，转换成二进制为0010，根据异或的运算规律，可以得出其结果为1101 即13。
 	}
 }

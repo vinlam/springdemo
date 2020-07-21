@@ -20,7 +20,21 @@
 		<param name="maxFileSize" value="1MB" />
 		<param name="maxBackupIndex" value="2" />
 		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-			<param name="FileNamePattern" value="/Users/vinlam/logs/%d{yyyy-MM-dd}/runtime-log.log" />
+			<param name="FileNamePattern" value="/Users/vinlam/logs/%d{yyyy-MM-dd}.log" />
+		</rollingPolicy>
+		<layout class="org.apache.log4j.EnhancedPatternLayout">
+<!-- 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p](%-35c:%-3L) %m%n" /> -->
+			<param name="ConversionPattern" value="[%date{yyyy-MM-dd HH:mm:ss}] [%X{Ip}] [%thread] [%X{requestId}] [%X{TraceId}] [%-5level] --%mdc{client} %msg%n" />
+		</layout>
+	</appender>
+	<appender name="myLogger" class="org.apache.log4j.RollingFileAppender">
+		<!-- <param name="file" value="$${webapp.root}/logs/test.log"/> -->
+		<param name="file" value="/Users/vinlam/logs/testlog.log" />
+		<param name="append" value="true" />
+		<param name="maxFileSize" value="1MB" />
+		<param name="maxBackupIndex" value="2" />
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+			<param name="FileNamePattern" value="/Users/vinlam/logs/testlog%d{yyyy-MM-dd}.log" />
 		</rollingPolicy>
 		<layout class="org.apache.log4j.EnhancedPatternLayout">
 <!-- 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p](%-35c:%-3L) %m%n" /> -->
@@ -58,5 +72,6 @@
 		<level value="INFO" />
 		<!--<appender-ref ref="console" /> -->
 		<appender-ref ref="rollingFile" />
+		<appender-ref ref="myLogger" />
 	</root>
 </log4j:configuration>
