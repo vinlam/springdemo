@@ -6,12 +6,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.UnknownHostException;
-import java.lang.annotation.Annotation;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Timer;
@@ -36,7 +39,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.util.JsonMapper;
 
@@ -69,7 +71,7 @@ public class TestDemo {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
-
+		rand();
 		System.out.println(System.getProperty("hostName"));
 		System.out.println(System.getProperty("ct"));
 		System.out.println(System.getProperty("user.dir"));
@@ -94,7 +96,9 @@ public class TestDemo {
 				String name = jarEntry.getName();
 				if (name != null && name.endsWith(".class")) {// 只解析了.class文件，没有解析里面的jar包
 					// 默认去系统已经定义的路径查找对象，针对外部jar包不能用
-					// Class<?> c =  Thread.currentThread().getContextClassLoader().loadClass(name.replace("/",".").substring(0,name.length() - 6));
+					// Class<?> c =
+					// Thread.currentThread().getContextClassLoader().loadClass(name.replace("/",".").substring(0,name.length()
+					// - 6));
 					Class<?> c = loader.loadClass(name.replace("/", ".").substring(0, name.length() - 6));// 自己定义的loader路径可以找到
 					System.out.println(c);
 					classes.add(c);
@@ -119,8 +123,8 @@ public class TestDemo {
 		// log4jPath=System.getProperty("user.dir")+"/src/test/java/log4j.properties";
 		// PropertyConfigurator.configure(log4jPath);
 		DOMConfigurator.configure(TestDemo.class.getResource("/log4j.xml"));// 从class路径加载
-		//Log4jConfigurer.initLogging(TestDemo.class.getResource("/log4j.xml"));
-		//applicationContext = new ClassPathXmlApplicationContext(classPath);
+		// Log4jConfigurer.initLogging(TestDemo.class.getResource("/log4j.xml"));
+		// applicationContext = new ClassPathXmlApplicationContext(classPath);
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 			private int count = 5;
@@ -132,7 +136,9 @@ public class TestDemo {
 					System.out.println("construct:" + System.getProperty("st"));
 					logger.info("log4j count:" + count);
 					mylog.info("mylog log4j count:" + count);
-
+					Random random = new Random();
+					int r = random.nextInt(10 - 5 + 1) + 5;
+					System.out.println("5-10随机："+r);
 					count--;
 				} else {
 					// doWorkEnd();
@@ -140,7 +146,31 @@ public class TestDemo {
 				}
 			}
 		};
-		timer.scheduleAtFixedRate(task, 2000L, 2000L);
+		//timer.scheduleAtFixedRate(task, 2000L, 2000L);//task-所要安排的任务 time-首次执行任务的时间 period-执行一次task的时间间隔，单位毫秒
+		timer.scheduleAtFixedRate(task, 0, 1000L);//task-所要安排的任务 time-首次执行任务的时间 period-执行一次task的时间间隔，单位毫秒
+		
+		final Timer timer1 = new Timer();
+	    //timer1.scheduleAtFixedRate(new TimerTask() {
+	    timer1.schedule(new TimerTask() {//分别注释这行和上面这行试一试效果
+	      int count = 1;
+	 
+	      @Override
+	      public void run() {
+	        count++;
+	        if (count == 10) {
+	          try {
+	            Thread.sleep(5000);
+	          } catch (InterruptedException e) {
+	            System.out.println("延迟5s");
+	            e.printStackTrace();
+	          }
+	        }else {
+	        	//cancel();
+	        }
+	        SimpleDateFormat sf = new SimpleDateFormat("yyyy MM dd hh:mm:ss");
+	        System.out.println("当前时间："+ sf.format(System.currentTimeMillis()) + "计划时间：" + sf.format(scheduledExecutionTime()));
+	      }
+	    }, 1000, 1000);
 		String str = "thi is a test 这是一个测试";
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<persons>\n" + " <person id=\"23\">\n"
 				+ " <name>张 三</name>\n" + " <age>26</age>\n" + "</person>\n" + " <person id=\"22\">\n"
@@ -247,15 +277,16 @@ public class TestDemo {
 		String[] d = { "ab", "cd", "ef" };
 		List<String> listd = new ArrayList<String>();
 		Collections.addAll(listd, d);
-		int pos = listd.indexOf("ef1");
-		StringBuilder ds = new StringBuilder("000");
-		String dsd = String.valueOf(ds.charAt(pos));
-		if ("0".equals(dsd)) {
-			System.out.println("endpos:" + (pos + 1));
-			ds.replace(pos, pos + 1, "1");
-			System.out.println(ds.toString());
+		int pos = listd.indexOf("ef");
+		if (pos > -1) {
+			StringBuilder ds = new StringBuilder("000");
+			String dsd = String.valueOf(ds.charAt(pos));
+			if ("0".equals(dsd)) {
+				System.out.println("endpos:" + (pos + 1));
+				ds.replace(pos, pos + 1, "1");
+				System.out.println(ds.toString());
+			}
 		}
-
 		m();
 	}
 
@@ -598,5 +629,33 @@ public class TestDemo {
 		b = 2;
 		System.out.println("a 与 b 异或的结果是：" + (a ^ b));// a 与 b 异或的结果是：13 分析上面的程序段：a 的值是15，转换成二进制为1111，而b
 														// 的值是2，转换成二进制为0010，根据异或的运算规律，可以得出其结果为1101 即13。
+	}
+
+	private static void rand() {
+		Random random = new Random();
+
+		/**
+		 * 生成 [m,n] 的数字 int i1 = random.nextInt() * (n-m+1)+m;
+		 */
+		// 生成64-128内的随机数
+		int i = random.nextInt(128) % (128 - 64 + 1) + 64;
+		int r = random.nextInt(128 - 64 + 1) + 64;
+		System.out.println(r);
+		/**
+		 * 生成0-n之内的数字 int i1 = random.nextInt() * (n-0+1);
+		 *
+		 *
+		 */
+		// 生成0-64内的数字
+		int i1 = random.nextInt(64) % (64 - 0 + 1);
+		//System.out.println(random.nextLong());
+		Long a = 2147483648L;
+		Long b = 2147483648L;
+		BigDecimal add = new BigDecimal(a).add(new BigDecimal(b));
+		BigDecimal sub = new BigDecimal(a).subtract(new BigDecimal(b));
+		System.out.println("add:"+add.longValue());
+		System.out.println("sub:"+sub.longValue());
+		System.out.println("生成64-128内的数字:" + String.valueOf(i));
+		System.out.println("生成0-64内的数字:"+String.valueOf(i1));
 	}
 }
