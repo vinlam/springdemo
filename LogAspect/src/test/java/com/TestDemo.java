@@ -138,7 +138,7 @@ public class TestDemo {
 					mylog.info("mylog log4j count:" + count);
 					Random random = new Random();
 					int r = random.nextInt(10 - 5 + 1) + 5;
-					System.out.println("5-10随机："+r);
+					System.out.println("5-10随机：" + r);
 					count--;
 				} else {
 					// doWorkEnd();
@@ -146,31 +146,33 @@ public class TestDemo {
 				}
 			}
 		};
-		//timer.scheduleAtFixedRate(task, 2000L, 2000L);//task-所要安排的任务 time-首次执行任务的时间 period-执行一次task的时间间隔，单位毫秒
-		timer.scheduleAtFixedRate(task, 0, 1000L);//task-所要安排的任务 time-首次执行任务的时间 period-执行一次task的时间间隔，单位毫秒
-		
+		// timer.scheduleAtFixedRate(task, 2000L, 2000L);//task-所要安排的任务 time-首次执行任务的时间
+		// period-执行一次task的时间间隔，单位毫秒
+		timer.scheduleAtFixedRate(task, 0, 1000L);// task-所要安排的任务 time-首次执行任务的时间 period-执行一次task的时间间隔，单位毫秒
+
 		final Timer timer1 = new Timer();
-	    //timer1.scheduleAtFixedRate(new TimerTask() {
-	    timer1.schedule(new TimerTask() {//分别注释这行和上面这行试一试效果
-	      int count = 1;
-	 
-	      @Override
-	      public void run() {
-	        count++;
-	        if (count == 10) {
-	          try {
-	            Thread.sleep(5000);
-	          } catch (InterruptedException e) {
-	            System.out.println("延迟5s");
-	            e.printStackTrace();
-	          }
-	        }else {
-	        	//cancel();
-	        }
-	        SimpleDateFormat sf = new SimpleDateFormat("yyyy MM dd hh:mm:ss");
-	        System.out.println("当前时间："+ sf.format(System.currentTimeMillis()) + "计划时间：" + sf.format(scheduledExecutionTime()));
-	      }
-	    }, 1000, 1000);
+		// timer1.scheduleAtFixedRate(new TimerTask() {
+		timer1.schedule(new TimerTask() {// 分别注释这行和上面这行试一试效果
+			int count = 1;
+
+			@Override
+			public void run() {
+				count++;
+				if (count == 10) {
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						System.out.println("延迟5s");
+						e.printStackTrace();
+					}
+				} else {
+					// cancel();
+				}
+				SimpleDateFormat sf = new SimpleDateFormat("yyyy MM dd hh:mm:ss");
+				System.out.println("当前时间：" + sf.format(System.currentTimeMillis()) + "计划时间："
+						+ sf.format(scheduledExecutionTime()));
+			}
+		}, 1000, 1000);
 		String str = "thi is a test 这是一个测试";
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<persons>\n" + " <person id=\"23\">\n"
 				+ " <name>张 三</name>\n" + " <age>26</age>\n" + "</person>\n" + " <person id=\"22\">\n"
@@ -648,14 +650,60 @@ public class TestDemo {
 		 */
 		// 生成0-64内的数字
 		int i1 = random.nextInt(64) % (64 - 0 + 1);
-		//System.out.println(random.nextLong());
+		// System.out.println(random.nextLong());
 		Long a = 2147483648L;
 		Long b = 2147483648L;
 		BigDecimal add = new BigDecimal(a).add(new BigDecimal(b));
 		BigDecimal sub = new BigDecimal(a).subtract(new BigDecimal(b));
-		System.out.println("add:"+add.longValue());
-		System.out.println("sub:"+sub.longValue());
+		System.out.println("add:" + add.longValue());
+		System.out.println("sub:" + sub.longValue());
 		System.out.println("生成64-128内的数字:" + String.valueOf(i));
-		System.out.println("生成0-64内的数字:"+String.valueOf(i1));
+		System.out.println("生成0-64内的数字:" + String.valueOf(i1));
+	}
+
+	/**
+	 * @Author：
+	 * 
+	 * @Description：获取某个目录下所有直接下级文件，不包括目录下的子目录的下的文件，所以不用递归获取 @Date：
+	 */
+	public static List<String> getFiles(String path) {
+		List<String> files = new ArrayList<String>();
+		File file = new File(path);
+		File[] tempList = file.listFiles();
+
+		for (int i = 0; i < tempList.length; i++) {
+			if (tempList[i].isFile()) {
+				files.add(tempList[i].toString());
+				// 文件名，不包含路径
+				String fileName = tempList[i].getName();
+			}
+			if (tempList[i].isDirectory()) {
+				// 这里就不递归了，
+			}
+		}
+		return files;
+	}
+
+	private static ArrayList<String> listname = new ArrayList<String>();
+
+	public static void readAllFile(String filepath) {
+		File file = new File(filepath);
+		if (!file.isDirectory()) {
+			listname.add(file.getName());
+		} else if (file.isDirectory()) {
+			System.out.println("文件");
+			String[] filelist = file.list();
+			for (int i = 0; i < filelist.length; i++) {
+				File readfile = new File(filepath);
+				if (!readfile.isDirectory()) {
+					listname.add(readfile.getName());
+				} else if (readfile.isDirectory()) {
+					readAllFile(filepath + "\\" + filelist[i]);// 递归
+				}
+			}
+		}
+		for (int i = 0; i < listname.size(); i++) {
+			System.out.println(listname.get(i));
+		}
 	}
 }
