@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page import="com.entity.User" %>
 <html>
 <body>
@@ -11,6 +12,35 @@
 		<span>val:${item.value}</span>
 		<br>
 	</c:forEach>
+	<c:set var="salary" scope="session" value="${2000*2}"/>
+	<c:out value="${salary}"/>
+	<c:set var="str" value="stringStRiNg"/>
+<%-- 	<c:set var="strs" value="${fn:split('a#b','#'}"/> --%>
+	<c:set var="string1" value="www runoob com"/>
+	<c:set var="string2" value="${fn:split(string1, ' ')}" />
+	<c:set var="string3" value="${fn:join(string2, '-')}" />
+	
+	<p>string3 字符串 : ${string3}</p>
+	
+	<c:set var="string4" value="${fn:split(string3, '-')}" />
+	<c:set var="string5" value="${fn:join(string4, ' ')}" />
+	
+	<p>string5 字符串: ${string5}</p>
+	<c:forEach items="${string2}" var="item">
+		<span>${item}</span>
+		<br>
+	</c:forEach>
+	<c:set var="t" value="tr"/>
+	<c:out value="${str} = ${fn:length(str)}"/>
+	<c:out value="${fn:toLowerCase(str)}"/>
+	<c:out value="${fn:toUpperCase(' ')}"/>
+	<c:out value="${fn:toUpperCase('AbCdEfg')}"/><br>
+	<c:out value="${fn:substring('asdfefg',0,3)}"/><br>
+	<c:out value="${fn:substringAfter('asdf','s')}"/><Br>
+	<c:out value="${fn:substringBefore(str,'g')}"/><Br>
+	<c:out value="${fn:trim(' sd dew e ')}"/><Br>
+	<c:out value=" d sd dew e "/><Br>
+	<c:out value="${fn:replace(str,'ing','IN')}"/><Br>
 </body>
 <% 
 //String usercode = request.getParameter("usercode");//用request得到 
@@ -52,6 +82,7 @@ out.println(user.getPassword());
   
 	</c:forEach>
 	</c:if>
+	
 	console.log(JSON.stringify(users));
 </script>
 </html>
