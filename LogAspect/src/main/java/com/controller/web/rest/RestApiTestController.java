@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.define.annotation.CacheLock;
@@ -56,6 +57,9 @@ import com.util.JsonMapper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -67,7 +71,53 @@ public class RestApiTestController {
 	@Autowired
 	@Qualifier("AutoInjectB")
 	private IAutoInject autoInjectb;
+	
+	@RequestMapping(value = "/type", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Object returnByType(@NotBlank(message = "type notBlank") @RequestParam String type) {
+		if("api".equals(type)) {
+			return type;
+		}else {
+			ModelAndView view = new ModelAndView();
 
+		    List<User> users = new ArrayList<User>();
+		    
+		    User user = new User();
+		    user.setAge(10);
+		    user.setName("jack");
+		    user.setPassword("000000");
+		    users.add(user);
+		    user = new User();
+		    user.setAge(12);
+		    user.setName("tom");
+		    user.setPassword("111111");
+		    users.add(user);
+		    User user1 = new User();
+		    user1.setAge(19);
+		    user1.setName("kk");
+		    user1.setPassword("222222");
+			ModelAndView mv = new ModelAndView();
+			Map<String,Object> map = new HashMap<String,Object>();
+			List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
+			map.put("k","v=123");
+			map.put("a","123");
+			mapList.add(map);
+			MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+
+			mapperFactory.classMap(User.class, Map.class).byDefault();
+			MapperFacade mapper = mapperFactory.getMapperFacade();
+			Map<String,Object> mapuser = mapper.map(user1, Map.class);
+			logger.info(mapuser.toString());
+			mv.addObject("r", "#a=123");
+			mv.addObject("m", map);
+			mv.addObject("users",users);
+			mv.addObject("u",user1);
+			mv.addObject("list",mapList);
+			mv.addObject("mapuser",mapuser);
+			view.setViewName("success");
+			return view;
+		}
+	}
+	
 	@RequestMapping(value = "/inject", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	// @ResponseBody
 	public String testb() {
@@ -93,6 +143,20 @@ public class RestApiTestController {
 	public TempDTO tempData(@RequestBody TempDTO t) {
 		
 		return t;
+	}
+	
+	@RequestMapping(value = "/postMap/{m}", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	// @ResponseBody
+	public Map<String,Object> postMap(@PathVariable String m,@RequestBody Map<String,Object> map) {
+		System.out.println("--------"+m+"--------");
+		return map;
+	}
+	
+	@RequestMapping(value = "/postStr/{m}", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	// @ResponseBody
+	public String postStr(@PathVariable String m,@RequestParam String s) {
+		System.out.println("--------"+m+"--------");
+		return s;
 	}
 
 	@RequestMapping(value = "/getSaveData/{uid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
