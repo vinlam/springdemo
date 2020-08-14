@@ -86,11 +86,12 @@ public class testcontroller {
 		String severName = servletRequest.getServerName();
 		logger.info(schema+"://"+severName+":"+port+path);
 		Cookie[] cookies = servletRequest.getCookies();
-		if(cookies !=null)
+		if(cookies !=null) {
 		for(Cookie cookie: cookies) {
 			if(cookie!=null&&StringUtils.isNotBlank(cookie.getName())) {
 				logger.info("cookieName:"+cookie.getName() + " - cookieVal:" + cookie.getValue());
 			}
+		}
 		}
 		logger.info("schema:"+schema);
 		log.info("mylogutil:"+ schema);
@@ -137,7 +138,9 @@ public class testcontroller {
 		mv.addObject("list",mapList);
 		mv.addObject("mapuser",mapuser);
 		mv.setViewName("success");
-		
+
+		mv.addObject("uri",servletRequest.getRequestURI());
+		mv.addObject("url",servletRequest.getRequestURL());
 	    PojoTest pojo=new PojoTest("小明", "男");
 	    model.addAttribute("pojo", pojo);
 		return mv;
