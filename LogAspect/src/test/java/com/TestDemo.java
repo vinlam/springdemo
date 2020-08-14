@@ -69,9 +69,10 @@ public class TestDemo {
 	public static ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
-
+	
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		rand();
+	
 		System.out.println(System.getProperty("hostName"));
 		System.out.println(System.getProperty("ct"));
 		System.out.println(System.getProperty("user.dir"));
@@ -290,6 +291,12 @@ public class TestDemo {
 			}
 		}
 		m();
+		int c = 0;
+		s(c);
+	}
+	
+	private static void s(int count) {
+		System.out.println(count);
 	}
 
 	public static <T> List<T> deepCopy(List<T> src) throws IOException, ClassNotFoundException {

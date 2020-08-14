@@ -4,7 +4,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ page import="com.entity.User"%>
+<%@ page import="org.apache.commons.lang3.StringUtils"%>
 <html>
+<head>
+		<script>
+	     	if(window.location.protocol=="https:"){
+	     		document.cookie = "protocol=https; path=/; domain=.test.com;";
+	     	}else{
+	     		document.cookie = "protocol=http; path=/; domain=.test.com;";
+	     	}
+    	</script>
+	</head>
 <body>
 	<% pageContext.setAttribute("date", new java.util.Date());%>
 	<h3>
@@ -75,6 +85,8 @@
 	</p>
 	<h2>Hello Success! ${name}</h2>
 	<h2>${r}</h2>
+	<h2>URI:${uri}</h2>
+	<h2>URL:${url}</h2>
 	<c:forEach items="${m}" var="item">
 		<span>key:${item.key}</span>
 		<span>val:${item.value}</span>
@@ -120,8 +132,11 @@
 <%
 	//String usercode = request.getParameter("usercode");//用request得到 
 	User user = (User) request.getAttribute("u");
-	String uname = user.getName();
-	out.println(user.getPassword());
+	String uname = "";
+	if(user != null && StringUtils.isNotBlank(user.getName())){
+		uname = user.getName();
+		out.println(user.getPassword());
+	}
 %>
 <script type="text/javascript"
 	src="/LogAspect/resources/js/jquery.min.js"></script>
@@ -136,7 +151,7 @@
 	var u = "${pojo}";
 	var n = "${u}";
 	var n = "<%=uname%>";
-	var n1 = "<%=user.getName()%>";
+	var n1 = "<%if(StringUtils.isNotBlank(user.getName())){%><%=user.getName()%><%}%>";
 	var name = "${u.name}";
 	var arrstr = "${users}";
 	var list = "${list}";

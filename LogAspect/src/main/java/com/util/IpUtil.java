@@ -15,18 +15,24 @@ public class IpUtil {
 			return "unknown";
 		}
 		
-		String ip = request.getHeader("x-forwarded-for");
+		String ip = request.getHeader("x-forwarded-for");//HTTP代理或者负载均衡
 		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
-			ip = request.getHeader("Proxy-Client-IP");
+			ip = request.getHeader("Proxy-Client-IP");//apache http代理服务器
 		}
 		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
-			ip = request.getHeader("X-Forwarded-For");
+			ip = request.getHeader("X-Forwarded-For");//HTTP代理或者负载均衡
 		}
 		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
-			ip = request.getHeader("WL-Proxy-Client-IP");
+			ip = request.getHeader("HTTP_CLIENT_IP");//某些代理服务器
 		}
 		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
-			ip = request.getHeader("X-Real-IP");
+			ip = request.getHeader("HTTP_X_FORWARDED_FOR");//nginx
+		}
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+			ip = request.getHeader("WL-Proxy-Client-IP");//weblogic插件
+		}
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+			ip = request.getHeader("X-Real-IP");//nginx代理服务器
 		}
 		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
 			ip = request.getRemoteAddr();

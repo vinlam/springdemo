@@ -40,6 +40,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.define.annotation.CacheLock;
 import com.define.annotation.CacheParam;
 import com.define.annotation.LocalLock;
+import com.dto.DemoDTO;
 import com.entity.Person;
 import com.entity.SafeConfess;
 import com.entity.SafeConfessContent;
@@ -72,7 +73,7 @@ public class RestApiTestController {
 	@Qualifier("AutoInjectB")
 	private IAutoInject autoInjectb;
 	
-	@RequestMapping(value = "/type", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/type", method = {RequestMethod.GET,RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object returnByType(@NotBlank(message = "type notBlank") @RequestParam String type) {
 		if("api".equals(type)) {
 			return type;
@@ -113,6 +114,8 @@ public class RestApiTestController {
 			mv.addObject("u",user1);
 			mv.addObject("list",mapList);
 			mv.addObject("mapuser",mapuser);
+			mv.addObject("uri",servletRequest.getRequestURI());
+			mv.addObject("url",servletRequest.getRequestURL());
 			view.setViewName("success");
 			return view;
 		}
@@ -132,6 +135,20 @@ public class RestApiTestController {
 	@RequestMapping(value = "/saveandreturnurl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	// @ResponseBody
 	public String saveData(@RequestBody User u) {
+		saveDataService.saveUser(u);
+		Map<String, String> map = new HashMap<>();
+		map.put("url", "/t/testget?name=xt");
+		return JsonMapper.toJsonString(map);
+	}
+	@RequestMapping(value = "/bd", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	// @ResponseBody
+	public DemoDTO bd(@RequestBody DemoDTO demoDTO) {
+		return demoDTO;
+	}
+	
+	@RequestMapping(value = "/formdata", method = RequestMethod.POST, produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	// @ResponseBody
+	public String formdata(User u) {
 		saveDataService.saveUser(u);
 		Map<String, String> map = new HashMap<>();
 		map.put("url", "/t/testget?name=xt");

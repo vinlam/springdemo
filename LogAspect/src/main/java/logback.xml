@@ -5,8 +5,6 @@
 <configuration scan="true" scanPeriod="60 seconds"
 	debug="false">
 	<!--配置规则类的位置 -->
-	<conversionRule conversionWord="hostName"
-		converterClass="com.util.LogHostNameConfig" />
 
 	<timestamp key="bySecond" datePattern="yyyyMMdd-HHmmss"/> 
     <contextName>${bySecond}</contextName> 
