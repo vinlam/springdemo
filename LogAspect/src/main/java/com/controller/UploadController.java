@@ -47,6 +47,7 @@ public class UploadController {
 			try {
 				
 				String fileName = file.getOriginalFilename();
+				
 				// 文件保存路径
 				//String savePath = path + file.getOriginalFilename();
 				
@@ -81,7 +82,6 @@ public class UploadController {
 		
 		String returnUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() +"/resources/upload/imgs/";//存储路径
         path = request.getSession().getServletContext().getRealPath("resources/upload/imgs"); //文件存储位置
-        
         List<String> listPath = new ArrayList<String>();
 		// 判断file数组不能为空并且长度大于0
 		if (files != null && files.length > 0) {
@@ -89,6 +89,8 @@ public class UploadController {
 			// 循环获取file数组中得文件
 			for (int i = 0; i < files.length; i++) {
 				MultipartFile file = files[i];
+				System.out.println(file.getName());
+				System.out.println(file.getOriginalFilename());
 				// 保存文件
 				rturl = saveFile(file, path);
 				rturl = returnUrl+rturl;
@@ -107,6 +109,7 @@ public class UploadController {
 		// 用来检测程序运行时间
 		long startTime = System.currentTimeMillis();
 		System.out.println("fileName：" + files.getOriginalFilename());
+		System.out.println("item fileName：" + files.getFileItem().getName());
 		OutputStream os = null;
 		InputStream is = null;
 		try {
