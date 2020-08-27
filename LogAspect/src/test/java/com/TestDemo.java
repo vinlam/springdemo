@@ -38,8 +38,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.shiro.web.filter.authc.UserFilter;
 import org.springframework.context.ApplicationContext;
 
+import com.dto.DemoDTO;
 import com.util.JsonMapper;
 
 import ma.glasnost.orika.MapperFacade;
@@ -72,7 +74,20 @@ public class TestDemo {
 	
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		rand();
-	
+		String p = null;
+		String p2 = "123";
+		String p3 = "123";
+		Map<String,Object> m = new HashMap<String, Object>();
+		m.put("k", 234567);//Object 为数字类型，强转(String)m.get("k")会提示java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.String,要用String.valueOf();
+		String k = String.valueOf(m.get("k"));
+		System.out.println(k);
+		System.out.println("13800138000".substring(5, 11));
+		System.out.println("hamburger".substring(4, 8)); //returns "urge"
+		System.out.println("smiles".substring(1, 5));// returns "mile"
+		System.out.println(System.identityHashCode(p2));//获取对象内存地址
+		System.out.println(System.identityHashCode(p3));
+		System.out.println("java.io.tmpdir:"+System.getProperty("java.io.tmpdir"));
+		System.out.println(String.format("测试:%s,参数2:%s", p,p2));
 		System.out.println(System.getProperty("hostName"));
 		System.out.println(System.getProperty("ct"));
 		System.out.println(System.getProperty("user.dir"));
@@ -167,7 +182,7 @@ public class TestDemo {
 						e.printStackTrace();
 					}
 				} else {
-					// cancel();
+					 cancel();
 				}
 				SimpleDateFormat sf = new SimpleDateFormat("yyyy MM dd hh:mm:ss");
 				System.out.println("当前时间：" + sf.format(System.currentTimeMillis()) + "计划时间："
@@ -293,6 +308,98 @@ public class TestDemo {
 		m();
 		int c = 0;
 		s(c);
+		Integer integer = null;
+		System.out.println(integer);
+		System.out.println(String.valueOf(integer));
+		Long long1 = null;
+		System.out.println(long1);
+		System.out.println(String.valueOf(long1));
+		intvalueAndValueOf();
+		DemoDTO demoDTO = new DemoDTO();
+		demoDTO.setData("123");
+		System.out.println("-----Start demoDTO-----");
+		System.out.println(demoDTO.getData());
+		System.out.println(demoDTO.getInteger());
+		System.out.println(demoDTO.getL());
+		System.out.println(demoDTO.getBigDecimal());
+		System.out.println(demoDTO.getLong1());
+		System.out.println("-----End demoDTO-----");
+		User u = new User();
+		setData(u);
+		System.out.println("u:"+u.getAge());
+	}
+	
+	private static void setData(User u ) {
+		u.setAge(10);
+	}
+	
+	private static void intvalueAndValueOf() {
+		Double s = 2.5;
+		Float k = 2.7f;
+		double kk = 2.9;
+		Double double1 = new Double(2.9);
+
+		System.out.println(k.intValue());
+		System.out.println(s.intValue());
+//		输出结果：
+//		2
+//		2
+
+//		valueOf()
+//		String 类中的valueOf()：
+//
+//		static String valueOf(boolean b)
+//		          返回 boolean 参数的字符串表示形式。
+//		static String valueOf(Object obj)
+//		          返回 Object 参数的字符串表示形式。
+//		  表示的是将( )中的 值， 转换  成  字符串类型
+//
+//		eg.
+
+		String a = "abcdefbac";
+
+		String kkk = a.valueOf(true);
+
+		System.out.println(kkk.getBytes());
+
+		System.out.println(Arrays.toString(kkk.getBytes()));
+
+//		输出结果：
+//		[B@4554617c
+//		[116, 114, 117, 101]
+//
+//		原因分析：
+//		因为a.valueOf(true) 与 a 其实没有关系(String a = null ,也是可以的 )，主要是将（）中的值变成字符串类型。
+//		字符串类型通过.getbytes() 转成 字符数组输出的是：字符数组的首地址的 hashcode 值
+//
+//		通过Arrays.toString()方法 可以输出 字符数组中的内容。
+//
+//		数据类型的转换方式：
+//		所以有如下转换方式：
+
+		//Double s = 2.5;
+		System.out.println(s.valueOf(2.5f));
+		System.out.println(s.valueOf("2"));
+//		输出结果：
+//		2.5
+//		2.0
+
+		//Float k = 2.7f;
+		System.out.println(k.valueOf(2.9f));
+		System.out.println(k.valueOf("2.533435"));
+		System.out.println(k.valueOf((float) 2.5d));
+//		输出结果：
+//		2.9
+//		2.533435
+//		2.5
+		
+		Integer aa = 9;
+//		System.out.println(aa.valueOf("23.0"));
+//		输出结果：
+//		报错Exception in thread "main" java.lang.NumberFormatException: For input string: "23.0"
+//		原因：因为"23.0"  默认是double类型的，而aa类型是int。又因为"23.0"是字符串，无法强制转换
+//		只能是
+		System.out.println(aa.valueOf((int)23.0));//强转类型必须和aa一致
 	}
 	
 	private static void s(int count) {

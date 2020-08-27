@@ -81,6 +81,7 @@
 		<sigar.version>1.6.4</sigar.version>
 		<useragent.version>1.20</useragent.version>
 		<truelicense.version>1.33</truelicense.version>
+		<jol-core.version>0.9</jol-core.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.chenlb.mmseg4j/mmseg4j-analysis -->
@@ -585,10 +586,17 @@
 			<version>${useragent.version}</version>
 		</dependency>
 		<dependency>
-      <groupId>de.schlichtherle.truelicense</groupId>
-      <artifactId>truelicense-core</artifactId>
-      <version>${truelicense.version}</version>
-</dependency>
+			<groupId>de.schlichtherle.truelicense</groupId>
+			<artifactId>truelicense-core</artifactId>
+			<version>${truelicense.version}</version>
+		</dependency>
+		<!-- 获取对象内存信息 -->
+		<dependency>
+			<groupId>org.openjdk.jol</groupId>
+			<artifactId>jol-core</artifactId>
+			<version>${jol-core.version}</version>
+		</dependency>
+
 	</dependencies>
 
 

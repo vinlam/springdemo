@@ -37,4 +37,8 @@ public class User implements Serializable{
 		this.name = name;
 		this.age = age;
 	}
+
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
 }
