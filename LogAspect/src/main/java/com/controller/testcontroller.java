@@ -70,7 +70,7 @@ public class testcontroller {
 	private HttpServletRequest servletRequest;
 	@Autowired
 	private HttpServletResponse servletResponse;
-
+	//http://localhost:8080/LogAspect/t/testApi
 	@RequestMapping(value = "/testget", method = RequestMethod.GET)
 	public String test(Model model, String name) {
 		System.out.println(servletRequest.getRequestURL());

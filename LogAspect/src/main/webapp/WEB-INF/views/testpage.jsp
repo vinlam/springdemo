@@ -53,6 +53,26 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.min.js"></script>
 <script type="text/javascript">
 		$("#tempdata").off("click").on("click",getPostData);
+		v();
+		function v(){
+			var param={};
+			$.ajax({
+               	url : "<%=request.getContextPath()%>/api/testvoid",
+				type : 'get',
+				//async:true, 
+				//dataType : "json",
+				contentType : "application/json",
+				//traditional: true, 
+				//data : {},
+				data : param,
+				success : function(result) {
+					alert("ok");
+				},error : function(XMLHttpRequest, textStatus, errorThrown) {
+					//异常处理；
+					alert("ajaxerror: " + JSON.stringify(XMLHttpRequest) + " textStatus: " + XMLHttpRequest.statusText);
+				}
+		});
+		}
 		function getPostData(){
 			var param = {};
 			param = JSON.parse($("#txt").val());

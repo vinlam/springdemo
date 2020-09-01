@@ -128,6 +128,13 @@ public class RestApiTestController {
 		logger.info("--------------" + b);
 		return "--------------" + b;
 	}
+	@RequestMapping(value = "/testvoid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	// @ResponseBody
+	public void testVoid() {
+		String b = autoInjectb.print();
+		logger.info("void:--------------" + b);
+		//return "--------------" + b;
+	}
 
 	@Autowired
 	private SaveDataService saveDataService;

@@ -40,6 +40,8 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.shiro.web.filter.authc.UserFilter;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.dto.DemoDTO;
 import com.util.JsonMapper;
@@ -211,6 +213,19 @@ public class TestDemo {
 		int[] a = { 1, 2, 4, 5 };
 		List<User> list = new ArrayList<User>();
 		List<User> newlist = new ArrayList<User>();
+		User obj = new User();
+		if(ObjectUtils.isEmpty(obj)) {
+			System.out.println("Object Empty");
+		}
+		User obj1 = null;
+		//用于对象或数组多层校验
+		if(ObjectUtils.isEmpty(obj1)) {
+			System.out.println("Object is null");
+		}
+		//用于数组
+		if(CollectionUtils.isEmpty(list)) {
+			System.out.println("Collection Empty");
+		}
 		User u1 = new User(1, "q", 5);
 		User u2 = new User(2, "j", 7);
 		User u3 = new User(3, "g", 10);
