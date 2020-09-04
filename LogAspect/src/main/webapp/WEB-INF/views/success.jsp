@@ -136,6 +136,8 @@
 	if(user != null && StringUtils.isNotBlank(user.getName())){
 		uname = user.getName();
 		out.println(user.getPassword());
+	}else{
+		user = new User();
 	}
 %>
 <script type="text/javascript"
