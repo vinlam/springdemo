@@ -1,12 +1,25 @@
 package com;
 
-import org.apache.commons.codec.binary.Base64;
-
-import javax.crypto.Cipher;
-import java.security.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
+
+import javax.crypto.Cipher;
+
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * <p>
@@ -97,16 +110,47 @@ public class RSATool {
 		KeyPair myPair;
 		long mySeed;
 		mySeed = System.currentTimeMillis();
+		String name= "r";
 		try {
 			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
 			random.setSeed(mySeed);
 			keyGen.initialize(1024, random);
 			myPair = keyGen.generateKeyPair();
+			PublicKey publicKey = myPair.getPublic();
+			PrivateKey privateKey = myPair.getPrivate();
+			String cert = RSATool.class.getResource("/cert/").getPath()+name+".c.cert";
+			String pubcert = RSATool.class.getResource("/cert/").getPath()+name+".pub.cert";
+			String pricert = RSATool.class.getResource("/cert/").getPath()+name+".pri.cert";
+			saveKey(myPair,cert);
+			saveKey(publicKey,pubcert);
+			saveKey(privateKey,pricert);
 		} catch (Exception e1) {
 			return null;
 		}
 		return myPair;
+	}
+
+	private static void saveKey(Object keyPair, String certPath) {
+		ObjectOutputStream out = null;
+		try {
+			File file = new File(certPath);
+			if (file.isDirectory()) {
+				return;
+			}
+			if (file == null || !file.exists()) {
+				file.createNewFile();
+			}
+			out = new ObjectOutputStream(new FileOutputStream(file));
+			out.writeObject(keyPair);
+		} catch (IOException ioException) {
+
+		} finally {
+			try {
+				out.close();
+			} catch (IOException weDontCare) {
+			}
+		}
 	}
 
 	/**
@@ -198,6 +242,7 @@ public class RSATool {
 		// byte[] nullreturn = { 0 };
 		try {
 			MessageDigest thisMD = MessageDigest.getInstance("SHA");
+			thisMD = MessageDigest.getInstance("SHA-256");
 			byte[] digest = thisMD.digest(source.getBytes("UTF-8"));
 			return digest;
 		} catch (Exception e) {
@@ -210,6 +255,7 @@ public class RSATool {
 	 */
 	public static void main(String[] args) {
 		try {
+			System.out.println(RSATool.class.getClass().getResource("/"));
 			// 私钥加密 公钥解密
 			// 生成私钥-公钥对
 			Object[] v = giveRSAKeyPairInByte();
@@ -229,7 +275,7 @@ public class RSATool {
 
 			// 使用公钥对摘要进行加密 获得密文
 			byte[] signpub_pri = encryptByRSA((byte[]) v[1], sourcepub_pri);
-			// System.out.println("公钥加密密文："+new String(Base64.encodeBase64(signpub_pri)));
+			System.out.println("公钥加密密文："+new String(Base64.encodeBase64(signpub_pri)));
 
 			// 使用私钥对密文进行解密 返回解密后的数据
 			byte[] newSourcepub_pri = decryptByRSA((byte[]) v[0], signpub_pri);
@@ -248,7 +294,7 @@ public class RSATool {
 			// 使用私钥对摘要进行加密 获得密文
 			byte[] signpri_pub = encryptByRSA1((byte[]) v[0], sourcepri_pub);
 
-			// System.out.println("私钥加密密文："+new String(Base64.encodeBase64(sign11)));
+			System.out.println("私钥加密密文："+new String(Base64.encodeBase64(signpri_pub)));
 			// 使用公钥对密文进行解密 返回解密后的数据
 			byte[] newSourcepri_pub = decryptByRSA1((byte[]) v[1], signpri_pub);
 
@@ -261,6 +307,7 @@ public class RSATool {
 			byte[] signPublic = Base64.decodeBase64(PUBLICKEY.getBytes());
 
 			String publicpwd = "N/b4nYbbLFVq0yTAIOpNNydtNQUCQxQy0B7bD6kzxLMW2guYxXtWOC/9Z5dpWecx/y7d5CezUJ6cf/8++msiNie4DcKBaFDFPh5rPbjeEB+DRfhjcdR2BsVGXWLsq3dLYLgZObQXG6Tb9rXakuH34Y+6KIIwCjiODH2QAU+PSiM=";
+			
 			String privatepwd = "MTMyNjU5ODY1ODR8fDMxNjQ5NDY0NjU0NjQ4NjQ5OHx8MDF8fHByaXZhdGU=";
 			// 使用私钥对密文进行解密 返回解密后的数据
 			byte[] newSource111 = decryptByRSA(signPrivate, Base64.decodeBase64(publicpwd.getBytes()));

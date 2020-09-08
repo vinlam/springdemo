@@ -62,6 +62,19 @@
 	<bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
 	<property name="cacheManager" ref="ehcacheManagerFactory" />
 	</bean>
+	
+	<bean id="simpleCacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+        <property name="caches">
+            <set>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
+                    <property name="name" value="default"/>
+                </bean>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
+                    <property name="name" value="accountCache"/>
+                </bean>
+            </set>
+        </property>
+    </bean>
 	<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
 	<!-- <property name="jndiName"> -->
 	<!-- <value>jdbc/ds</value> -->
