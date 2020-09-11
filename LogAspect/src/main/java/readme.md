@@ -28,20 +28,26 @@ Hibernate Validator提供的校验注解：
 # keystore: 指定私钥库文件的名称(生成在当前目录)
 # storepass：指定私钥库的密码(获取keystore信息所需的密码) 
 # keypass：指定别名条目的密码(私钥的密码) 
-keytool -genkeypair -keysize 1024 -validity 3650 -alias "privatekey" -keystore "privateKeys.keystore" -storepass "123456" -keypass "123456" -dname "CN=localhost, OU=localhost, O=localhost, L=SH, ST=SH, C=CN"
+keytool -genkeypair -keysize 1024 -validity 3650 -alias "privatekey" -keystore "privateKeys.keystore" -storepass "a123456" -keypass "a123456" -dname "CN=localhost, OU=localhost, O=localhost, L=SH, ST=SH, C=CN"
+
+JKS 密钥库使用专用格式。建议使用 "keytool -importkeystore -srckeystore privateKeys.keystore -destkeystore privateKeys.keystore -deststoretype pkcs12" 迁移到行业标准格式 PKCS12。
 
 ## 2. 把私匙库内的公匙导出到一个文件当中
 # alias：私钥别称
 # keystore：指定私钥库的名称(在当前目录查找)
 # storepass: 指定私钥库的密码
 # file：证书名称
-keytool -exportcert -alias "privatekey" -keystore "privateKeys.keystore" -storepass "123456" -file "certfile.cer"
+keytool -exportcert -alias "privatekey" -keystore "privateKeys.keystore" -storepass "a123456" -file "certfile.cer"
 
 ## 3. 再把这个证书文件导入到公匙库
 # alias：公钥别称
 # file：证书名称
 # keystore：公钥文件名称
 # storepass：指定私钥库的密码
-keytool -import -alias "publiccert" -file "certfile.cer" -keystore "publicCerts.keystore" -storepass "123456"
+keytool -import -alias "publiccert" -file "certfile.cer" -keystore "publicCerts.keystore" -storepass "a123456"
 
-
+以后更新时，先删除原来的证书，然后导入新的证书 
+keytool -list -keystore publicCerts.keystore 
+keytool -delete -alias privatekey -keystore privateKeys.keystore
+keytool -delete -alias publiccert -keystore publicCerts.keystore
+keytool -import -alias "publiccert" -file "certfile.cer" -keystore "publicCerts.keystore" -storepass "a123456"

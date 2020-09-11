@@ -49,7 +49,7 @@
 <!-- 	order="顺序"   -->
 <!--         /> -->
 	
-	<context:property-placeholder location="classpath*:application.properties" ignore-resource-not-found="true"/>
+	<context:property-placeholder location="classpath*:application.properties" ignore-resource-not-found="true" ignore-unresolvable="true"/>
 	<!-- <context:annotation-config /> -->
 	<!--ControllerAdvice控制器增强，使一个Contoller成为全局的异常处理类，类中用@ExceptionHandler方法注解的方法可以处理所有Controller发生的异常 -->
 	<!-- <context:component-scan base-package="com.*" /> -->
@@ -73,20 +73,6 @@
 	<bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
 	<property name="cacheManager" ref="ehcacheManagerFactory" />
 	</bean>
-	
-	
-	<bean id="simpleCacheManager" class="org.springframework.cache.support.SimpleCacheManager">
-        <property name="caches">
-            <set>
-                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
-                    <property name="name" value="default"/>
-                </bean>
-                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
-                    <property name="name" value="accountCache"/>
-                </bean>
-            </set>
-        </property>
-    </bean>
 	<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
 	<!-- <property name="jndiName"> -->
 	<!-- <value>jdbc/ds</value> -->

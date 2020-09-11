@@ -20,8 +20,8 @@
 	<!--[redis-JedisPoolConfig配置](http://blog.csdn.net/liang_love_java/article/details/50510753) -->
 	<!-- jedis-2.7.2.jar 依赖jar包 commons-pool2-2.3.jar jedis基于 commons-pool2-2.3.jar 
 		自己实现了一个资源池。 配置参数 详见 http://blog.csdn.net/liang_love_java/article/details/50510753 -->
-	<context:property-placeholder location="classpath*:application.properties"
-		ignore-unresolvable="true" />
+<!-- 	<context:property-placeholder location="classpath*:application.properties" -->
+<!-- 		ignore-unresolvable="true" /> -->
 	<bean id="jedsPoolConfig" class="com.config.jedsPoolConfig">
 	</bean>
 	<bean id="connectionFactory"

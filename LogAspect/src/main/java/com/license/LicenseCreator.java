@@ -105,7 +105,7 @@ public class LicenseCreator {
         param.setPrivateAlias("privatekey");
         param.setKeyPass("123456");
         param.setStorePass("123456");
-        param.setLicensePath("/Users/vinlam/license.lic");
+        param.setLicensePath("/Users/vinlam/work/gitproject/springdemo/LogAspect/src/main/java/license.lic");
         param.setPrivateKeysStorePath("/Users/vinlam/work/gitproject/springdemo/LogAspect/src/main/java/privateKeys.keystore");
         Calendar issueCalendar = Calendar.getInstance();
         param.setIssuedTime(issueCalendar.getTime());

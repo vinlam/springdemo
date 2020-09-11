@@ -4,6 +4,9 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.*;
@@ -32,6 +35,25 @@ public class RSAUtils {
 		// 初始化密钥对生成器（指定密钥长度,使用默认的安全随机数源）
 		gen.initialize(KEY_SIZE);
 
+		// 随机生成一对密钥（包含公钥和私钥）
+		return gen.generateKeyPair();
+	}
+	/**
+	 * 生成密钥对（包含公钥和私钥）
+	 */
+	public static KeyPair generateKeyPair(String ormKey) throws Exception {
+		if(StringUtils.isBlank(ormKey)) {
+			throw new IllegalArgumentException("原始Key不合法");
+		}
+		// 获取指定算法的密钥对生成器
+		KeyPairGenerator gen = KeyPairGenerator.getInstance(ALGORITHM);
+		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", ormKey);
+		long mySeed;
+		mySeed = System.currentTimeMillis();
+		random.setSeed(mySeed);
+		// 初始化密钥对生成器（指定密钥长度,使用默认的安全随机数源）
+		gen.initialize(KEY_SIZE,random);
+		
 		// 随机生成一对密钥（包含公钥和私钥）
 		return gen.generateKeyPair();
 	}

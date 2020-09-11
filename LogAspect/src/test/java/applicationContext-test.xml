@@ -308,10 +308,10 @@
         </property>
     </bean>
 	
-	<import resource="spring-aop.xml" />
-	<import resource="spring-activemq.xml" />
-	<import resource="spring-redis.xml" />
-	<import resource="memcache.xml" />
+<!-- 	<import resource="spring-aop.xml" /> -->
+<!-- 	<import resource="spring-activemq.xml" /> -->
+<!-- 	<import resource="spring-redis.xml" /> -->
+<!-- 	<import resource="memcache.xml" /> -->
 <!-- 	<import resource="spring-drools.xml" /> -->
 
 </beans>

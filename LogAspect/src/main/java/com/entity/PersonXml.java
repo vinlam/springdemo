@@ -1,7 +1,8 @@
 package com.entity;
 
+import java.util.Arrays;
 import java.util.List;
-import org.apache.catalina.tribes.util.Arrays;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
