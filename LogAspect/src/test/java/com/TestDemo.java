@@ -75,6 +75,8 @@ public class TestDemo {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
+		System.out.println(EnumDemo.CODE.getName());
+		System.out.println(EnumDemo.CODE.getType());
 		System.out.println(TestDemo.class.getResource("/"));
 		rand();
 		String p = null;

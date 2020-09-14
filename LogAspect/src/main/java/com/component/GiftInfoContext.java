@@ -1,6 +1,7 @@
 package com.component;
 
 import java.lang.annotation.Annotation;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,9 @@ public class GiftInfoContext {
     // 注入的策略
     @Resource
     private Map<Integer, IGiftInfoStrategyService> giftInfoStrategyServiceMap;
+    // 注入的策略
+    @Autowired
+    private Map<String, IGiftInfoStrategyService> map;
     
     // 注入的策略
     @Autowired
@@ -38,6 +42,13 @@ public class GiftInfoContext {
     
     // 对外暴露的统一获取礼品信息的返回
 	public GiftInfo getGiftInfo(int subjectId, int activityId) {
+		Iterator<String> iter = map.keySet().iterator();
+		while(iter.hasNext()){
+			String key=iter.next();
+			IGiftInfoStrategyService value = map.get(key);
+			//value.getGiftInfo(activityId).getGiftName();
+			System.out.println(key+" "+value.getGiftInfo(activityId).getGiftName());
+		}
 		for(IGiftInfoStrategyService infoStrategyService:list) {
 			System.out.println(AnnotationUtils.getAnnotation(infoStrategyService.getClass(), Service.class));
 			
@@ -50,6 +61,16 @@ public class GiftInfoContext {
 			
 			}
 		}
+		
+//		DoubleElevenGiftInfoStrategy 空气净化器
+//		SummerBuyDayGiftInfoStrategy 铁锅三件套
+//		@org.springframework.stereotype.Service(value=DoubleElevenGiftInfoStrategy)
+//		1
+//		{value=DoubleElevenGiftInfoStrategy}
+//		@org.springframework.stereotype.Service(value=SummerBuyDayGiftInfoStrategy)
+//		2
+//		{value=SummerBuyDayGiftInfoStrategy}
+//		{"giftId":1,"giftName":"铁锅三件套"}
         IGiftInfoStrategyService giftInfoStrategyService = giftInfoStrategyServiceMap.get(subjectId);
         Assert.notNull(giftInfoStrategyService,"不能为空");
         return giftInfoStrategyService.getGiftInfo(activityId);
