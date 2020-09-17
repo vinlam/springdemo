@@ -35,10 +35,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.shiro.web.filter.authc.UserFilter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -360,6 +360,26 @@ public class TestDemo {
         //右移一位
         printInfo(number);
     }
+	
+	private static void randomchar() {
+		//产生5位长度的随机字符串，中文环境下是乱码
+		RandomStringUtils.random(5);
+
+		//使用指定的字符生成5位长度的随机字符串
+		RandomStringUtils.random(5, new char[]{'a','b','c','d','e','f', '1', '2', '3'});
+
+		//生成指定长度的字母和数字的随机组合字符串
+		RandomStringUtils.randomAlphanumeric(5);
+
+		//生成随机数字字符串
+		RandomStringUtils.randomNumeric(5);
+
+		//生成随机[a-z]字符串，包含大小写
+		RandomStringUtils.randomAlphabetic(5);
+
+		//生成从ASCII 32到126组成的随机字符串 
+		RandomStringUtils.randomAscii(4);
+	}
 
     /**
      * 输出一个int的二进制数
