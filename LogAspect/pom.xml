@@ -82,7 +82,7 @@
 		<useragent.version>1.20</useragent.version>
 		<truelicense.version>1.33</truelicense.version>
 		<jol-core.version>0.9</jol-core.version>
-		<netty.version>4.1.17.Final</netty.version>
+		<netty.version>4.1.42.Final</netty.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.chenlb.mmseg4j/mmseg4j-analysis -->

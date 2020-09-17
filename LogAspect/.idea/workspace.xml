@@ -1,61 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="d2ac818a-0e2c-4cac-b77b-d7c7efe0d8de" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/controller/AdviceViewController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/controller/advice/AdviceVController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/controller/view/AdviceViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.core.resources.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.core.resources.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.project.facet.core.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.project.facet.core.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/common/DefineServiceException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/common/DefineServiceException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/common/RestExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/common/RestExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/common/ReturnFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/common/ReturnFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/controller/ModelAttributeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/controller/ModelAttributeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/controller/testcontroller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/controller/testcontroller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/controller/web/rest/RestApiTestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/controller/web/rest/RestApiTestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/core/aop/SysLogAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/core/aop/SysLogAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/service/ElasticService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/service/ElasticService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/service/impl/ElasticServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/service/impl/ElasticServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/modeattr.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/modeattr.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/modelTest.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/modelTest.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/modepojo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/modepojo.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/show.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/show.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/success.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/success.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/testpage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/testpage.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/JDBCTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/JDBCTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/testunit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/testunit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/common/DefineServiceException.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/common/DefineServiceException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/common/RestExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/common/RestExceptionHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/common/ReturnFormat.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/common/ReturnFormat.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/controller/ModelAttributeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/controller/ModelAttributeController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/controller/testcontroller.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/controller/testcontroller.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/core/aop/SysLogAspect.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/core/aop/SysLogAspect.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/dao/TC.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dao/TC.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/entity/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/maven/com.mvn/LogAspect/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/maven/com.mvn/LogAspect/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/maven/com.mvn/LogAspect/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/maven/com.mvn/LogAspect/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/privateKeys.keystore" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/privateKeys.keystore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/publicCerts.keystore" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/publicCerts.keystore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/EnumSetDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/EnumSetDemo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/TestDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/TestDemo.java" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
-  </component>
-  <component name="FavoritesManager">
-    <favorites_list name="LogAspect" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="$MAVEN_REPOSITORY$" />
+        <option name="mavenHome" value="$USER_HOME$/tools/apache-maven-3.6.0" />
+        <option name="userSettingsFile" value="$USER_HOME$/.m2/settings.xml" />
+      </MavenGeneralSettings>
+    </option>
     <option name="importingSettings">
       <MavenImportingSettings>
-        <option name="importAutomatically" value="true" />
         <option name="jdkForImporter" value="1.8" />
       </MavenImportingSettings>
     </option>
@@ -70,82 +55,93 @@
   </component>
   <component name="ProjectId" id="1SXqx6QLsZBSq1kI8SCXcp12V9e" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="SDKs" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="com.poratu.idea.plugins.tomcat.setting.TomcatSettingConfigurable" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="RunManager" selected="Smart Tomcat.tomcat">
-    <configuration name="All in LogAspect" type="AndroidJUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="All in LogAspect" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
       <module name="LogAspect" />
       <option name="PACKAGE_NAME" value="" />
       <option name="TEST_OBJECT" value="package" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="com.poratu.idea.plugins.tomcat" factoryName="SMART_TOMCAT_FACTORY">
-      <option name="DOC_BASE" value="$USER_HOME$/tools/tomcat7/webapps" />
-      <option name="DOC_MODULE_ROOT" value="" />
-      <option name="CONTEXT_PATH" value="/" />
-      <option name="TOMCAT_PORT" value="8080" />
-      <option name="AJP_PORT" value="8009" />
-      <option name="ADMIN_PORT" value="8005" />
-      <option name="VM_OPTIONS" value="" />
-      <option name="PASS_PARENT_ENV_OPTIONS" value="true" />
-      <option name="CLASS_NAME" value="" />
-      <option name="DEBUG" value="" />
-      <option name="DIGEST" value="" />
-      <option name="ROLE_NAME_COL" value="" />
-      <option name="USER_CRED_COL" value="" />
-      <option name="USER_NAME_COL" value="" />
-      <option name="USER_ROLE_TABLE" value="" />
-      <option name="USER_TABLE" value="" />
-      <option name="JNDI_GLOBAL" value="" />
-      <option name="JNDI_NAME" value="" />
-      <option name="JNDI_TYPE" value="" />
-      <option name="DATA_SOURCE_NAME" value="" />
+    <configuration name="LruMap" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.LruMap" />
+      <module name="LogAspect" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="tomcat" type="com.poratu.idea.plugins.tomcat" factoryName="SMART_TOMCAT_FACTORY">
-      <option name="DOC_BASE" value="$USER_HOME$/tools/tomcat7/webapps" />
-      <option name="DOC_MODULE_ROOT" value="" />
-      <option name="CONTEXT_PATH" value="/" />
-      <option name="TOMCAT_PORT" value="8080" />
-      <option name="AJP_PORT" value="8009" />
-      <option name="ADMIN_PORT" value="8005" />
-      <option name="VM_OPTIONS" value="" />
-      <option name="PASS_PARENT_ENV_OPTIONS" value="true" />
-      <option name="CLASS_NAME" value="" />
-      <option name="DEBUG" value="" />
-      <option name="DIGEST" value="" />
-      <option name="ROLE_NAME_COL" value="" />
-      <option name="USER_CRED_COL" value="" />
-      <option name="USER_NAME_COL" value="" />
-      <option name="USER_ROLE_TABLE" value="" />
-      <option name="USER_TABLE" value="" />
-      <option name="JNDI_GLOBAL" value="" />
-      <option name="JNDI_NAME" value="" />
-      <option name="JNDI_TYPE" value="" />
-      <option name="DATA_SOURCE_NAME" value="" />
+    <configuration name="GiftInfoTest.TestGift" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="LogAspect" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com" />
+      <option name="MAIN_CLASS_NAME" value="com.GiftInfoTest" />
+      <option name="METHOD_NAME" value="TestGift" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testunit.testthread" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="LogAspect" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com" />
+      <option name="MAIN_CLASS_NAME" value="com.testunit" />
+      <option name="METHOD_NAME" value="testthread" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="tomcat" type="com.poratu.idea.plugins.tomcat" factoryName="SMART_TOMCAT_FACTORY" editBeforeRun="true">
+      <option name="adminPort" value="8005" />
+      <option name="contextPath" value="/" />
+      <option name="docBase" value="$USER_HOME$/tools/tomcat7/webapps" />
+      <option name="envOptions">
+        <map />
+      </option>
+      <option name="passParentEnvironmentVariables" value="true" />
+      <option name="port" value="8080" />
+      <option name="tomcatInfo">
+        <TomcatInfo>
+          <option name="name" value="Apache Tomcat 7.0.92" />
+          <option name="number" value="0" />
+          <option name="path" value="$USER_HOME$/tools/tomcat7" />
+          <option name="version" value="7.0.92.0" />
+        </TomcatInfo>
+      </option>
+      <option name="vmOptions" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
         <option name="MakeProject" enabled="true" />
@@ -153,14 +149,21 @@
     </configuration>
     <list>
       <item itemvalue="Android JUnit.All in LogAspect" />
+      <item itemvalue="Application.LruMap" />
+      <item itemvalue="JUnit.GiftInfoTest.TestGift" />
+      <item itemvalue="JUnit.testunit.testthread" />
       <item itemvalue="Smart Tomcat.tomcat" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.GiftInfoTest.TestGift" />
+        <item itemvalue="Application.LruMap" />
+        <item itemvalue="JUnit.testunit.testthread" />
         <item itemvalue="Android JUnit.All in LogAspect" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -179,12 +182,45 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="204" y="97" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599626071003">
+      <screen x="0" y="23" width="1440" height="834" />
+    </state>
+    <state x="204" y="97" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.834@0.23.1440.834" timestamp="1599626071003" />
+    <state width="1358" height="436" key="GridCell.Tab.0.bottom" timestamp="1600154852014">
+      <screen x="0" y="23" width="1440" height="837" />
+    </state>
+    <state width="1358" height="436" key="GridCell.Tab.0.bottom/0.23.1440.834@0.23.1440.834" timestamp="1599626669973" />
+    <state width="1358" height="436" key="GridCell.Tab.0.bottom/0.23.1440.837@0.23.1440.837" timestamp="1600154852014" />
+    <state width="1358" height="436" key="GridCell.Tab.0.bottom/0.23.1440.844@0.23.1440.844" timestamp="1599825652620" />
+    <state width="1358" height="436" key="GridCell.Tab.0.center" timestamp="1600154852014">
+      <screen x="0" y="23" width="1440" height="837" />
+    </state>
+    <state width="1358" height="436" key="GridCell.Tab.0.center/0.23.1440.834@0.23.1440.834" timestamp="1599626669971" />
+    <state width="1358" height="436" key="GridCell.Tab.0.center/0.23.1440.837@0.23.1440.837" timestamp="1600154852014" />
+    <state width="1358" height="436" key="GridCell.Tab.0.center/0.23.1440.844@0.23.1440.844" timestamp="1599825652619" />
+    <state width="1358" height="436" key="GridCell.Tab.0.left" timestamp="1600154852014">
+      <screen x="0" y="23" width="1440" height="837" />
+    </state>
+    <state width="1358" height="436" key="GridCell.Tab.0.left/0.23.1440.834@0.23.1440.834" timestamp="1599626669971" />
+    <state width="1358" height="436" key="GridCell.Tab.0.left/0.23.1440.837@0.23.1440.837" timestamp="1600154852014" />
+    <state width="1358" height="436" key="GridCell.Tab.0.left/0.23.1440.844@0.23.1440.844" timestamp="1599825652618" />
+    <state width="1358" height="436" key="GridCell.Tab.0.right" timestamp="1600154852014">
+      <screen x="0" y="23" width="1440" height="837" />
+    </state>
+    <state width="1358" height="436" key="GridCell.Tab.0.right/0.23.1440.834@0.23.1440.834" timestamp="1599626669972" />
+    <state width="1358" height="436" key="GridCell.Tab.0.right/0.23.1440.837@0.23.1440.837" timestamp="1600154852014" />
+    <state width="1358" height="436" key="GridCell.Tab.0.right/0.23.1440.844@0.23.1440.844" timestamp="1599825652619" />
+    <state x="328" y="177" key="IDE.errors.dialog" timestamp="1599624534526">
+      <screen x="0" y="23" width="1440" height="834" />
+    </state>
+    <state x="328" y="177" key="IDE.errors.dialog/0.23.1440.834@0.23.1440.834" timestamp="1599624534526" />
   </component>
 </project>
