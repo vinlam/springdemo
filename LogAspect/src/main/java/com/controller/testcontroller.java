@@ -98,6 +98,7 @@ public class testcontroller {
 		
 		Cookie c = new Cookie("name", "cookie");
 		c.setDomain(".test.com");
+		//c.setSecure(true);
 		//c.setPath("/");
 		//if HttpOnly
 		c.setPath(";Path=/;HttpOnly;");

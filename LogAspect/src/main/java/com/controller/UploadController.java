@@ -190,7 +190,7 @@ public class UploadController {
 		return "";
 	}
 
-	@RequestMapping("/filesUpload")
+	@PostMapping("/filesUpload")
 	public String filesUpload(@RequestParam("files") MultipartFile[] files, HttpServletRequest request,
 			HttpServletResponse response) {
 		String path = "/Users/vinlam/upload/";

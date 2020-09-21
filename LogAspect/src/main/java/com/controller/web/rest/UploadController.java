@@ -2,6 +2,7 @@ package com.controller.web.rest;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,8 +11,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +25,11 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -35,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.alibaba.druid.support.logging.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -105,28 +113,123 @@ public class UploadController {
 		return uploadService.upload(url, multipartFile, headerParams, otherParams);
 	}
 	
-	@PostMapping("/upload/restupload")
-	public Object restTemplateUpload(MultipartFile multipartFile, HttpServletRequest request, HttpServletResponse response) {
-		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", multipartFile);
+	@PostMapping("/upload/restbyteupload")
+	public Object restbyteupload(MultipartFile multipartFile, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpHeaders pictureHeader = new HttpHeaders();
+        pictureHeader.setContentType(MediaType.parseMediaType(multipartFile.getContentType()));
+        //如果是用spring 的MultipartFile接受，则加入下面这行， 去个随机文件名
+        pictureHeader.setContentDispositionFormData("file", multipartFile.getOriginalFilename());
+        HttpEntity<ByteArrayResource> picturePart = new HttpEntity<ByteArrayResource>(new ByteArrayResource(multipartFile.getBytes()), pictureHeader);
+        multipartRequest.add("file", picturePart);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<> 
+        (multipartRequest, headers);
+        
+		
 
 		String serverUrl = "http://localhost:8080/LogAspect/api/upload/save";
 
 		RestTemplate restTemplate = new RestTemplate();
-		ObjectMapper newObjectMapper = new ObjectMapper(); 
-		newObjectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false); 
-		MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter=new MappingJackson2HttpMessageConverter();
-		restTemplate.getMessageConverters().add(new FormHttpMessageConverter()); 
-		restTemplate.getMessageConverters().add(mappingJacksonHttpMessageConverter); 
-		restTemplate.getMessageConverters().add(new StringHttpMessageConverter()); 
-		//return restTemplate; 
-		ResponseEntity<String> responseEntity = restTemplate.postForEntity(serverUrl, requestEntity, String.class);
-		return requestEntity;
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				serverUrl, HttpMethod.POST, 
+                requestEntity,
+                String.class);
+		return responseEntity;
 	}
+	
+	@PostMapping("/upload/restmutlbyteupload")
+	public Object restmutlbyteupload(MultipartFile f1,MultipartFile f2, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		HttpHeaders pictureHeader = new HttpHeaders();
+		pictureHeader.setContentType(MediaType.parseMediaType(f1.getContentType()));
+		//如果是用spring 的MultipartFile接受，则加入下面这行， 去个随机文件名
+		pictureHeader.setContentDispositionFormData("files", f1.getOriginalFilename());
+		HttpEntity<ByteArrayResource> picturePart = new HttpEntity<ByteArrayResource>(new ByteArrayResource(f1.getBytes()), pictureHeader);
+		multipartRequest.add("files", picturePart);
+		HttpHeaders pictureHeader2 = new HttpHeaders();
+		pictureHeader2.setContentType(MediaType.parseMediaType(f2.getContentType()));
+		//如果是用spring 的MultipartFile接受，则加入下面这行， 去个随机文件名
+		pictureHeader2.setContentDispositionFormData("files", f2.getOriginalFilename());
+		HttpEntity<ByteArrayResource> picturePart2 = new HttpEntity<ByteArrayResource>(new ByteArrayResource(f1.getBytes()), pictureHeader);
+		multipartRequest.add("files", picturePart2);
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<> 
+		(multipartRequest, headers);
+		
+		
+		
+		String serverUrl = "http://localhost:8080/LogAspect/api/upload/filesUpload";
+		
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				serverUrl, HttpMethod.POST, 
+				requestEntity,
+				String.class);
+		return responseEntity;
+	}
+	
+	@PostMapping("/upload/restupload")
+	public Object restTemplateUpload(MultipartFile multipartFile, HttpServletRequest request, HttpServletResponse response) {
+		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+		//restTemple不能传输File和MulipartFile,转为FileSystemResource后传输
+		//构建FileSystemResource需要文件类型为File，因此先将MulipartFile转为File
+		File file = multipartFileToFile(multipartFile);
+		FileSystemResource resource = new FileSystemResource(file);
+		body.add("file", resource);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+		
+		String serverUrl = "http://localhost:8080/LogAspect/api/upload/save";
+		
+		RestTemplate restTemplate = new RestTemplate();
+//		ObjectMapper newObjectMapper = new ObjectMapper(); 
+//		newObjectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false); 
+//		MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter=new MappingJackson2HttpMessageConverter();
+//		restTemplate.getMessageConverters().add(new FormHttpMessageConverter()); 
+//		restTemplate.getMessageConverters().add(mappingJacksonHttpMessageConverter); 
+//		restTemplate.getMessageConverters().add(new StringHttpMessageConverter()); 
+		//return restTemplate; 
+		//ResponseEntity<String> responseEntity = restTemplate.postForEntity(serverUrl, requestEntity, String.class);
+		ResponseEntity<String> responseEntity = restTemplate.exchange(serverUrl, HttpMethod.POST,requestEntity, String.class);
+		return responseEntity;
+	}
+	
+	public File multipartFileToFile(MultipartFile file) {
+        if (file != null) {
+            String fileName = file.getOriginalFilename();
+            String filePath = "/Users/vinlam/upload/tmp";
+            String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());// 文件后缀
+			fileName = new Date().getTime() + "_" + new Random().nextInt(1000) + fileType;// 新的文件名
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			String fileAdd = sdf.format(new Date());
+			filePath = filePath + "/" + fileAdd;
+			
+			// 获取文件夹路径
+			File newfilepath = new File(filePath);
+			if (!newfilepath.exists() && !newfilepath.isDirectory()) {
+				newfilepath.mkdirs();
+			}
+			
+            File conventFile = new File(filePath,fileName);
+            try {
+                boolean isCreateSuccess = conventFile.createNewFile();
+                if (isCreateSuccess) {
+                    file.transferTo(conventFile);
+                    return conventFile;
+                }
+            } catch (IOException e) {
+                log.warn("multipartFile convert to File failed  -> " + e.getMessage());
+            }
+        }
+        return null;
+    }
+
 	@PostMapping("/upload/urlconnectionupload")
 	public Object urlconnectionupload(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 //		HttpURLConnection httpUrlConnection = null;
