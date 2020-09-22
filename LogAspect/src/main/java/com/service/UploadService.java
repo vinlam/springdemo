@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -95,18 +96,15 @@ public class UploadService {
      * 上传的文件
      * @return 响应结果
      */
-    public String uploadFile(String url ,MultipartFile file,Map<String,String>headerParams,Map<String,String>otherParams) {
+    public String uploadFile(String url ,List<File> file,Map<String,String>headerParams,Map<String,String>otherParams) {
     	CloseableHttpClient httpClient = HttpClients.createDefault();
     	String result = "";
     	try {
-    		String fileName = file.getOriginalFilename();
     		HttpPost httpPost = new HttpPost(url);
     		//添加header
     		for (Map.Entry<String, String> e : headerParams.entrySet()) {
     			httpPost.addHeader(e.getKey(), e.getValue());
     		}
-    		String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());//文件后缀
-    		fileName=new Date().getTime()+"_"+new Random().nextInt(1000)+fileType;//新的文件名
     		//1.设置上传的模式；
     		//setMode(HttpMultipartMode mode)，其中mode主要有BROWSER_COMPATIBLE，RFC6532，STRICT三种，默认值是STRICT。
     		//2.创建MultipartEntityBuilder对象，并添加需要上传的数据；
@@ -122,11 +120,10 @@ public class UploadService {
     		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
     		builder.setCharset(Charset.forName("utf-8"));
     		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);//加上此行代码解决返回中文乱码问题
-//    		for (File f:file) {
-//    			builder.addBinaryBody(fileName, f, ContentType.MULTIPART_FORM_DATA, fileName);// 文件流
-//    		}	
+    		for (File f:file) {
+    			builder.addBinaryBody("file", f);// 文件流
+    		}	
     		
-    		builder.addBinaryBody(fileName, file.getInputStream(), ContentType.MULTIPART_FORM_DATA, fileName);// 文件流
     		for (Map.Entry<String, String> e : otherParams.entrySet()) {
     			builder.addTextBody(e.getKey(), e.getValue());// 类似浏览器表单提交，对应input的name和value
     		}

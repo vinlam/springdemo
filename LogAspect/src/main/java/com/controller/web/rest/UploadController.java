@@ -12,8 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -39,6 +41,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,6 +88,42 @@ public class UploadController {
 		// data = JSON.toJSONString(otherParams);
 		String url = "http://localhost:8080/LogAspect/api/upload/springUpload";
 		return uploadService.upload(url, multipartFile, headerParams, otherParams);
+	}
+	
+	@PostMapping("/upload/httpfile")
+	public Object upload(@RequestParam(required = false) String param, HttpServletRequest request, HttpServletResponse response) {
+		// multipartFile为上传的文件
+		String data = "";
+//      form-data中其他参数的处理
+		Map<String, String> headerParams = new HashMap<String, String>();
+		@SuppressWarnings("unchecked")
+//		Map<String, String> otherParams = request.getParameterMap();//等于操作的时候会关联原对象 原对象不可以进行修改 那新参数也无法进行修改
+		//修改后
+		Map<String, String> otherParams = new HashMap<String, String>(request.getParameterMap());
+		headerParams.put("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;)");
+		File f1 = new File("/Users/vinlam/www/photo/noimage.png");
+		File f2 = new File("/Users/vinlam/www/photo/120.png");
+		
+		otherParams.put("param", param);
+		
+		List<File> file = new ArrayList<File>();
+		file.add(f1);
+		file.add(f2);
+		// 注 这里一定不能添加 content-Type:multipart/form-data 属性
+		// 因为这里面有个boundary参数属性是不可控的。这个值是由浏览器生成的。如果强行指明和可能
+		// 导致边界值不一致 就会请求失败 详细参见
+		// http://blog.csdn.net/xiaojianpitt/article/details/6856536
+		// application/x-www-form-urlencoded(默认值)
+		// multipart/form-data
+		// 其实form表单在你不写enctype属性时，也默认为其添加了enctype属性值，默认值是enctype="application/x-
+		// www-form-urlencoded".
+		// headerParams.put("content-Type", "multipart/form-data");
+		// headerParams.put("Host", "****");
+		headerParams.put("Accept-Encoding", "gzip");
+		headerParams.put("charset", "utf-8");
+		// data = JSON.toJSONString(otherParams);
+		String url = "http://localhost:8080/LogAspect/api/upload/uploadSubmit";
+		return uploadService.uploadFile(url, file, headerParams, otherParams);
 	}
 
 	@PostMapping("/upload/http/save")
@@ -162,6 +201,39 @@ public class UploadController {
 		
 		
 		String serverUrl = "http://localhost:8080/LogAspect/api/upload/filesUpload";
+		
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				serverUrl, HttpMethod.POST, 
+				requestEntity,
+				String.class);
+		return responseEntity;
+	}
+	
+	@PostMapping("/upload/restuploadsubmit")
+	public Object restuploadsubmit(MultipartFile f1,MultipartFile f2,@RequestParam(required = false)String user, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		HttpHeaders pictureHeader = new HttpHeaders();
+		pictureHeader.setContentType(MediaType.parseMediaType(f1.getContentType()));
+		//如果是用spring 的MultipartFile接受，则加入下面这行， 去个随机文件名
+		pictureHeader.setContentDispositionFormData("files", f1.getOriginalFilename());
+		HttpEntity<ByteArrayResource> picturePart = new HttpEntity<ByteArrayResource>(new ByteArrayResource(f1.getBytes()), pictureHeader);
+		multipartRequest.add("files", picturePart);
+		multipartRequest.add("user", user);
+		HttpHeaders pictureHeader2 = new HttpHeaders();
+		pictureHeader2.setContentType(MediaType.parseMediaType(f2.getContentType()));
+		//如果是用spring 的MultipartFile接受，则加入下面这行， 去个随机文件名
+		pictureHeader2.setContentDispositionFormData("files", f2.getOriginalFilename());
+		HttpEntity<ByteArrayResource> picturePart2 = new HttpEntity<ByteArrayResource>(new ByteArrayResource(f1.getBytes()), pictureHeader);
+		multipartRequest.add("files", picturePart2);
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<> 
+		(multipartRequest, headers);
+		
+		
+		
+		String serverUrl = "http://localhost:8080/LogAspect/api/upload/uploadSubmit";
 		
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<String> responseEntity = restTemplate.exchange(

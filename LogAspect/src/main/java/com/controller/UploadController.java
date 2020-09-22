@@ -218,6 +218,36 @@ public class UploadController {
 		// 重定向
 		// return "redirect:/list.html";
 	}
+	
+	@PostMapping("/uploadSubmit")
+	public String uploadSubmit(@RequestParam("files") MultipartFile[] files,@RequestParam(required = false)String user, HttpServletRequest request,
+			HttpServletResponse response) {
+		System.out.println(user);
+		String path = "/Users/vinlam/upload/";
+		
+		String returnUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+		+ request.getContextPath() + "/resources/upload/imgs/";// 存储路径
+		path = request.getSession().getServletContext().getRealPath("resources/upload/imgs"); // 文件存储位置
+		List<String> listPath = new ArrayList<String>();
+		// 判断file数组不能为空并且长度大于0
+		if (files != null && files.length > 0) {
+			String rturl = "";
+			// 循环获取file数组中得文件
+			for (int i = 0; i < files.length; i++) {
+				MultipartFile file = files[i];
+				System.out.println(file.getName());
+				System.out.println(file.getOriginalFilename());
+				// 保存文件
+				rturl = saveFile(file, path);
+				rturl = returnUrl + rturl;
+				listPath.add(rturl);
+			}
+		}
+		System.out.println(listPath.toString());
+		return "success:" + listPath.toString();
+		// 重定向
+		// return "redirect:/list.html";
+	}
 
 	private String saveFile(MultipartFile file, String path) {
 		// String path ="/Users/vinlam/upload";

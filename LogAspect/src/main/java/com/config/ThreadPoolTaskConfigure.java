@@ -1,4 +1,4 @@
-package com.common;
+package com.config;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;

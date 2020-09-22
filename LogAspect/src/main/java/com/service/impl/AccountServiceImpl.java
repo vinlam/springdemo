@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.common.CacheContext;
+import com.common.component.CacheContext;
 import com.entity.Account;
 import com.google.common.base.Optional;
 import com.service.AccountService;
