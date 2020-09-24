@@ -77,6 +77,11 @@ public class TestDemo {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		System.out.println(EnumDemo.CODE.getName());
 		System.out.println(EnumDemo.CODE.getType());
+		
+		Integer myint = 1;
+		System.out.println(myint);
+		System.out.println("1".equals(myint));//false
+		System.out.println("1".equals(myint.toString()));//true
 		System.out.println(TestDemo.class.getResource("/"));
 		rand();
 		String p = null;
@@ -284,10 +289,10 @@ public class TestDemo {
 		}
 		for (String n : s) {
 			if (Long.valueOf(n).longValue() == 1L) {
-				System.out.println(n);
-				System.out.println(Long.valueOf(n).equals(1L));
-				System.out.println(n.equals(1));
-				System.out.println(n.equals(String.valueOf(1L)));
+				System.out.println(n);//1
+				System.out.println(Long.valueOf(n).equals(1L));//true
+				System.out.println(n.equals(1));//false
+				System.out.println(n.equals(String.valueOf(1L)));//true
 			}
 		}
 
