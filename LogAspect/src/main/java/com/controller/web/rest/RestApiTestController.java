@@ -197,9 +197,43 @@ public class RestApiTestController {
 		}
 	}
 
-	@RequestMapping(value = "/getdata", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = {"/getdata","/mgetdata"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getData() {
 		return "ok";
+	}
+	//限制请求参数(参数匹配才会进入)，追加在url上的键值对，多个参数以&分割
+	//如：/api/login?name=zhangsan&&age=22
+	//* 使用：@RequestMapping(path = "/login", params={"name=kolbe","age=22"}),参数及值不对会返回404
+	/**
+	 * 限制请求头中的“Content-Type”值，客户端请求实体对应的MIME类型（Contect-Type:application/x-www-form-urlencoded）
+	 * 使用：@RequestMapping(path = "/login", consumes = "text/plain")
+	 * consumes = "text/plain"
+	 * consumes = {"text/plain", "application/*"}
+	 * consumes = MediaType.TEXT_PLAIN_VALUE
+	 */
+
+	/**
+	 *  限制请求头中的“Accept”值,客户端能够接收的MIME类型（Accept:text/html,application/xml）
+	 * 使用：@RequestMapping(path = "/login", produces = "text/plain;charset=UTF-8")
+	 * produces = "text/plain"
+	 * produces = {"text/plain", "application/*"}
+	 * produces = MediaType.TEXT_PLAIN_VALUE
+	 * produces = "text/plain;charset=UTF-8"
+	 */
+	@RequestMapping(value = {"/login"},params = {"name=kolbe","age=22"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String,Object> getParam(@RequestParam String name,@RequestParam int age) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("name", name);
+		map.put("age", age);
+		
+		return map;
+	}
+	
+	@PostMapping(value = "/postjsonstr", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String,Object> postjsonstr(@RequestBody String jsonStr) {
+		Map<String,Object> map = (Map<String, Object>) JsonMapper.fromJsonString(jsonStr, Map.class);
+		
+		return map;
 	}
 
 	@GetMapping(value = "gettest/user", produces = MediaType.APPLICATION_JSON_VALUE)

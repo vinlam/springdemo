@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -328,6 +329,8 @@ public class TestDemo {
 				System.out.println(ds.toString());
 			}
 		}
+		
+		test5(listd);
 		m();
 		int c = 0;
 		s(c);
@@ -365,6 +368,58 @@ public class TestDemo {
         //右移一位
         printInfo(number);
     }
+	
+	//方式1.一开始是这样的：
+	public static void test1(List<String> list) {
+	  for (int i = 0; i < list.size(); i++) {
+	    System.out.println(list.get(i));
+	  }
+	}
+	
+	//方式2.当然稍微高级一点的是这样：
+	public static void test2(List<String> list) {
+	  for (int i = 0,lengh=list.size(); i < lengh; i++) {
+	    System.out.println(list.get(i));
+	  }
+	}
+	
+	//方式3.还有就是Iterator遍历：
+	public static void test3(List<String> list) {
+	  Iterator<String> iterator = list.iterator();
+	  while(iterator.hasNext()){
+	    System.out.println(iterator.next());
+	  }
+	}
+	
+	//方式4.后来有了增强for循环：
+	public static void test4(List<String> list) {
+	  for(String str:list){
+	    System.out.println(str);
+	  }
+	}
+	
+	//方式5.java8以后新增的方式：
+	public static void test5(List<String> list) {
+	  //list.forEach(System.out::println);和下面的写法等价
+	  list.forEach(str->{
+	    System.out.println(str);
+	  });
+	  list.forEach(new Consumer<String>() {
+
+		@Override
+		public void accept(String t) {
+			// TODO Auto-generated method stub
+			System.out.println("====:"+t);
+		}
+	});
+	}
+	
+	//方式6.还有另一种：
+	public static void test6(List<String> list) {
+	  list.iterator().forEachRemaining(str->{
+	    System.out.println(str);
+	  });
+	}
 	
 	private static void randomchar() {
 		//产生5位长度的随机字符串，中文环境下是乱码

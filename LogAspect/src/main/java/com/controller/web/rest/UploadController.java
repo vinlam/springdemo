@@ -71,7 +71,8 @@ public class UploadController {
 //      form-data中其他参数的处理
 		Map<String, String> headerParams = new HashMap<String, String>();
 		@SuppressWarnings("unchecked")
-		Map<String, String> otherParams = request.getParameterMap();
+		//Map<String, String> otherParams = request.getParameterMap();
+		Map<String, String> otherParams = new HashMap<String, String>();
 		headerParams.put("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;)");
 		// 注 这里一定不能添加 content-Type:multipart/form-data 属性
 		// 因为这里面有个boundary参数属性是不可控的。这个值是由浏览器生成的。如果强行指明和可能
@@ -85,8 +86,14 @@ public class UploadController {
 		// headerParams.put("Host", "****");
 		headerParams.put("Accept-Encoding", "gzip");
 		headerParams.put("charset", "utf-8");
+		
+		otherParams.put("ThirdSysID", "ZHCS001");
+		otherParams.put("TxCode", "SFT10030");
+		otherParams.put("Data", "30E1456CAE4AC140");
+		otherParams.put("Auth", "f010b054dfd284eff25065792c143271");
 		// data = JSON.toJSONString(otherParams);
 		String url = "http://localhost:8080/LogAspect/api/upload/springUpload";
+		url = "http://mall.ccb.com/ecp/api/thirdpart/upload";
 		return uploadService.upload(url, multipartFile, headerParams, otherParams);
 	}
 	
