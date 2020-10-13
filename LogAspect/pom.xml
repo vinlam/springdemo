@@ -19,7 +19,7 @@
 		<!-- <spring.version>3.1.2.RELEASE</spring.version> -->
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<jstl.version>1.2</jstl.version>
 		<commons.version>1.2</commons.version>
 		<!-- <mysql.version>5.1.39</mysql.version> -->
