@@ -22,6 +22,9 @@ import com.dao.TB;
 import com.entity.Book;
 import com.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.license.LicenseCreator;
@@ -39,6 +42,9 @@ import com.util.DateJsonSerializer;
 import com.util.JsonMapper;
 import com.util.JsonUtil;
 
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
 import org.junit.Test;
@@ -100,7 +106,83 @@ public class testunit {
         latch.await();
         System.out.println("执行完毕了吗！");
     }
+    private static MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+    @Test
+    public void testJsonAnnotation() throws JsonMappingException, JsonProcessingException {
+    	String str="[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
+		String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
+		String agenullobj = "{\"name\":\"jack\",\"age\":null,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
+		String agenull = "{\"name\":\"jack\",\"age\":\"\",\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
+		String ob1 = "{\"name\":\"jack\",\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
+		ObjectMapper mapper1 = new ObjectMapper();
+		List<JsonDTO> jsonDTOs = mapper1.readValue(str,new TypeReference<List<JsonDTO>>(){});
+		
+		//1.实体上
 
+		//@JsonInclude(value = Include.NON_NULL) 
+
+		//将该标记放在属性上，如果该属性为NULL则不参与序列化 
+		//如果放在类上边,那对这个类的全部属性起作用 
+		//Include.Include.ALWAYS 默认 
+		//Include.NON_DEFAULT 属性为默认值不序列化 
+		//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化 
+		//Include.NON_NULL 属性为NULL 不序列化 
+		
+		JsonDTO j = mapper1.readValue(ob,JsonDTO.class);
+		System.out.println(JsonMapper.toJsonString(j));
+		JavaType javaType = JsonMapper.getInstance().createCollectionType(List.class, JsonDTO.class);
+		//JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
+		JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
+		List<JsonDTO> jsonDTO = JsonMapper.getInstance().fromJson(str,javaType);
+		JsonDTO<NewUser> jDTO = JsonMapper.getInstance().fromJson(ob,jType);
+		//JsonDTO<NewUser> jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class); 
+		JsonDTO jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class);
+		JsonDTO jn1 = JsonMapper.getInstance().fromJson(ob1, JsonDTO.class);
+		JsonDTO jnagenullobj = JsonMapper.getInstance().fromJson(agenullobj, JsonDTO.class);
+		System.out.println("age:"+jn1.getAge());//null
+		System.out.println("agenull序列返回\"\":"+jnagenullobj.getAge());//agenullobj 中age:null 返回 null, agenull中age:"" 返回无内容
+		System.out.println("agenull序列返回\"\":"+JsonMapper.toJsonString(jnagenullobj));//agenull序列返回"":{"name":"jack","age":"","data":{"name":"tom","age":10,"sex":"Man","newUserData":{"weight":"50KG","height":"170CM"}}}
+		JsonInDTO jsonInDTO = JsonMapper.getInstance().fromJson(ob, JsonInDTO.class);
+		//mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class).byDefault();
+		mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class)
+		.field("name","name")
+		.field("age","age")
+		.field("data", "newUser")//或者单个设置如下面四个field
+//		.field("data.name", "newUser.name")
+//	    .field("data.sex", "newUser.sex")
+//	    .field("data.age", "newUser.age")
+//	    .field("data.newUserData", "newUser.newUserData")
+	    .register();;
+		MapperFacade mapperFacade = mapperFactory.getMapperFacade();
+		
+		JsonOutDTO newDto =mapperFacade.map(jsonInDTO, JsonOutDTO.class);
+		System.out.println("newDto:"+JsonMapper.toJsonString(newDto));
+		System.out.println("jn:"+JsonMapper.toJsonString(jn));
+		System.out.println(JsonMapper.toJsonString(jDTO));
+		System.out.println(JsonMapper.toJsonString(jsonDTO));
+		System.out.println(JsonMapper.toJsonString(jsonDTOs));
+		
+		JsonDTO<NewUser> json = new JsonDTO<NewUser>();
+		json.setAge("20");
+		json.setName("Zhang");
+		
+		NewUser data = new NewUser();
+		data.setAge(15);
+		data.setName("Li");
+		data.setSex("F");
+		json.setData(data);
+		System.out.println(JsonMapper.toJsonString(json));
+		System.out.println(javaType.hasRawClass(List.class));//true
+		String s = "{\"id\": 1,\"name\": \"小明\",\"array\": [\"1\", \"2\"]}";
+		ObjectMapper mapper = new ObjectMapper();
+		// Json映射为对象
+		Student student = mapper.readValue(s, Student.class);
+		// 对象转化为Json
+		String jsonstr = mapper.writeValueAsString(student);
+		System.out.println(jsonstr);
+		System.out.println(student.toString());
+	}
+    
 	@Test
 	public void testRedisSerializer() {
 		User u = new User();

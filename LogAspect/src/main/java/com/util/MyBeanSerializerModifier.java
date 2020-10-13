@@ -17,6 +17,8 @@ public class MyBeanSerializerModifier extends BeanSerializerModifier {
     private JsonSerializer<Object> _nullStringJsonSerializer = new MyNullStringJsonSerializer();
 
     private JsonSerializer<Object> _nullIntegerJsonSerializer = new MyNullIntegerJsonSerializer();
+    
+    private JsonSerializer<Object> _nullBooleanJsonSerializer = new MyNullBooleanJsonSerializer();
 
     @Override
     public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc,
@@ -32,7 +34,9 @@ public class MyBeanSerializerModifier extends BeanSerializerModifier {
             if (isStringType(writer)) {
                 writer.assignNullSerializer(this.defaultNullStringJsonSerializer());
             }
-
+            if (isBooleanType(writer)) {
+                writer.assignNullSerializer(this.defaultNullBooleanJsonSerializer());
+            }
             if (isIntegerType(writer)) {
                 writer.assignNullSerializer(this.defaultNullIntegerJsonSerializer());
             }
@@ -42,12 +46,12 @@ public class MyBeanSerializerModifier extends BeanSerializerModifier {
 
     // 判断是什么类型
     protected boolean isArrayType(BeanPropertyWriter writer) {
-        Class<?> clazz = writer.getPropertyType();
+        Class<?> clazz = writer.getType().getRawClass();
         return clazz.isArray() || clazz.equals(List.class) || clazz.equals(Set.class);
     }
 
     protected boolean isStringType(BeanPropertyWriter writer) {
-        Class<?> clazz = writer.getPropertyType();
+        Class<?> clazz = writer.getType().getRawClass();
         return clazz.equals(String.class);
     }
 
@@ -56,6 +60,14 @@ public class MyBeanSerializerModifier extends BeanSerializerModifier {
 //        return clazz.equals(Integer.class) || clazz.equals(int.class);
         JavaType javaType = writer.getType();
         return javaType.hasRawClass(Integer.class) || javaType.hasRawClass(int.class);
+    }
+    
+    /**
+     * 是否是boolean
+     */
+    protected boolean isBooleanType(BeanPropertyWriter writer) {
+        Class<?> clazz = writer.getType().getRawClass();
+        return clazz.equals(Boolean.class);
     }
 
     protected JsonSerializer<Object> defaultNullArrayJsonSerializer() {
@@ -68,5 +80,9 @@ public class MyBeanSerializerModifier extends BeanSerializerModifier {
 
     protected JsonSerializer<Object> defaultNullIntegerJsonSerializer() {
         return _nullIntegerJsonSerializer;
+    }
+    
+    protected JsonSerializer<Object> defaultNullBooleanJsonSerializer() {
+    	return _nullBooleanJsonSerializer;
     }
 }

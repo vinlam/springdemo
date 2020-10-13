@@ -54,7 +54,7 @@ public class JsonMapper extends ObjectMapper {
 		
 		// 为mapper注册一个带有SerializerModifier的Factory，此modifier主要做的事情为：当序列化类型为array，list、set时，当值为空时，序列化成[]
         this.setSerializerFactory(this.getSerializerFactory().withSerializerModifier(new MyBeanSerializerModifier()));
-		
+		//当MyNullStringJsonSerializer重写序列化后，//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化 //Include.NON_NULL 属性为NULL 不序列化;String 为 null 不会生效注解： 默认返回""
         
         // 空值处理为空串
 		this.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>(){

@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.UnknownHostException;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -224,10 +225,28 @@ public class TestDemo {
 		List<User> list = new ArrayList<User>();
 		List<User> newlist = new ArrayList<User>();
 		User obj = new User();
+		obj.setAge(12);
+		System.out.println("obj getName:"+obj.getName());
 		if (ObjectUtils.isEmpty(obj)) {
 			System.out.println("Object Empty");
 		}
 		User obj1 = null;
+		try {
+			System.out.println(obj1.getName());
+		}catch (Exception e) {
+			// TODO: handle exception
+			if(e instanceof NullPointerException) {
+				//System.out.println("NullPointerException");
+				StringBuilder sbException = new StringBuilder();
+				sbException.append("NullPointerException:");
+	            for (StackTraceElement ele : e.getStackTrace()) {
+	                sbException.append(MessageFormat.format("\tat {0}.{1}({2}:{3})\n",
+	                    ele.getClassName(), ele.getMethodName(), ele.getFileName(), ele.getLineNumber()));;
+	            }
+	            System.out.println(sbException);
+			}
+			System.out.println("obj1 exception: getLocalizedMessage="+e.getLocalizedMessage()+" getMessage= " + e.getMessage()+" getCause= " +e.getCause());
+		}
 		// 用于对象或数组多层校验
 		if (ObjectUtils.isEmpty(obj1)) {
 			System.out.println("Object is null");

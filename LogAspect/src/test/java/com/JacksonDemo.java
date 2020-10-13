@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,8 +27,22 @@ public class JacksonDemo {
 	public static void main(String[] args) throws IOException {
 		String str="[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
 		String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
+		String agenullobj = "{\"name\":\"jack\",\"age\":null,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
+		String agenull = "{\"name\":\"jack\",\"age\":\"\",\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
+		String ob1 = "{\"name\":\"jack\",\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
 		ObjectMapper mapper1 = new ObjectMapper();
 		List<JsonDTO> jsonDTOs = mapper1.readValue(str,new TypeReference<List<JsonDTO>>(){});
+		
+		//1.实体上
+
+		//@JsonInclude(value = Include.NON_NULL) 
+
+		//将该标记放在属性上，如果该属性为NULL则不参与序列化 
+		//如果放在类上边,那对这个类的全部属性起作用 
+		//Include.Include.ALWAYS 默认 
+		//Include.NON_DEFAULT 属性为默认值不序列化 
+		//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化 
+		//Include.NON_NULL 属性为NULL 不序列化 
 		
 		JsonDTO j = mapper1.readValue(ob,JsonDTO.class);
 		System.out.println(JsonMapper.toJsonString(j));
@@ -37,6 +53,11 @@ public class JacksonDemo {
 		JsonDTO<NewUser> jDTO = JsonMapper.getInstance().fromJson(ob,jType);
 		//JsonDTO<NewUser> jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class); 
 		JsonDTO jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class);
+		JsonDTO jn1 = JsonMapper.getInstance().fromJson(ob1, JsonDTO.class);
+		JsonDTO jnagenullobj = JsonMapper.getInstance().fromJson(agenullobj, JsonDTO.class);
+		System.out.println("age:"+jn1.getAge());//null
+		System.out.println("agenull序列返回\"\":"+jnagenullobj.getAge());//agenullobj 中age:null 返回 null, agenull中age:"" 返回无内容
+		System.out.println("agenull序列返回\"\":"+JsonMapper.toJsonString(jnagenullobj));//agenull序列返回"":{"name":"jack","age":"","data":{"name":"tom","age":10,"sex":"Man","newUserData":{"weight":"50KG","height":"170CM"}}}
 		JsonInDTO jsonInDTO = JsonMapper.getInstance().fromJson(ob, JsonInDTO.class);
 		//mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class).byDefault();
 		mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class)
