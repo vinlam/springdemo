@@ -13,7 +13,7 @@ import com.util.JsonMapper;
 @Repository
 public class SaveDataDao {
 	static final Logger logger = LoggerFactory.getLogger(SaveDataDao.class);
-	//conditio判断参数条件，unless 返回结果#result
+	//condition判断参数条件，unless 返回结果#result
 	@Cacheable(cacheNames="userCache",key="#u.Id",condition="#u.name!=null&&#u.password!=null")
     public User userDataCache(User u) {
 		logger.info("save:"+JsonMapper.toJsonString(u));

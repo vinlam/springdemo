@@ -3,6 +3,7 @@ package com.controller.web.rest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,6 +55,7 @@ import com.service.IAutoInject;
 import com.service.SaveDataService;
 import com.util.ExportExcelByPoiUtil;
 import com.util.JsonMapper;
+import com.util.ToolUtils;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -169,9 +171,20 @@ public class RestApiTestController {
 		return t;
 	}
 	
+	//curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"a":123,"b":"qwe"}' 'http://localhost:8080/LogAspect/api/postMap/t'
 	@RequestMapping(value = "/postMap/{m}", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	// @ResponseBody
 	public Map<String,Object> postMap(@PathVariable String m,@RequestBody Map<String,Object> map) {
+		try {
+			String param = ToolUtils.copyToString(servletRequest.getInputStream(),Charset.forName("UTF-8"));
+			param = new String(ToolUtils.readInputStream(servletRequest.getInputStream()),Charset.forName("UTF-8"));
+			Map<String,Object> mp = servletRequest.getParameterMap();
+			System.out.println(mp);
+			logger.info("param:"+param);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+		}
 		System.out.println("--------"+m+"--------");
 		return map;
 	}

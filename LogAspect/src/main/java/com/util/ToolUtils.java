@@ -1,14 +1,21 @@
 package com.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.service.impl.GreetingServiceImpl;
 
 public class ToolUtils {
 	private final static Logger logger = LoggerFactory.getLogger(ToolUtils.class);
+	
+	public static final int BUFFER_SIZE = 4096;
 	public ToolUtils() {
 		// TODO Auto-generated constructor stub
 	}
@@ -31,5 +38,33 @@ public class ToolUtils {
 	        type = "pc";
 	    }
 	    return type;
+	}
+	
+	public static byte[] readInputStream(InputStream inputStream) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[BUFFER_SIZE];
+		int bytesRead = -1;
+		while ((bytesRead = inputStream.read(buffer)) != -1) {
+			outputStream.write(buffer, 0, bytesRead);
+			//byteCount += bytesRead;
+		}
+		outputStream.close();
+		outputStream.flush();
+		return outputStream.toByteArray();
+	}
+	
+	public static String copyToString(InputStream in, Charset charset) throws IOException {
+		if (in == null) {
+			return "";
+		}
+
+		StringBuilder out = new StringBuilder();
+		InputStreamReader reader = new InputStreamReader(in, charset);
+		char[] buffer = new char[BUFFER_SIZE];
+		int bytesRead = -1;
+		while ((bytesRead = reader.read(buffer)) != -1) {
+			out.append(buffer, 0, bytesRead);
+		}
+		return out.toString();
 	}
 }

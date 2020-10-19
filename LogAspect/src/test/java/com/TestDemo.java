@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -79,11 +80,11 @@ public class TestDemo {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		System.out.println(EnumDemo.CODE.getName());
 		System.out.println(EnumDemo.CODE.getType());
-		
+
 		Integer myint = 1;
 		System.out.println(myint);
-		System.out.println("1".equals(myint));//false
-		System.out.println("1".equals(myint.toString()));//true
+		System.out.println("1".equals(myint));// false
+		System.out.println("1".equals(myint.toString()));// true
 		System.out.println(TestDemo.class.getResource("/"));
 		rand();
 		String p = null;
@@ -92,6 +93,29 @@ public class TestDemo {
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("k", 234567);// Object 为数字类型，强转(String)m.get("k")会提示java.lang.ClassCastException:
 							// java.lang.Integer cannot be cast to java.lang.String,要用String.valueOf();
+		m.put("k", "ab");
+		Iterator<String> iter = m.keySet().iterator();
+		while (iter.hasNext()) {
+			System.out.println("m:" + iter.next());
+		}
+		long timestamp = 0L;
+		// 通过Map.entrySet使用iterator遍历key和value
+		Iterator<Entry<String, Object>> iterator = m.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, Object> entry = iterator.next();
+			System.out.println(entry.getKey() + " = " + entry.getValue());
+		}
+
+		// 通过Map.entrySet遍历key和value（推荐容量大时使用）
+		for (Entry<String, Object> entry : m.entrySet()) {
+			System.out.println(entry.getKey() + " = " + entry.getValue());
+		}
+		System.out.println(System.currentTimeMillis() - timestamp);
+
+		// 通过Map.values()遍历所有的value，但不能遍历key
+		for (Object value : m.values()) {
+			System.out.println(value);
+		}
 		String k = String.valueOf(m.get("k"));
 		System.out.println(k);
 		System.out.println("13800138000".substring(5, 11));
@@ -226,26 +250,28 @@ public class TestDemo {
 		List<User> newlist = new ArrayList<User>();
 		User obj = new User();
 		obj.setAge(12);
-		System.out.println("obj getName:"+obj.getName());
+		System.out.println("obj getName:" + obj.getName());
 		if (ObjectUtils.isEmpty(obj)) {
 			System.out.println("Object Empty");
 		}
 		User obj1 = null;
 		try {
 			System.out.println(obj1.getName());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			// TODO: handle exception
-			if(e instanceof NullPointerException) {
-				//System.out.println("NullPointerException");
+			if (e instanceof NullPointerException) {
+				// System.out.println("NullPointerException");
 				StringBuilder sbException = new StringBuilder();
 				sbException.append("NullPointerException:");
-	            for (StackTraceElement ele : e.getStackTrace()) {
-	                sbException.append(MessageFormat.format("\tat {0}.{1}({2}:{3})\n",
-	                    ele.getClassName(), ele.getMethodName(), ele.getFileName(), ele.getLineNumber()));;
-	            }
-	            System.out.println(sbException);
+				for (StackTraceElement ele : e.getStackTrace()) {
+					sbException.append(MessageFormat.format("\tat {0}.{1}({2}:{3})\n", ele.getClassName(),
+							ele.getMethodName(), ele.getFileName(), ele.getLineNumber()));
+					;
+				}
+				System.out.println(sbException);
 			}
-			System.out.println("obj1 exception: getLocalizedMessage="+e.getLocalizedMessage()+" getMessage= " + e.getMessage()+" getCause= " +e.getCause());
+			System.out.println("obj1 exception: getLocalizedMessage=" + e.getLocalizedMessage() + " getMessage= "
+					+ e.getMessage() + " getCause= " + e.getCause());
 		}
 		// 用于对象或数组多层校验
 		if (ObjectUtils.isEmpty(obj1)) {
@@ -309,10 +335,10 @@ public class TestDemo {
 		}
 		for (String n : s) {
 			if (Long.valueOf(n).longValue() == 1L) {
-				System.out.println(n);//1
-				System.out.println(Long.valueOf(n).equals(1L));//true
-				System.out.println(n.equals(1));//false
-				System.out.println(n.equals(String.valueOf(1L)));//true
+				System.out.println(n);// 1
+				System.out.println(Long.valueOf(n).equals(1L));// true
+				System.out.println(n.equals(1));// false
+				System.out.println(n.equals(String.valueOf(1L)));// true
 			}
 		}
 
@@ -348,7 +374,7 @@ public class TestDemo {
 				System.out.println(ds.toString());
 			}
 		}
-		
+
 		test5(listd);
 		m();
 		int c = 0;
@@ -372,100 +398,100 @@ public class TestDemo {
 		User u = new User();
 		setData(u);
 		System.out.println("u:" + u.getAge());
-		
-		
-		//<<  : 左移运算符，num << 1,相当于num乘以2
-		//>>  : 右移运算符，num >> 1,相当于num除以2
-		//>>> : 无符号右移，忽略符号位，空位都以0补齐
-		int number = 10;
-        //原始数二进制
-        printInfo(number);
-        number = number << 1;
-        //左移一位
-        printInfo(number);
-        number = number >> 1;
-        //右移一位
-        printInfo(number);
-    }
-	
-	//方式1.一开始是这样的：
-	public static void test1(List<String> list) {
-	  for (int i = 0; i < list.size(); i++) {
-	    System.out.println(list.get(i));
-	  }
-	}
-	
-	//方式2.当然稍微高级一点的是这样：
-	public static void test2(List<String> list) {
-	  for (int i = 0,lengh=list.size(); i < lengh; i++) {
-	    System.out.println(list.get(i));
-	  }
-	}
-	
-	//方式3.还有就是Iterator遍历：
-	public static void test3(List<String> list) {
-	  Iterator<String> iterator = list.iterator();
-	  while(iterator.hasNext()){
-	    System.out.println(iterator.next());
-	  }
-	}
-	
-	//方式4.后来有了增强for循环：
-	public static void test4(List<String> list) {
-	  for(String str:list){
-	    System.out.println(str);
-	  }
-	}
-	
-	//方式5.java8以后新增的方式：
-	public static void test5(List<String> list) {
-	  //list.forEach(System.out::println);和下面的写法等价
-	  list.forEach(str->{
-	    System.out.println(str);
-	  });
-	  list.forEach(new Consumer<String>() {
 
-		@Override
-		public void accept(String t) {
-			// TODO Auto-generated method stub
-			System.out.println("====:"+t);
+		// << : 左移运算符，num << 1,相当于num乘以2
+		// >> : 右移运算符，num >> 1,相当于num除以2
+		// >>> : 无符号右移，忽略符号位，空位都以0补齐
+		int number = 10;
+		// 原始数二进制
+		printInfo(number);
+		number = number << 1;
+		// 左移一位
+		printInfo(number);
+		number = number >> 1;
+		// 右移一位
+		printInfo(number);
+	}
+
+	// 方式1.一开始是这样的：
+	public static void test1(List<String> list) {
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i));
 		}
-	});
 	}
-	
-	//方式6.还有另一种：
+
+	// 方式2.当然稍微高级一点的是这样：
+	public static void test2(List<String> list) {
+		for (int i = 0, lengh = list.size(); i < lengh; i++) {
+			System.out.println(list.get(i));
+		}
+	}
+
+	// 方式3.还有就是Iterator遍历：
+	public static void test3(List<String> list) {
+		Iterator<String> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			System.out.println(iterator.next());
+		}
+	}
+
+	// 方式4.后来有了增强for循环：
+	public static void test4(List<String> list) {
+		for (String str : list) {
+			System.out.println(str);
+		}
+	}
+
+	// 方式5.java8以后新增的方式：
+	public static void test5(List<String> list) {
+		// list.forEach(System.out::println);和下面的写法等价
+		list.forEach(str -> {
+			System.out.println(str);
+		});
+		list.forEach(new Consumer<String>() {
+
+			@Override
+			public void accept(String t) {
+				// TODO Auto-generated method stub
+				System.out.println("====:" + t);
+			}
+		});
+	}
+
+	// 方式6.还有另一种：
 	public static void test6(List<String> list) {
-	  list.iterator().forEachRemaining(str->{
-	    System.out.println(str);
-	  });
+		list.iterator().forEachRemaining(str -> {
+			System.out.println(str);
+		});
 	}
-	
+
 	private static void randomchar() {
-		//产生5位长度的随机字符串，中文环境下是乱码
+		// 产生5位长度的随机字符串，中文环境下是乱码
 		RandomStringUtils.random(5);
 
-		//使用指定的字符生成5位长度的随机字符串
-		RandomStringUtils.random(5, new char[]{'a','b','c','d','e','f', '1', '2', '3'});
+		// 使用指定的字符生成5位长度的随机字符串
+		RandomStringUtils.random(5, new char[] { 'a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3' });
 
-		//生成指定长度的字母和数字的随机组合字符串
+		// 生成指定长度的字母和数字的随机组合字符串
 		RandomStringUtils.randomAlphanumeric(5);
 
-		//生成随机数字字符串
+		// 生成随机数字字符串
 		RandomStringUtils.randomNumeric(5);
 
-		//生成随机[a-z]字符串，包含大小写
+		// 生成随机[a-z]字符串，包含大小写
 		RandomStringUtils.randomAlphabetic(5);
 
-		//生成从ASCII 32到126组成的随机字符串 
+		// 生成从ASCII 32到126组成的随机字符串
 		RandomStringUtils.randomAscii(4);
 	}
 
-    /**
-     * 输出一个int的二进制数
-     * @param num
-     */
-    private static void printInfo(int num){
-        System.out.println(Integer.toBinaryString(num));
+	/**
+	 * 输出一个int的二进制数
+	 * 
+	 * @param num
+	 */
+	private static void printInfo(int num) {
+		System.out.println(Integer.toBinaryString(num));
 //        运行结果为：
 //
 //        1010
@@ -478,9 +504,7 @@ public class TestDemo {
 //         1010      十进制：10     原始数         number
 //        10100      十进制：20     左移一位       number = number << 1;
 //         1010      十进制：10     右移一位       number = number >> 1;
-    }
-	
-
+	}
 
 	private static void setData(User u) {
 		u.setAge(10);
