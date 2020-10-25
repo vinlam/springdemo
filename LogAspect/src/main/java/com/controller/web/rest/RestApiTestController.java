@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Max;
@@ -130,6 +131,30 @@ public class RestApiTestController {
 		logger.info("--------------" + b);
 		return "--------------" + b;
 	}
+	@RequestMapping(value = "/forward", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	// @ResponseBody
+	public String forward(@RequestParam String param,HttpServletRequest request,HttpServletResponse response) {
+		logger.info("--------------" + param);
+		try {
+			request.getRequestDispatcher("/api/getforward").forward(request, response);
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@RequestMapping(value = "/getforward", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	// @ResponseBody
+	public ResponseEntity<String> getForward(@RequestParam(required = false) String param) {
+		
+		logger.info("------param------" + param);
+		
+		return ResponseEntity.ok(param);
+	}
+	
 	@RequestMapping(value = "/testvoid", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	// @ResponseBody
 	public void testVoid() {
