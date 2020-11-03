@@ -14,6 +14,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 
 import com.entity.GiftInfo;
 import com.service.IGiftInfoStrategyService;
@@ -53,7 +54,9 @@ public class GiftInfoContext {
 			System.out.println(AnnotationUtils.getAnnotation(infoStrategyService.getClass(), Service.class));
 			
 			Order order = AnnotationUtils.getAnnotation(infoStrategyService.getClass(), Order.class);
-			System.out.println(order.value());
+			if(!ObjectUtils.isEmpty(order)) {
+				System.out.println(order.value());
+			}
 			Annotation annotations = AnnotationUtils.findAnnotation(infoStrategyService.getClass(), Service.class);
 		    Map<String, Object> annotAttribs = AnnotationUtils.getAnnotationAttributes(annotations);
 			System.out.println(annotAttribs);

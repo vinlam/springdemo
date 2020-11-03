@@ -78,10 +78,17 @@ public class TestDemo {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
-		System.out.println(EnumDemo.CODE.getName());
-		System.out.println(EnumDemo.CODE.getType());
+		System.out.println(EnumDemo.CODE.getName());//RSA
+		System.out.println(EnumDemo.CODE.getType());//1
 
 		Integer myint = 1;
+		Integer newint = 1;
+		Integer bint = 128;
+		Integer newbint = 128;//(-128 - 127)
+		System.out.println(bint == newbint);//false
+		System.out.println(bint.equals(newbint));//true
+		System.out.println(myint == newint);//true
+		System.out.println(1 == myint);//true
 		System.out.println(myint);
 		System.out.println("1".equals(myint));// false
 		System.out.println("1".equals(myint.toString()));// true
@@ -90,6 +97,9 @@ public class TestDemo {
 		String p = null;
 		String p2 = "123";
 		String p3 = "123";
+		String cstr = "汉字";
+		System.out.println("中文GBK占用字节："+cstr.getBytes("gbk").length); //结果是4
+		System.out.println("中文UTF-8占用字节："+cstr.getBytes().length); //结果是6
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("k", 234567);// Object 为数字类型，强转(String)m.get("k")会提示java.lang.ClassCastException:
 							// java.lang.Integer cannot be cast to java.lang.String,要用String.valueOf();

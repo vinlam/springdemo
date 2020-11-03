@@ -9,6 +9,6 @@ class UserService2 implements StrategyUserService{
 
     @Override
     public void saveUser() {
-        System.out.println("UserService1：业务实现类");
+        System.out.println("UserService2：业务实现类");
     }
 }

@@ -44,6 +44,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.common.gateway.RestClient;
 import com.dao.TB;
 import com.dao.TC;
+import com.entity.Cat;
 import com.entity.Country;
 import com.entity.PojoTest;
 import com.entity.User;
@@ -63,10 +64,10 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 @Controller
-@RequestMapping("/t")
-public class testcontroller {
-	private static final Logger logger = LoggerFactory.getLogger(testcontroller.class);
-	private static org.apache.log4j.Logger log = LoggerUtil.getLog(testcontroller.class);
+@RequestMapping("/view")
+public class MyController {
+	private static final Logger logger = LoggerFactory.getLogger(MyController.class);
+	private static org.apache.log4j.Logger log = LoggerUtil.getLog(MyController.class);
 	@Autowired
 	private HttpServletRequest servletRequest;
 	@Autowired
@@ -594,34 +595,41 @@ public class testcontroller {
 		modelAndView.addObject("param", "123");
 		// modelAndView.setViewName("forward:/t/getforward?" +
 		// servletRequest.getQueryString());
-		//modelAndView.setViewName("forward:/t/getforward");
-		//modelAndView.setViewName("forward:/view/getforward?abc=123");
-		modelAndView.setViewName("redirect:/view/showattr#abc=123");
+		modelAndView.setViewName("forward:/t/getforward");
 		return modelAndView;
 	}
-	
-	@RequestMapping(value = "/sforward", method = RequestMethod.GET)
-	public String  sforward() {
-		return "redirect:/view/showattr#abc=123";
-	}
-	
-	@ModelAttribute  
-    public void populateModel(Model model) {  
-       model.addAttribute("param", "abc");  //返回model
-    } 
-	
-	@ModelAttribute(value = "fwinfo")
-	public Map<String, String> userinfo() {
-		HashMap<String, String> map = new HashMap<>();
-		map.put("name", "jack");
-		map.put("age", "20");
-		return map;
+
+	@ModelAttribute
+	public void populateModel(@RequestParam(required = false) String abc, Model model) {
+		model.addAttribute("data", abc); // 返回model
 	}
 
+	@RequestMapping(value = "/helloWorld")
+	public String helloWorld() {
+		return "helloWorld"; // 返回的视图名
+	}
+//    
+//	@ModelAttribute(value = "fwinfo")
+//	public Map<String, String> userinfo() {
+//		HashMap<String, String> map = new HashMap<>();
+//		map.put("name", "jack");
+//		map.put("age", "20");
+//		return map;
+//	}
+
 	@RequestMapping(value = "/getforward", method = RequestMethod.GET)
-	public ResponseEntity<String> getForward(@RequestParam(required = false) String param,@ModelAttribute("fwinfo") Map<String, String> m) {
+	public ResponseEntity<String> getForward(@RequestParam(required = false) String param) {
 		logger.info("------param------" + param);
-		return ResponseEntity.ok(m.get("name"));
+		logger.info("------Attribute param------" + servletRequest.getAttribute("data"));
+
+		return ResponseEntity.ok(param);
+	}
+
+	@RequestMapping(value = "/showattr", method = RequestMethod.GET)
+	public String showAttr() {
+		logger.info("------Attribute param------" + servletRequest.getAttribute("data"));
+
+		return "showattr";
 	}
 
 	@RequestMapping(value = "/myiframerd", method = RequestMethod.GET)
@@ -638,5 +646,48 @@ public class testcontroller {
 		modelAndView.addObject("redirectUrl", "/LogAspect/t/route");
 		modelAndView.setViewName("iframe");
 		return modelAndView;
+	}
+
+	@RequestMapping("/helloshow")
+	public String helloshow(@ModelAttribute("users") User user, Map<String, Object> map, Cat cat, String password) {
+		cat.setSpeed(100);
+		System.out.println(password);
+		return "helloshow";
+	}
+	
+//	@ModelAttribute注解的方法在@RequestMapping注解的方法之前执行，并且preUser方法中，一共有四个对象放入map中，相当于：
+//
+//	map.put("cat", cat)、map.put("user", user)、map.put("users", user1)和map.put("string", "abc");
+//
+//	POJO在传参的过程中，springmvc会默认的把POJO放入到map中，其中键值就是类名的第一个字母小写。在@ModelAttribute注解的方法里，POJO放入到Map的同时，也放入ImpliciteModel中， 比如上面代码中的user和cat。@ModelAttribute注解的方法里，返回类型不是void，则返回的值也会被放到Map中，其中键值为返回类型的第一个字母小写。比如上述代码中，返回的"abc",就会被放入到Map中，相当于map.put("string", "abc")。
+//
+//	在执行@ModelAttribute注解的方法里，表单的数据会被当作参数传到@ModelAttribute注解的方法，和@RequestMapping注解的方法传参是一样的。
+//
+//	(2) @ModelAttribute对参数进行注解
+//
+//	比如上面的代码，@ModelAttribute("users")User user。在传参的过程中，首先检查ImpliciteModel有没有键值为users，有的话，直接从ImpliciteModel中取出该对象，然后在把表单传过来的数据赋值到该对象中，最后把该对象当作参数传入到@RequestMapping注解方法里，也就是hello方法。当检查到键值的话，并不会创建新的对象，而是直接从ImpliciteModel直接取出来。
+//
+//	(3) @ModelAttribute和@RequestMapping一起对方法进行注解
+//
+//	@ModelAttribute和@RequestMapping对方法进行注解时，其中返回类型被到Map中，并不会被当作视图的路径进行解析
+	@ModelAttribute
+	@RequestMapping("/hellob")
+	public String hello(@ModelAttribute("users") User user, Map<String, Object> map, Cat cat, String password) {
+		cat.setSpeed(100);
+		System.out.println(password);
+		return "bbbbb";
+	}
+
+	@ModelAttribute
+	public String preUser(Cat cat, User user, Map<String, Object> map, String username) {
+		System.out.println(username);
+		cat.setSpeed(110);
+		user.setId(1);
+		User user1 = new User();
+		user1.setAge(10);
+		user1.setName("jack");
+		user1.setPassword("111111");
+		map.put("users", user1);
+		return "abc";
 	}
 }

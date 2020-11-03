@@ -15,7 +15,7 @@ import com.entity.GiftInfo;
 import com.util.JsonMapper;
 
 /**
- * 礼品信息调用
+ * 策略模式
  */
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
