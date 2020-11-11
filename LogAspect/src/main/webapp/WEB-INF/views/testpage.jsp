@@ -21,6 +21,7 @@
 		<input type="button" value="getlistgids" id="sendGds"> 
 		<input type="button" value="delids" id="delids"> 
 	    <input type="button" value="testpost" id="sendPost">
+	    <input type="button" value="testpostStr" id="postStr">
 	    <input type="button" value="testpostData" id="sendTestPost">
 	    <input type="button" value="restclientformpost" id="restclientformpost">
 	    <input type="button" value="returnpostUser" id="returnpostUser">
@@ -297,6 +298,29 @@
 				success : function(result) {
 					alert(result);
 					alert(JSON.stringify(result));
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					//异常处理；
+					alert("ajaxerror: " + JSON.stringify(XMLHttpRequest)
+							+ " textStatus: " + XMLHttpRequest.statusText);
+				}
+			});
+		}
+       
+       	function testpostStr(){
+       		var param = {
+       				
+       		};
+           $.ajax({
+                   	url : "<%=request.getContextPath()%>/api/postStr/post?s=asdfasd",
+				type : 'post',
+				//async:true, 
+				dataType : "text",
+				contentType : "application/json",
+				//traditional: true, 
+				data : JSON.stringify(param),
+				success : function(result) {
+					alert(result);
 				},
 				error : function(XMLHttpRequest, textStatus, errorThrown) {
 					//异常处理；
@@ -654,6 +678,7 @@
 		$("#sendGds").off("click").on("click", testgds);
 		$("#delids").off("click").on("click", testdelids);
 		$("#sendPost").off("click").on("click", testpost);
+		$("#postStr").off("click").on("click", testpostStr);
 		$("#sendTestPost").off("click").on("click", testpostdata);
 		$("#restclientformpost").off("click").on("click", restclientformpost);
 		$("#returnpostUser").off("click").on("click", returnpostUser);

@@ -3,6 +3,7 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+String newbasePath = "//"+request.getServerName()+path+"/";
 %>
 <html>
 <head>
@@ -11,7 +12,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <title>ModelAttribute</title>
 </head>
 <body>
-	<form action="/LogAspect/view/helloshow" method="post">
+<%=newbasePath%>
+	<form action="<%=newbasePath%>view/helloshow" method="post">
 		<input name="name" type="text" /> 
 		<input name="password" type="text" /> 
 		<input type="submit" value="submit">

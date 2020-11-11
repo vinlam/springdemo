@@ -214,6 +214,7 @@ public class RestApiTestController {
 		return map;
 	}
 	
+	//http://localhost:8080/LogAspect/api/postStr/post?s=sdfasdf
 	@RequestMapping(value = "/postStr/{m}", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	// @ResponseBody
 	public String postStr(@PathVariable String m,@RequestParam String s) {

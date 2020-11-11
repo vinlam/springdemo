@@ -80,7 +80,13 @@ public class TestDemo {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		System.out.println(EnumDemo.CODE.getName());//RSA
 		System.out.println(EnumDemo.CODE.getType());//1
-
+		
+		Data data = new Data();
+		data.setscrtData("adsfad");
+		data.setScrtSgn("1111adsfad");
+		data.setUserIDCOM("www.v");
+		data.setTeData("注解在get上");
+		System.out.println(JsonMapper.toJsonString(data));
 		Integer myint = 1;
 		Integer newint = 1;
 		Integer bint = 128;
@@ -421,6 +427,33 @@ public class TestDemo {
 		number = number >> 1;
 		// 右移一位
 		printInfo(number);
+		
+		try {
+			gec();
+		}catch (Exception e) {
+			System.out.println(e.getCause().getMessage());//u is null
+			
+			System.out.println(e.getMessage());//java.lang.Exception: u is null
+		}
+	}
+	
+	public static void ec() throws Exception {
+		User u = null;
+		try {
+			System.out.println(u.getName());
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new Exception("u is null");
+		}
+	}
+	
+	public static void gec() throws Exception {
+		try {
+			ec();
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new Exception(e);
+		}
 	}
 
 	// 方式1.一开始是这样的：

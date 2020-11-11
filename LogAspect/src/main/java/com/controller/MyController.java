@@ -671,7 +671,7 @@ public class MyController {
 //
 //	@ModelAttribute和@RequestMapping对方法进行注解时，其中返回类型被到Map中，并不会被当作视图的路径进行解析
 	@ModelAttribute
-	@RequestMapping("/hellob")
+	@RequestMapping("/helloattr")
 	public String hello(@ModelAttribute("users") User user, Map<String, Object> map, Cat cat, String password) {
 		cat.setSpeed(100);
 		System.out.println(password);
