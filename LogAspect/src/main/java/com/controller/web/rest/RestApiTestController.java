@@ -41,6 +41,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONObject;
 import com.define.annotation.CacheLock;
 import com.define.annotation.CacheParam;
+import com.define.annotation.Idempotent;
 import com.define.annotation.LocalLock;
 import com.dto.DemoDTO;
 import com.entity.Person;
@@ -56,6 +57,7 @@ import com.service.IAutoInject;
 import com.service.SaveDataService;
 import com.util.ExportExcelByPoiUtil;
 import com.util.JsonMapper;
+import com.util.TokenUtil;
 import com.util.ToolUtils;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -661,5 +663,20 @@ public class RestApiTestController {
         Map<String, List<Map<String, String>>> map = Maps.newHashMap();
         map.put("安全交底列表", dataList);
         ExportExcelByPoiUtil.createExcel(request, response, titleAttr, titleHead, widthAttr, map, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }/* 此处数组为需要合并的列，可能有的需求是只需要某些列里面相同内容合并 */);
+    }
+    
+    @Autowired
+    private TokenUtil tokenUtil;
+ 
+    @GetMapping("/get/token")
+    public String getToken(){
+        String token = tokenUtil.generateToken();
+        return token;
+    }
+ 
+    @Idempotent
+    @GetMapping("/token/test")
+    public String testIdempotent(){
+        return "校验成功";
     }
 }

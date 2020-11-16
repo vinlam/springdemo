@@ -10,7 +10,6 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.apache.coyote.http11.upgrade.servlet31.ReadListener;
 
 public class RequestWrapper  extends HttpServletRequestWrapper {
     private final String body;

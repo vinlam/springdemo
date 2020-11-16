@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -242,6 +243,7 @@ public class TestDemo {
 						+ sf.format(scheduledExecutionTime()));
 			}
 		}, 1000, 1000);
+		System.out.println(URLDecoder.decode("%D6%D8%C7%EC%CE%D6%B2%D6%B9%A9%D3%A6%C1%B4%B9%DC%C0%ED%D3%D0%CF%DE%B9%AB%CB%BE","gbk"));
 		String str = "thi is a test 这是一个测试";
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<persons>\n" + " <person id=\"23\">\n"
 				+ " <name>张 三</name>\n" + " <age>26</age>\n" + "</person>\n" + " <person id=\"22\">\n"
