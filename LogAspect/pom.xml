@@ -77,7 +77,7 @@
 		<retry.version>1.2.2.RELEASE</retry.version>
 		<jwt.version>0.9.0</jwt.version>
 		<thumbnailator.version>0.4.8</thumbnailator.version>
-		<jetty.version>9.4.16.v20190411</jetty.version>
+		<jetty.version>9.4.35.v20201120</jetty.version>
 		<sigar.version>1.6.4</sigar.version>
 		<useragent.version>1.20</useragent.version>
 		<truelicense.version>1.33</truelicense.version>
