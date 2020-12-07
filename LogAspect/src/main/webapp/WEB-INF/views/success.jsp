@@ -163,7 +163,7 @@
 	console.log("key:${item.key} val:${item.value}");
 	</c:forEach>
 	//console.log(u);
-	<c:if test="${not empty(users) && users.size() > 0}">
+	<c:if test="${not empty(users)}">
 	<c:forEach items="${users}" var="user">
     	console.log("${user.name}");
     	var obj = {};

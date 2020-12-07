@@ -113,6 +113,10 @@
 			<mvc:mapping path="/t/**" />
 			<bean class="com.core.interceptor.ViewModelInterceptor" />
 		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/view/t/**" />
+			<bean class="com.core.interceptor.RedirectInterceptor" />
+		</mvc:interceptor>
 	</mvc:interceptors>
 	<!-- solr服务器地址 -->
 	<!-- <solr:solr-server id="solrServer" url="${solr.server}" /> -->

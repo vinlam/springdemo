@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -80,6 +81,83 @@ public class MyController {
 		System.out.println("test");
 		model.addAttribute("name", name);
 		return "success";
+	}
+	
+	@RequestMapping(value = "/setstatus", method = RequestMethod.GET)
+	public ModelAndView setstatus(Model model, String name) {
+		System.out.println(servletRequest.getRequestURL());
+		System.out.println("test");
+		model.addAttribute("name", name);
+		ModelAndView mv = new ModelAndView();
+		mv.setStatus(HttpStatus.BAD_REQUEST);
+		mv.setViewName("success");
+		return mv;
+	}
+	
+	@RequestMapping(value = "/svga", method = RequestMethod.GET)
+	public ModelAndView svga(Model model, String name) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("svgademo");
+		return mv;
+	}
+
+	// http://localhost:8080/LogAspect/t/testApi
+	@RequestMapping(value = "/response", method = RequestMethod.GET)
+	public void resp(HttpServletResponse response) throws IOException {
+		 /** response对象学习：
+		 * 		作用：
+		 * 			用来响应数据到浏览器的一个对象
+		 * 		使用：
+		 * 			设置响应头
+		 * 				setHeader(String name,String value);	// 在响应头中添加响应信息，但是同键会覆盖。
+		 * 				addHeader(String name,String value);	// 在响应头中添加响应信息，但是不会覆盖。
+		 * 			设置响应状态
+		 * 				sendError(int num,String msg);			// 自定义响应状态码。
+		 * 			设置响应实体
+		 * 				resp.getWrite().write(String str);		// 响应具体的数据给浏览器
+		 * 			设置响应编码格式：
+		 * 				resp.setContentType("text/html;charset=utf-8");
+		 * 
+		 * 		总结：
+		 * 			service请求处理代码流程：
+		 * 				(1)设置响应编码格式
+		 * 				(2)获取请求数据
+		 * 				(3)处理请求数据 java逻辑代码
+		 * 					-- 数据库操作（MVC思想）	
+		 * 				(4)响应处理结果 response
+		*/
+//		response.setHeader("mouse", "two fly birds");
+//		response.setHeader("mouse", "bjsxt");
+//		response.addHeader("key", "thinkpad");
+//		response.addHeader("key", "wollo");
+//		response.sendError(222, "wollo");
+		// 设置响应编码格式
+		// response.setHeader("content-type", "text/html;charset=utf-8");
+		// response.setContentType("text/plain;charset=utf-8"); //告诉浏览器
+		// 发送的是plain普通文本，<b>标签不被解析
+		// response.setContentType("text/xml;charset=utf-8"); //告诉浏览器
+		// 发送的是xml数据，并以xml的数据解析
+		response.setContentType("text/html");
+
+		// 设置响应状态码
+		// response.sendError(888, "自定义相应状态码，不是很常用");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("state", 222);
+		map.put("msg", "response set error status 222");
+		// 设置响应实体
+		//response.getWriter().write(JsonMapper.toJsonString(map));
+		PrintWriter out = response.getWriter();
+		out.println("<!DOCTYPE HTML>");
+		out.println("<HTML>");
+		out.println(" <HEAD><TITLE>sender</TITLE></HEAD>");
+		out.println(" <BODY>");
+		out.println(" <div>");
+		out.println(JsonMapper.toJsonString(map));
+		out.println(" </div>");
+		out.println(" </BODY>");
+		out.println("</HTML>");
+		out.flush();
+		out.close();
 	}
 
 	@RequestMapping(value = "/route", method = RequestMethod.GET)
@@ -151,7 +229,7 @@ public class MyController {
 		return mv;
 	}
 
-	@RequestMapping("/rd")
+	@RequestMapping("/t/rd")
 	public ModelAndView redirect(HttpServletResponse response) {
 		System.out.println("redirect");
 		System.out.println(servletRequest.getRequestURL());
@@ -169,7 +247,7 @@ public class MyController {
 
 	// https://localhost/LogAspect/t/testget?msg=%E6%AC%A2%E8%BF%8E%E8%AE%BF%E9%97%AE+hangge.com&blogName=java2blog&authorName=vin
 	// https://localhost/LogAspect/t/myrd
-	@RequestMapping("/myrd")
+	@RequestMapping("/t/myrd")
 	public ModelAndView mvredirect(HttpServletResponse response) {
 		System.out.println("redirect");
 		System.out.println(servletRequest.getHeader("X-Forwarded-Proto") + "\n" + servletRequest.getRequestURL());
@@ -242,18 +320,20 @@ public class MyController {
 			parameter.put("txt", "from rdp post");
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
-			out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
+			out.println("<!DOCTYPE HTML>");
 			out.println("<HTML>");
+			out.println(" <HEAD><meta charset=\"utf-8\"></HEAD>");
 			out.println(" <HEAD><TITLE>sender</TITLE></HEAD>");
 			out.println(" <BODY>");
-			out.println("<form name=\"submitForm\" action=\"" + url + "\" method=\"post\">");
-			Iterator<String> it = parameter.keySet().iterator();
-			while (it.hasNext()) {
-				String key = it.next();
-				out.println("<input type=\"hidden\" name=\"" + key + "\" value=\"" + parameter.get(key) + "\"/>");
-			}
-			out.println("</from>");
-			out.println("<script>window.document.submitForm.submit();</script> ");
+			out.println(" <div>form submit</div>");
+//			out.println("<form name=\"submitForm\" action=\"" + url + "\" method=\"post\">");
+//			Iterator<String> it = parameter.keySet().iterator();
+//			while (it.hasNext()) {
+//				String key = it.next();
+//				out.println("<input type=\"hidden\" name=\"" + key + "\" value=\"" + parameter.get(key) + "\"/>");
+//			}
+//			out.println("</from>");
+			//out.println("<script>window.document.submitForm.submit();</script> ");
 			out.println(" </BODY>");
 			out.println("</HTML>");
 			out.flush();
@@ -654,7 +734,7 @@ public class MyController {
 		System.out.println(password);
 		return "helloshow";
 	}
-	
+
 //	@ModelAttribute注解的方法在@RequestMapping注解的方法之前执行，并且preUser方法中，一共有四个对象放入map中，相当于：
 //
 //	map.put("cat", cat)、map.put("user", user)、map.put("users", user1)和map.put("string", "abc");

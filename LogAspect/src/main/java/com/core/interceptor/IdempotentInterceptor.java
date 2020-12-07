@@ -8,13 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.define.annotation.Idempotent;
 import com.util.TokenUtil;
-
+@Component
 public class IdempotentInterceptor implements HandlerInterceptor {
 	private final static Logger log = LoggerFactory.getLogger(IdempotentInterceptor.class); 
 	@Autowired

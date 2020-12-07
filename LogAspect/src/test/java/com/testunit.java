@@ -9,44 +9,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.common.component.AsyncTask;
-import com.common.component.MyRunnable;
-import com.common.component.NoAsyncTask;
-import com.common.gateway.RestClient;
-import com.common.memcached.MemcachedCacheManager;
-import com.common.solr.SolrClient;
-import com.config.BeanConfig;
-import com.dao.TB;
-import com.entity.Book;
-import com.entity.User;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.license.LicenseCreator;
-import com.license.LicenseCreatorParam;
-import com.service.BookService;
-import com.service.CustomerService;
-import com.service.EhCacheTestService;
-import com.service.IAutoInject;
-import com.service.MemCacheTestService;
-import com.service.SysLogService;
-import com.service.UserService;
-import com.service.impl.MemCacheTestServiceImpl;
-import com.service.impl.a.AutoInject;
-import com.util.DateJsonSerializer;
-import com.util.JsonMapper;
-import com.util.JsonUtil;
-
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
-import net.rubyeye.xmemcached.MemcachedClient;
-import net.rubyeye.xmemcached.exception.MemcachedException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +28,55 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.common.component.AsyncTask;
+import com.common.component.MyRunnable;
+import com.common.component.NoAsyncTask;
+import com.common.gateway.RestClient;
+import com.common.memcached.MemcachedCacheManager;
+import com.common.solr.SolrClient;
+import com.config.BeanConfig;
+import com.dao.TB;
+import com.entity.Book;
+import com.entity.User;
+import com.entry.xml.Address;
+import com.entry.xml.Person;
+import com.entry.xml.XmlElment;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.license.LicenseCreator;
+import com.license.LicenseCreatorParam;
+import com.service.BookService;
+import com.service.CustomerService;
+import com.service.EhCacheTestService;
+import com.service.IAutoInject;
+import com.service.MemCacheTestService;
+import com.service.SysLogService;
+import com.service.UserService;
+import com.service.impl.MemCacheTestServiceImpl;
+import com.service.impl.a.AutoInject;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.naming.NoNameCoder;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
+import com.thoughtworks.xstream.io.xml.Xpp3Driver;
+import com.thoughtworks.xstream.io.xml.XppDriver;
+import com.util.DateJsonSerializer;
+import com.util.JsonMapper;
+import com.util.JsonUtil;
+
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.exception.MemcachedException;
+
 //@Transactional
 //@TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -74,8 +85,7 @@ import org.springframework.util.MultiValueMap;
 @ContextConfiguration(locations = { "classpath*:/applicationContext.xml" })
 //@ContextConfiguration({"file:src/main/java/applicationContext.xml"})
 public class testunit {
-	
-	
+
 	@Autowired
 	// @Qualifier("AutoInjectA")
 	private AutoInject autoInjecta;
@@ -93,86 +103,90 @@ public class testunit {
 	@Autowired
 	// @Qualifier("redisTemplate")
 	private StringRedisTemplate stringRedisTemplate; // 使用RedisTemplate操作redis
-	
-	@Autowired
-    private MyRunnable threadRunnable;
 
-    @Test
-    public void testthread() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(10);
-        for (int i = 0; i < 11; i++) {
-            threadRunnable.executeThread("架构师成长之路", latch);
-        }
-        latch.await();
-        System.out.println("执行完毕了吗！");
-    }
-    private static MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-    @Test
-    public void testJsonAnnotation() throws JsonMappingException, JsonProcessingException {
-    	String str="[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
+	@Autowired
+	private MyRunnable threadRunnable;
+
+	@Test
+	public void testthread() throws InterruptedException {
+		CountDownLatch latch = new CountDownLatch(10);
+		for (int i = 0; i < 11; i++) {
+			threadRunnable.executeThread("架构师成长之路", latch);
+		}
+		latch.await();
+		System.out.println("执行完毕了吗！");
+	}
+
+	private static MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+
+	@Test
+	public void testJsonAnnotation() throws JsonMappingException, JsonProcessingException {
+		String str = "[{\"name\":\"jack\",\"age\":18},{\"name\":\"tom\",\"age\":20}]";
 		String ob = "{\"name\":\"jack\",\"age\":18,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
 		String agenullobj = "{\"name\":\"jack\",\"age\":null,\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
 		String agenull = "{\"name\":\"jack\",\"age\":\"\",\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
 		String ob1 = "{\"name\":\"jack\",\"data\":{\"name\":\"tom\",\"age\":10,\"sex\":\"Man\",\"newUserData\":{\"weight\":\"50KG\",\"height\":\"170CM\"}}}";
 		ObjectMapper mapper1 = new ObjectMapper();
-		List<JsonDTO> jsonDTOs = mapper1.readValue(str,new TypeReference<List<JsonDTO>>(){});
-		
-		//1.实体上
+		List<JsonDTO> jsonDTOs = mapper1.readValue(str, new TypeReference<List<JsonDTO>>() {
+		});
 
-		//@JsonInclude(value = Include.NON_NULL) 
+		// 1.实体上
 
-		//将该标记放在属性上，如果该属性为NULL则不参与序列化 
-		//如果放在类上边,那对这个类的全部属性起作用 
-		//Include.Include.ALWAYS 默认 
-		//Include.NON_DEFAULT 属性为默认值不序列化 
-		//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化 
-		//Include.NON_NULL 属性为NULL 不序列化 
-		
-		JsonDTO j = mapper1.readValue(ob,JsonDTO.class);
+		// @JsonInclude(value = Include.NON_NULL)
+
+		// 将该标记放在属性上，如果该属性为NULL则不参与序列化
+		// 如果放在类上边,那对这个类的全部属性起作用
+		// Include.Include.ALWAYS 默认
+		// Include.NON_DEFAULT 属性为默认值不序列化
+		// Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化
+		// Include.NON_NULL 属性为NULL 不序列化
+
+		JsonDTO j = mapper1.readValue(ob, JsonDTO.class);
 		System.out.println(JsonMapper.toJsonString(j));
 		JavaType javaType = JsonMapper.getInstance().createCollectionType(List.class, JsonDTO.class);
-		//JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
+		// JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class,
+		// NewUser.class);
 		JavaType jType = JsonMapper.getInstance().createCollectionType(JsonDTO.class, NewUser.class);
-		List<JsonDTO> jsonDTO = JsonMapper.getInstance().fromJson(str,javaType);
-		JsonDTO<NewUser> jDTO = JsonMapper.getInstance().fromJson(ob,jType);
-		//JsonDTO<NewUser> jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class); 
+		List<JsonDTO> jsonDTO = JsonMapper.getInstance().fromJson(str, javaType);
+		JsonDTO<NewUser> jDTO = JsonMapper.getInstance().fromJson(ob, jType);
+		// JsonDTO<NewUser> jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class);
 		JsonDTO jn = JsonMapper.getInstance().fromJson(ob, JsonDTO.class);
 		JsonDTO jn1 = JsonMapper.getInstance().fromJson(ob1, JsonDTO.class);
 		JsonDTO jnagenullobj = JsonMapper.getInstance().fromJson(agenullobj, JsonDTO.class);
-		System.out.println("age:"+jn1.getAge());//null
-		System.out.println("agenull序列返回\"\":"+jnagenullobj.getAge());//agenullobj 中age:null 返回 null, agenull中age:"" 返回无内容
-		System.out.println("agenull序列返回\"\":"+JsonMapper.toJsonString(jnagenullobj));//agenull序列返回"":{"name":"jack","age":"","data":{"name":"tom","age":10,"sex":"Man","newUserData":{"weight":"50KG","height":"170CM"}}}
+		System.out.println("age:" + jn1.getAge());// null
+		System.out.println("agenull序列返回\"\":" + jnagenullobj.getAge());// agenullobj 中age:null 返回 null, agenull中age:""
+																		// 返回无内容
+		System.out.println("agenull序列返回\"\":" + JsonMapper.toJsonString(jnagenullobj));// agenull序列返回"":{"name":"jack","age":"","data":{"name":"tom","age":10,"sex":"Man","newUserData":{"weight":"50KG","height":"170CM"}}}
 		JsonInDTO jsonInDTO = JsonMapper.getInstance().fromJson(ob, JsonInDTO.class);
-		//mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class).byDefault();
-		mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class)
-		.field("name","name")
-		.field("age","age")
-		.field("data", "newUser")//或者单个设置如下面四个field
+		// mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class).byDefault();
+		mapperFactory.classMap(JsonInDTO.class, JsonOutDTO.class).field("name", "name").field("age", "age")
+				.field("data", "newUser")// 或者单个设置如下面四个field
 //		.field("data.name", "newUser.name")
 //	    .field("data.sex", "newUser.sex")
 //	    .field("data.age", "newUser.age")
 //	    .field("data.newUserData", "newUser.newUserData")
-	    .register();;
+				.register();
+		;
 		MapperFacade mapperFacade = mapperFactory.getMapperFacade();
-		
-		JsonOutDTO newDto =mapperFacade.map(jsonInDTO, JsonOutDTO.class);
-		System.out.println("newDto:"+JsonMapper.toJsonString(newDto));
-		System.out.println("jn:"+JsonMapper.toJsonString(jn));
+
+		JsonOutDTO newDto = mapperFacade.map(jsonInDTO, JsonOutDTO.class);
+		System.out.println("newDto:" + JsonMapper.toJsonString(newDto));
+		System.out.println("jn:" + JsonMapper.toJsonString(jn));
 		System.out.println(JsonMapper.toJsonString(jDTO));
 		System.out.println(JsonMapper.toJsonString(jsonDTO));
 		System.out.println(JsonMapper.toJsonString(jsonDTOs));
-		
+
 		JsonDTO<NewUser> json = new JsonDTO<NewUser>();
 		json.setAge("20");
 		json.setName("Zhang");
-		
+
 		NewUser data = new NewUser();
 		data.setAge(15);
 		data.setName("Li");
 		data.setSex("F");
 		json.setData(data);
 		System.out.println(JsonMapper.toJsonString(json));
-		System.out.println(javaType.hasRawClass(List.class));//true
+		System.out.println(javaType.hasRawClass(List.class));// true
 		String s = "{\"id\": 1,\"name\": \"小明\",\"array\": [\"1\", \"2\"]}";
 		ObjectMapper mapper = new ObjectMapper();
 		// Json映射为对象
@@ -182,7 +196,7 @@ public class testunit {
 		System.out.println(jsonstr);
 		System.out.println(student.toString());
 	}
-    
+
 	@Test
 	public void testRedisSerializer() {
 		User u = new User();
@@ -462,24 +476,26 @@ public class testunit {
 		u3.setName("vv");
 		u3.setPassword("asdf1234");
 		String s = JsonUtil.beanToJson(u3);
-		//System.out.println("m第0次调用：" + memCacheTestService.cacheJsonStr(u3.getId(), s));
+		// System.out.println("m第0次调用：" + memCacheTestService.cacheJsonStr(u3.getId(),
+		// s));
 		// Thread.sleep(2000);
-		//System.out.println("m2秒之后调用：" + memCacheTestService.mCache());
-		//System.out.println("cacheStr调用：" + memCacheTestService.cacheStr("1","mCache_1"));
+		// System.out.println("m2秒之后调用：" + memCacheTestService.mCache());
+		// System.out.println("cacheStr调用：" +
+		// memCacheTestService.cacheStr("1","mCache_1"));
 		System.out.println("cacheNoKey调用：" + memCacheTestService.cacheNoKey());
 		System.out.println("cacheKey调用：" + memCacheTestService.cacheKey("cache key"));
-		
+
 		Thread.sleep(11000);
 		System.out.println("cacheKey11秒之后调用：" + memCacheTestService.cacheKey("cache key"));
 		System.out.println("cacheNoKey 11秒之后调用：" + memCacheTestService.cacheNoKey());
-		
-		//System.out.println("m再过11秒之后调用：" + memCacheTestService.mCache());
+
+		// System.out.println("m再过11秒之后调用：" + memCacheTestService.mCache());
 	}
-	
+
 	@Autowired
-	private MemcachedCacheManager memcachedCacheManager ;
+	private MemcachedCacheManager memcachedCacheManager;
 	@Autowired
-	private MemcachedClient memcachedClient ;
+	private MemcachedClient memcachedClient;
 
 	@Test
 	public void mCacheDel() throws InterruptedException {
@@ -488,15 +504,15 @@ public class testunit {
 		System.out.println("m第一次调用：" + memCacheTestService.mCache());
 		Thread.sleep(2000);
 		memCacheTestService.mCacheDel();
-		memcachedCacheManager.getCache("mC").put("t","asd");
-		System.out.println(memcachedCacheManager.getCache("mC").get("t",String.class));
+		memcachedCacheManager.getCache("mC").put("t", "asd");
+		System.out.println(memcachedCacheManager.getCache("mC").get("t", String.class));
 		try {
-			//memcachedClient.flushAll();//清除所有；
+			// memcachedClient.flushAll();//清除所有；
 			memCacheTestService.delMutilKey();
 			System.out.println("调用delMutilKey 后mCapi：" + memCacheTestServiceImpl.gettime("t"));
 			System.out.println("调用delMutilKey：" + memCacheTestService.mCache());
-			memcachedCacheManager.getCache("mC").put("test","test cache");
-			System.out.println(memcachedCacheManager.getCache("mC").get("test",String.class));
+			memcachedCacheManager.getCache("mC").put("test", "test cache");
+			System.out.println(memcachedCacheManager.getCache("mC").get("test", String.class));
 			memcachedClient.delete("mC_test");
 		} catch (TimeoutException e) {
 			// TODO Auto-generated catch block
@@ -505,21 +521,19 @@ public class testunit {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("mC_time:"+memcachedCacheManager.getCache("mC").get("time",String.class));
-		System.out.println(memcachedCacheManager.getCache("mC").get("test",String.class));
+		System.out.println("mC_time:" + memcachedCacheManager.getCache("mC").get("time", String.class));
+		System.out.println(memcachedCacheManager.getCache("mC").get("test", String.class));
 		System.out.println("del之后调用：" + memCacheTestService.mCache());
-		
-		System.out.println(memcachedCacheManager.getCache("mC").get("t",String.class));
+
+		System.out.println(memcachedCacheManager.getCache("mC").get("t", String.class));
 		System.out.println("第2次调用：" + memCacheTestServiceImpl.getTimestamp("time"));
 	}
-	
 
 	@Test
-	public void mc(){
+	public void mc() {
 
-		System.out.println(memcachedCacheManager.getCache("mC").get("t",String.class));
+		System.out.println(memcachedCacheManager.getCache("mC").get("t", String.class));
 	}
-	
 
 	@Test
 	public void mCacheUser() throws InterruptedException {
@@ -750,43 +764,72 @@ public class testunit {
 		ResponseEntity<String> response = RestClient.getClient().exchange(url, HttpMethod.GET, request, String.class);
 		System.out.println(response.getBody());
 	}
-	
-    @Test
-    public void licenseCreate() {
-        // 生成license需要的一些参数
-        LicenseCreatorParam param = new LicenseCreatorParam();
-        param.setSubject("ioserver");
-        param.setPrivateAlias("privatekey");
-        param.setKeyPass("123456");
-        param.setStorePass("123456");
-        param.setLicensePath("/Users/vinlam/license.lic");
-        param.setPrivateKeysStorePath("/Users/vinlam/work/gitproject/springdemo/LogAspect/src/main/java/privateKeys.keystore");
-        Calendar issueCalendar = Calendar.getInstance();
-        param.setIssuedTime(issueCalendar.getTime());
-        Calendar expiryCalendar = Calendar.getInstance();
-        expiryCalendar.set(2020, Calendar.DECEMBER, 31, 23, 59, 59);
-        param.setExpiryTime(expiryCalendar.getTime());
-        param.setConsumerType("user");
-        param.setConsumerAmount(1);
-        param.setDescription("测试");
-        LicenseCreator licenseCreator = new LicenseCreator(param);
-        // 生成license
-        licenseCreator.generateLicense();
-    }
-    @Autowired
-    private TypeStrategyContext typeStrategy;
-    @Test
-    public void testStrategy() {
-    	try {
-			String[] types = {"pc1","mobile"};
-			//types = null;
-			String key = "TypePc";//TypeMobile
-			String res = typeStrategy.getRes(types,key);
+
+	@Test
+	public void licenseCreate() {
+		// 生成license需要的一些参数
+		LicenseCreatorParam param = new LicenseCreatorParam();
+		param.setSubject("ioserver");
+		param.setPrivateAlias("privatekey");
+		param.setKeyPass("123456");
+		param.setStorePass("123456");
+		param.setLicensePath("/Users/vinlam/license.lic");
+		param.setPrivateKeysStorePath(
+				"/Users/vinlam/work/gitproject/springdemo/LogAspect/src/main/java/privateKeys.keystore");
+		Calendar issueCalendar = Calendar.getInstance();
+		param.setIssuedTime(issueCalendar.getTime());
+		Calendar expiryCalendar = Calendar.getInstance();
+		expiryCalendar.set(2020, Calendar.DECEMBER, 31, 23, 59, 59);
+		param.setExpiryTime(expiryCalendar.getTime());
+		param.setConsumerType("user");
+		param.setConsumerAmount(1);
+		param.setDescription("测试");
+		LicenseCreator licenseCreator = new LicenseCreator(param);
+		// 生成license
+		licenseCreator.generateLicense();
+	}
+
+	@Autowired
+	private TypeStrategyContext typeStrategy;
+
+	@Test
+	public void testStrategy() {
+		try {
+			String[] types = { "pc1", "mobile" };
+			// types = null;
+			String key = "TypePc";// TypeMobile
+			String res = typeStrategy.getRes(types, key);
 			System.out.println(res);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-    }
+	}
+
+	@Test
+	public void testxmltobean() {
+		// 定义构造函数使用'XppDriver'防止双下划线问题。
+		XStream xStream = new XStream(new XppDriver(new XmlFriendlyReplacer("_-", "_")));
+		xStream = new XStream(new StaxDriver());
+		//xStream = new XStream(new DomDriver("UTF-8", new XmlFriendlyReplacer("_-", "_"))) ;
+		xStream = new XStream(new Xpp3Driver(new NoNameCoder()));
+		xStream.autodetectAnnotations(true);// 自动注解扫描，否则注解不生效
+
+		// 构造JavaBean
+		Person p = new Person("1", new XmlElment("中文名", "汤姆"), "Male", 18, new Address("China", "FuJian", "XiaMen"));
+		System.out.println("实体信息：" + p);
+
+		// JavaBean -》 xml
+		String xml = xStream.toXML(p);
+		System.out.println("xml内容：");
+		System.out.println(xml);
+
+		// xml -》 JavaBean
+		Person p2 = (Person) xStream.fromXML(xml);
+		System.out.println(p2.getAddress());
+		System.out.println(JsonMapper.getInstance().toJson(p2));
+
+	}
+
 }
 
 class MyThead implements Runnable {
