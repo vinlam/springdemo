@@ -78,6 +78,7 @@ public class MyController {
 	@RequestMapping(value = "/testget", method = RequestMethod.GET)
 	public String test(Model model, String name) {
 		System.out.println(servletRequest.getRequestURL());
+		logger.info("uri:"+servletRequest.getRequestURI());// uri:/LogAspect/view/testget
 		System.out.println("test");
 		model.addAttribute("name", name);
 		return "success";
@@ -294,11 +295,41 @@ public class MyController {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+		ModelAndView mv = new ModelAndView("redirect:https://www.vinlam.com/arr.php");
+		// mv.setView(new RedirectView("/testget", true, false, true));
+		//mv.setView(new RedirectView("/arr.php"));
+		//mv.setView(new RedirectView("//www.vinlam.com/arr.php"));
+		return mv;
+	}
+	
+	@RequestMapping("/rdphp")
+	public ModelAndView rdphp(HttpServletResponse response) {
+		System.out.println("redirect");
+		System.out.println(servletRequest.getScheme() + "\n" + servletRequest.getRequestURL());
+		// return "redirect:http://www.baidu.com";
+//		try {
+//			response.getWriter().write("http://www.baidu.com");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		ModelAndView mv = new ModelAndView();
 		// mv.setView(new RedirectView("/testget", true, false, true));
 		mv.setView(new RedirectView("/arr.php"));
 		return mv;
 	}
+	
+	@RequestMapping(value = "/rdvn", method = RequestMethod.GET)
+	public ModelAndView rdvn(@RequestParam(required = false) String p) {
+		logger.info("--------------" + p);
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("param", "123");
+		// modelAndView.setViewName("forward:/t/getforward?" +
+		// servletRequest.getQueryString());
+		modelAndView.setViewName("redirect:https://www.vinlam.com/arr.php");
+		return modelAndView;
+	}
+
 
 	@RequestMapping("/rd1")
 	public void redirect1(HttpServletResponse response) {

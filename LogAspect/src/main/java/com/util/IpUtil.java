@@ -1,7 +1,12 @@
 package com.util;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -71,5 +76,22 @@ public class IpUtil {
 			
 		}
 		return "";
+	}
+	
+	public static void main(String[] args) throws SocketException {
+		Enumeration<NetworkInterface> enumerationInter = NetworkInterface.getNetworkInterfaces();
+		while(enumerationInter.hasMoreElements()) {
+			NetworkInterface networkInterface = enumerationInter.nextElement();
+			Enumeration<InetAddress> address = networkInterface.getInetAddresses();
+			while (address.hasMoreElements()) {
+				InetAddress inetAddress = (InetAddress) address.nextElement();
+				if(inetAddress instanceof Inet4Address) {
+					System.out.println("ip v4:"+inetAddress.getHostAddress());
+				}else if(inetAddress instanceof Inet6Address) {
+					System.out.println("ip v6:"+inetAddress.getHostAddress());
+				}
+			}
+		}
+		//如遇到ip v6不出来，查看jdk配置参数是否有-Djava.net.preferIPv4Stack=true,openJDK源码中有 User can disable ipv6 expicitlt by -Djava.net.preferIPv4Stack=true
 	}
 }

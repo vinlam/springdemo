@@ -372,7 +372,8 @@ public class TestDemo {
 
 		ss = Arrays.toString(status).replaceAll("[\\[\\]\\s,]", "");
 		System.out.println(ss);// 1111116611
-
+		ss = "&amp;df&amp;";
+		System.out.println(ss.replaceAll("&amp;", "&"));// &df&
 		str = "****";
 		if (StringUtils.isNotBlank(str)) {
 			StringBuilder sb = new StringBuilder("18698587234");
