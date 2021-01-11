@@ -333,7 +333,9 @@ public class TestDemo {
 		System.out.println(JsonMapper.toJsonString(list));
 		System.out.println(JsonMapper.toJsonString(newlist));
 		str = "1|12|4|5";
+		str = "1|12|4||5";
 		String[] s = str.split("\\|");
+		System.out.println(s.length);
 		StringTokenizer stringTokenizer = new StringTokenizer(str, "\\|");
 		List<String> sl = new ArrayList<String>();
 		while (stringTokenizer.hasMoreTokens()) {
