@@ -82,7 +82,7 @@
 		<useragent.version>1.20</useragent.version>
 		<truelicense.version>1.33</truelicense.version>
 		<jol-core.version>0.9</jol-core.version>
-		<netty.version>4.1.17.Final</netty.version>
+		<netty.version>4.1.42.Final</netty.version>
 		<zip4j.version>1.3.2</zip4j.version>
 		<commons-lang3.version>3.7</commons-lang3.version>
 		<xstream.version>1.4.9</xstream.version>
