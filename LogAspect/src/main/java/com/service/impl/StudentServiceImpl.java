@@ -32,4 +32,23 @@ public class StudentServiceImpl implements StudentService{
 		return studentDao.batchDelete(sList);
 	}
 
+	@Override
+	@Transactional
+	public int addStudent(Student s) {
+		// TODO Auto-generated method stub
+		return studentDao.addStudent(s);
+	}
+
+	@Override
+	@Transactional
+	public void addStudentThread(Student s) {
+		studentDao.addStudentThread(s);
+	}
+
+	@Override
+	@Transactional
+	public void addStudentThreadSyncManager(Student s) {
+		studentDao.addStudentThreadSyncManager(s);
+	}
+
 }

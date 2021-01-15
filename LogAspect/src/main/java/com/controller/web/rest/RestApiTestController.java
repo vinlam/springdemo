@@ -50,6 +50,7 @@ import com.dto.DemoDTO;
 import com.entity.Person;
 import com.entity.SafeConfess;
 import com.entity.SafeConfessContent;
+import com.entity.Student;
 import com.entity.TempDTO;
 import com.entity.TestDTO;
 import com.entity.TestDataDTO;
@@ -58,6 +59,8 @@ import com.google.common.collect.Maps;
 import com.service.GreetingService;
 import com.service.IAutoInject;
 import com.service.SaveDataService;
+import com.service.StudentService;
+import com.service.impl.StudentServiceImpl;
 import com.util.ExportExcelByPoiUtil;
 import com.util.JsonMapper;
 import com.util.TokenUtil;
@@ -80,6 +83,9 @@ public class RestApiTestController {
 	@Autowired
 	@Qualifier("AutoInjectB")
 	private IAutoInject autoInjectb;
+	
+	@Autowired
+	private StudentService studentService; 
 
 	@RequestMapping(value = "/type", method = { RequestMethod.GET,
 			RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -130,6 +136,38 @@ public class RestApiTestController {
 		}
 	}
 
+	@RequestMapping(value = "/addStudent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String addStudent() {
+		Student s = new Student();
+		s.setId(1001);
+		s.setEmail("jack@163.com");
+		s.setStudentName("jack");
+		s.setDeptId(1000);
+		int i = studentService.addStudent(s);
+		return String.valueOf(i);
+	}
+	
+	@RequestMapping(value = "/addStudentT", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public void addStudentThread() {
+		Student s = new Student();
+		s.setId(1002);
+		s.setEmail("tom@163.com");
+		s.setStudentName("tom");
+		s.setDeptId(1000);
+		studentService.addStudentThread(s);
+	}
+	
+	@RequestMapping(value = "/addStudentTM", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public void addStudentThreadSyncManager() {
+		Student s = new Student();
+		s.setId(1003);
+		s.setEmail("lam@163.com");
+		s.setStudentName("lam");
+		s.setDeptId(1000);
+		studentService.addStudentThreadSyncManager(s);
+	}
+	
+	
 	@RequestMapping(value = "/inject", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	// @ResponseBody
 	public String testb() {

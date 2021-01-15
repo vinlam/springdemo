@@ -9,8 +9,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -810,7 +816,8 @@ public class testunit {
 		// 定义构造函数使用'XppDriver'防止双下划线问题。
 		XStream xStream = new XStream(new XppDriver(new XmlFriendlyReplacer("_-", "_")));
 		xStream = new XStream(new StaxDriver());
-		//xStream = new XStream(new DomDriver("UTF-8", new XmlFriendlyReplacer("_-", "_"))) ;
+		// xStream = new XStream(new DomDriver("UTF-8", new XmlFriendlyReplacer("_-",
+		// "_"))) ;
 		xStream = new XStream(new Xpp3Driver(new NoNameCoder()));
 		xStream.autodetectAnnotations(true);// 自动注解扫描，否则注解不生效
 
@@ -830,6 +837,53 @@ public class testunit {
 
 	}
 
+	@Test
+	public void with_unspecified_arguments() {
+		List list = Mockito.mock(List.class);
+		// 匹配任意参数
+		/*
+		 * Mockito.anyInt() 任何 int 值 
+		 * Mockito.anyLong() 任何 long 值 
+		 * Mockito.anyString() 任何 String 值 
+		 * Mockito.any(XXX.class) 任何 XXX 类型的值
+		 */
+		System.out.println("Mockito.anyInt:"+list.get(Mockito.anyInt()));
+		Mockito.when(list.get(Mockito.anyInt())).thenReturn(1);
+		Mockito.when(list.contains(Mockito.argThat(new IsValid()))).thenReturn(true);
+		Assert.assertEquals(1, list.get(1));
+		Assert.assertEquals(1, list.get(999));
+		Assert.assertTrue(list.contains(1));
+		Assert.assertTrue(!list.contains(3));
+	}
+
+	@Test
+	public void testAnswer1() {
+		List<String> mock = Mockito.mock(List.class);
+		Mockito.doAnswer(new CustomAnswer()).when(mock).get(Mockito.anyInt());
+		Assert.assertEquals("大于三", mock.get(4));
+		Assert.assertEquals("小于三", mock.get(2));
+	}
+
+	public class CustomAnswer implements Answer<String> {
+		public String answer(InvocationOnMock invocation) throws Throwable {
+			Object[] args = invocation.getArguments();
+			Integer num = (Integer) args[0];
+			if (num > 3) {
+				return "大于三";
+			} else {
+				return "小于三";
+			}
+		}
+	}
+
+}
+
+class IsValid implements ArgumentMatcher<List> {
+	@Override
+	public boolean matches(List argument) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
 
 class MyThead implements Runnable {
