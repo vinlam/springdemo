@@ -1,9 +1,25 @@
 package com.entity;
 
-public class Student {
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Student")
+public class Student implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7112480552295528591L;
+	@Column(name ="id")
 	private int id;
+	@Column(name ="student_name")
 	private String studentName;
+	@Column(name ="email")
 	private String email;
+	@Column(name ="Dept_No")
 	private int deptId;
 
 	public int getId() {
