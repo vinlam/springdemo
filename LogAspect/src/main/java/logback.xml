@@ -165,6 +165,8 @@
 	<logger name="update">
 		<appender-ref ref="update" />
 	</logger>
+	
+<!-- 	<logger name="org.springframework.jms.connection" level="ERROR" /> -->
 	<!-- <logger name="error" > -->
 	<!-- <appender-ref ref="error" /> -->
 	<!-- </logger> -->

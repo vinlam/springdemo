@@ -20,6 +20,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.core.thread.ThreadCache;
 import com.define.annotation.CacheLock;
 import com.define.annotation.CacheParam;
 import com.define.annotation.Idempotent;
@@ -777,5 +779,19 @@ public class RestApiTestController {
 	public String test() {
 	    return "test";
 	}
+	
+	@RequestMapping(value = "/threadLocal/getPostRequestParams",method = RequestMethod.POST)
+    public void getPostRequestParams() {
+        String params = ThreadCache.getPostRequestParams();
+        logger.info("controller-post请求参数:[params={}]", params);
+    }
+	
+	@RequestMapping(value = "/wrapped/getPostRequestParams",method = RequestMethod.POST)
+	//public void getPostRequestParams(@RequestBody String params) {
+    public void getPostRequestParams(HttpServletRequest request) throws Exception{
+        byte[] bytes = IOUtils.toByteArray(request.getInputStream());
+        String params = new String(bytes, request.getCharacterEncoding());
+        logger.info("controller-post请求参数:[params={}]", params);
+    }
 	
 }

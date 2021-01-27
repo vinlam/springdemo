@@ -23,7 +23,7 @@
 		brokerURL="${activemq.url}" userName="${activemq.user}"
 		password="${activemq.password}" />
 
-	<!-- 配置JMS连接工长 -->
+	<!-- 配置JMS连接工厂 -->
 	<bean id="jmsconnectionFactory"
 		class="org.springframework.jms.connection.CachingConnectionFactory">
 		<constructor-arg ref="amqConnectionFactory" />
@@ -60,13 +60,14 @@
 	<bean id="queueMessageListener"
 		class="com.core.message.listener.QueueMessageListener" />
 
-	<!-- 显示注入消息监听容器（Queue），配置连接工厂，监听的目标是demoQueueDestination，监听器是上面定义的监听器 -->
-	<!-- <bean id="queueListenerContainer" -->
-	<!-- class="org.springframework.jms.listener.DefaultMessageListenerContainer"> -->
-	<!-- <property name="connectionFactory" ref="jmsconnectionFactory" /> -->
-	<!-- <property name="destination" ref="demoQueueDestination" /> -->
-	<!-- <property name="messageListener" ref="queueMessageListener" /> -->
-	<!-- </bean> -->
+	<!-- 显示注入消息监听容器（Queue），配置连接工厂，监听的目标是demoQueueDestination，监听器是上面定义的监听器 ，recoveryInterval默认不设置5秒刷新，如异常消息量大可自定义间隔-->
+	<bean id="queueListenerContainer"
+	class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	<property name="connectionFactory" ref="jmsconnectionFactory" />
+	<property name="destination" ref="demoQueueDestination" />
+	<property name="messageListener" ref="queueMessageListener" />
+	<property name="recoveryInterval" value="30000" />
+	</bean>
 	
 	
     <!-- 消息处理 -->
