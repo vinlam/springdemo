@@ -35,6 +35,8 @@ import java.util.TimerTask;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,10 +79,81 @@ public class TestDemo {
 	public static ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
+//	验证规则说明：
+//	（1）验证http,https,ftp开头
+//	（2）验证一个":"，验证多个"/"
+//	（3）验证网址为 xxx.xxx
+//	（4）验证有0个或1个问号
+//	（5）验证参数必须为xxx=xxx格式，且xxx=空    格式通过
+//	（6）验证参数与符号&连续个数为0个或1个
+	public static void reg() {
+		String url = "http:/klsfnklnklwnl.csfwfwn.cn?1231=sjkfjkf&sfwfw=";
+		String regex = "^([hH][tT]{2}[pP]:/*|[hH][tT]{2}[pP][sS]:/*|[fF][tT][pP]:/*)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+(\\?{0,1}(([A-Za-z0-9-~]+\\={0,1})([A-Za-z0-9-~]*)\\&{0,1})*)$";
+		Pattern pattern = Pattern.compile(regex);
+		if (pattern.matcher(url).matches()) {
+			System.out.println("是正确的网址");
+		} else {
+			System.out.println("非法网址");
+		}
+		
+		String reg = "^(?:https?://)?[\\w]{1,}(?:\\.?[\\w]{1,})+[\\w-_/?&=#%:]*$";
+		String reg1 = "^(http|https)?:\\/\\/([\\w]{1,}+\\.)*(ccb.com)*$";
+		url = "https://a.ccb.com";
+		pattern = Pattern.compile(reg1);
+		if (pattern.matcher(url).matches()) {
+			System.out.println("是正确的网址");
+		} else {
+			System.out.println("非法网址");
+		}
+		
+		//1、(?!)表示整体忽略大小写，如果单个，则可以写成"^d(?!)oc"表示oc忽略大小写，"^d((?!)o)c"表示只有o忽略大小写 
+		//2、Pattern.CASE_INSENSITIVE
+		//解释说明:
+		//^						:表示匹配开始;
+		//?:https?://　　			:表示https?有,则有://;如果没有https?,则没有://,它们是一对一匹配;
+		//(?:https?://)?　　		:表示捕获组0个或者1个,可以没有https:// http://;
+		//[\\w]{1,}　　			:表示匹配a-zA-Z0-9,可以有多个,比如www ad 123dd等多种组合;
+		//?:\\.?[\\w]{1,}　　		:表示匹配如果有.,则有[\\w]{1,};如果没有.,则没有[\\w]{1,},它们是一对一匹配;
+		//(?:\\.?[\\w]{1,})+	:表示至少匹配一个.abc .com .cn;
+		//[\\w-_/?&=#%:]*　　		:表配url后面的参数,包括特殊字符,可以有0个或者多个;
+		//$　　					:表示匹配结束;
+		//
+		//量词描述一个模式吸收输入文本的方式.
+		//*:前面字符或组匹配0或多个
+		//+:前面字符或组匹配1或多个
+		//?:前面字符或组匹配0或1个
+		//{n}:前面字符或组的数量为n个
+		//{n,}:前面字符或组的数量至少n个
+		//{n,m}:前面字符或组数量至少n个,最多m个
+	}
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
+		reg() ;
 		System.out.println(EnumDemo.CODE.getName());//RSA
 		System.out.println(EnumDemo.CODE.getType());//1
+		String regex = "\\?|\\*";
+		Pattern pattern = Pattern.compile(regex);
+		String[] splitStrs = pattern.split("123?123*456*456");//123 123 456 456
+		System.out.println(splitStrs);
+		String[] splitStrs2 = pattern.split("123?123*456*456", 2);// 123 123*456*456
+		System.out.println(splitStrs2);
+		
+		Pattern pattern1 = Pattern.compile("\\?{2}");
+		Matcher matcher = pattern1.matcher("??");
+		boolean matches = matcher.matches();//true
+		System.out.println(matches);
+		matcher=pattern1.matcher("?");
+		matches = matcher.matches();//false
+		System.out.println(matches);
+		
+		Pattern pt = Pattern.compile("\\d+");
+		Matcher mt = pt.matcher("22bb23");
+		boolean match = mt.lookingAt();//true
+		System.out.println(match);
+		mt = pt.matcher("bb2233");
+		match= mt.lookingAt();
+		System.out.println(match);//false
+		
 		
 		Data data = new Data();
 		data.setscrtData("adsfad");
