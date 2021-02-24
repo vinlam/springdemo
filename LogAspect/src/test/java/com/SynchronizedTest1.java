@@ -30,7 +30,13 @@ public class SynchronizedTest1 {
         new Thread(test::method1).start();
 
         new Thread(test::method2).start();
-        
+      //替换下面片段
+//              new Thread(new Runnable() {
+//                  @Override
+//                  public void run() {
+//                      test.method2();
+//                  }
+//              }).start();
 //        Method 1 start
 //        Method 1 execute
 //        Method 1 end

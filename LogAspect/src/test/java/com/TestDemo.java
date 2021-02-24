@@ -338,6 +338,9 @@ public class TestDemo {
 		// int[] a = {1,2,4,5,3};
 		int[] a = { 1, 2, 4, 5 };
 		List<User> list = new ArrayList<User>();
+		List<User> listu = null;
+		System.out.println("list size:"+list.size());
+		System.out.println("listu size:"+listu.size());
 		List<User> newlist = new ArrayList<User>();
 		User obj = new User();
 		obj.setAge(12);
