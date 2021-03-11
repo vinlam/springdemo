@@ -30,6 +30,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,10 +76,105 @@ public class testcontroller {
 	// http://localhost:8080/LogAspect/t/testApi
 	@RequestMapping(value = "/testget", method = RequestMethod.GET)
 	public String test(Model model, String name) {
-		System.out.println(servletRequest.getRequestURL());
-		System.out.println("test");
+		logger.info(servletRequest.getRequestURL().toString());
+		logger.info("referer:" + servletRequest.getHeader("referer"));
+		logger.info("test");
+		Cookie[] cookies = servletRequest.getCookies();
+		if (!ObjectUtils.isEmpty(cookies)) {
+			for (Cookie cookie : cookies) {
+				logger.info("cookie ---- "+cookie.getName() + ":" + cookie.getValue());
+			}
+		}
 		model.addAttribute("name", name);
 		return "success";
+	}
+
+	@RequestMapping(value = "/testcookie", method = RequestMethod.GET)
+	public String setCookie(@RequestParam(required = false, defaultValue = "testcookie") String param) {
+
+		Cookie c = new Cookie("name", param);
+		c.setDomain(".test.com");
+		c.setMaxAge(100);// second
+		// c.setSecure(true);
+		// c.setPath("/");
+		// if HttpOnly
+		c.setPath(";Path=/;HttpOnly;");
+		servletResponse.addCookie(c);
+		return c.getValue();
+	}
+
+	@RequestMapping(value = "/rdvcookie", method = RequestMethod.GET)
+	public String rdvcookie(@RequestParam(required = false, defaultValue = "testcookie") String param) {
+
+		Cookie c = new Cookie("name", param);
+		c.setDomain(".test.com");
+		c.setMaxAge(100);// second
+		// c.setSecure(true);
+		// c.setPath("/");
+		// if HttpOnly
+		c.setPath(";Path=/;HttpOnly;");
+		servletResponse.addCookie(c);
+		logger.info("for set cookie:"+ c.getValue());
+		return "redirect:testget";
+	}
+
+	@RequestMapping(value = "/getcookie", method = RequestMethod.GET)
+	public String getCookie() {
+
+		Cookie[] cookies = servletRequest.getCookies();
+		if (!ObjectUtils.isEmpty(cookies)) {
+			for (Cookie cookie : cookies) {
+				logger.info(cookie.getName() + ":" + cookie.getValue());
+			}
+		}
+		return JsonMapper.toJsonString(cookies);
+	}
+
+	@RequestMapping(value = "/getcookiebynaame", method = RequestMethod.GET)
+	public String getCookie(String param) {
+
+		Cookie[] cookies = servletRequest.getCookies();
+		if (!ObjectUtils.isEmpty(cookies)) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals(param)) {
+					logger.info(cookie.getName() + ":" + cookie.getValue());
+					return cookie.getValue();
+				}
+			}
+		}
+		return JsonMapper.toJsonString(cookies);
+	}
+
+	@RequestMapping(value = "/delcookie", method = RequestMethod.GET)
+	public void delCookie() {
+
+		// 根据 key 将 value 置空
+		Cookie cookie_username = new Cookie("name", "");
+		// 设置持久时间为0
+		cookie_username.setMaxAge(0);
+		// 设置共享路径
+		cookie_username.setPath("/");
+		// 向客户端发送 Cookie
+		servletResponse.addCookie(cookie_username);
+		logger.info(cookie_username.getValue());
+	}
+
+	// http://localhost:8080/LogAspect/t/testApi
+	@RequestMapping(value = "/redirectview", method = RequestMethod.GET)
+	public String redirectview() throws IOException {
+		String path = "http://mall.ccb.com/ecp/view/thirdpart/member/authorize?channel_code=CCVMB001&loginParam=DCsOxzQK0cATEM6572Eg8cKqn3KtXvvUMd7Vbi42ApgNiVc1J3kFzKh%2BcHI%2BTEwuBFyg12oYwxzJxvEhuf%2BCVlO9UqATEo94Jqe42wySTOQqoLglXuVLTgX8KHgUCAdGOwQDiXQeoKH1oGDa53RfJyZ37AeZtBffqFDo%2BmZpUnM%3D&toUrl=http://mall.ccb.com/ecp/view/sft/m-index?channelCode=CCVMB001";
+		return "redirect:" + "path";
+	}
+
+	@RequestMapping(value = "/rdv", method = RequestMethod.GET)
+	public ModelAndView rdv() throws IOException {
+		String path = "https://mall.ccb.com/ecp/view/thirdpart/member/authorize?channel_code=CCVMB001&loginParam=DCsOxzQK0cATEM6572Eg8cKqn3KtXvvUMd7Vbi42ApgNiVc1J3kFzKh%2BcHI%2BTEwuBFyg12oYwxzJxvEhuf%2BCVlO9UqATEo94Jqe42wySTOQqoLglXuVLTgX8KHgUCAdGOwQDiXQeoKH1oGDa53RfJyZ37AeZtBffqFDo%2BmZpUnM%3D&toUrl=https://mall.ccb.com/ecp/view/sft/m-index?channelCode=CCVMB001";
+		servletResponse.setContentType("application/json;charset=utf-8");
+		servletResponse.setHeader("Content-Type", "application/json");
+		servletResponse.setCharacterEncoding("UTF-8");
+		servletResponse.setStatus(301);
+		servletResponse.sendRedirect(path);
+		return null;
 	}
 
 	@RequestMapping(value = "/route", method = RequestMethod.GET)
@@ -152,8 +248,8 @@ public class testcontroller {
 
 	@RequestMapping("/rd")
 	public ModelAndView redirect(HttpServletResponse response) {
-		System.out.println("redirect");
-		System.out.println(servletRequest.getRequestURL());
+		logger.info("redirect");
+		logger.info("requesturl:"+servletRequest.getRequestURL().toString());
 		// return "redirect:http://www.baidu.com";
 		try {
 			response.getWriter().write("http://www.baidu.com");
@@ -170,8 +266,8 @@ public class testcontroller {
 	// https://localhost/LogAspect/t/myrd
 	@RequestMapping("/myrd")
 	public ModelAndView mvredirect(HttpServletResponse response) {
-		System.out.println("redirect");
-		System.out.println(servletRequest.getHeader("X-Forwarded-Proto") + "\n" + servletRequest.getRequestURL());
+		logger.info("redirect");
+		logger.info(servletRequest.getHeader("X-Forwarded-Proto") + "\n" + servletRequest.getRequestURL());
 		Log.info("Proto:" + servletRequest.getHeader("X-Forwarded-Proto") + servletRequest.getServerName() + " Port:"
 				+ servletRequest.getHeader("X-Real-Port") + "\n" + servletRequest.getRequestURL());
 		// return "redirect:http://www.baidu.com";
@@ -182,6 +278,7 @@ public class testcontroller {
 //			e.printStackTrace();
 //		}
 		ModelAndView mv = new ModelAndView();
+		response.setHeader("referer", "asdf");
 		mv.setView(new RedirectView("/t/testget", true, false, true));
 		// mv.setView(new RedirectView("/t/testget"));
 		return mv;
@@ -189,8 +286,8 @@ public class testcontroller {
 
 	@RequestMapping("/rv")
 	public ModelAndView gorestview(HttpServletResponse response) {
-		System.out.println("redirect");
-		System.out.println(servletRequest.getScheme() + "\n" + servletRequest.getRequestURL());
+		logger.info("redirect");
+		logger.info(servletRequest.getScheme() + "\n" + servletRequest.getRequestURL());
 		// return "redirect:http://www.baidu.com";
 //		try {
 //			response.getWriter().write("http://www.baidu.com");
@@ -206,8 +303,8 @@ public class testcontroller {
 
 	@RequestMapping("/rvphp")
 	public ModelAndView rvphp(HttpServletResponse response) {
-		System.out.println("redirect");
-		System.out.println(servletRequest.getScheme() + "\n" + servletRequest.getRequestURL());
+		logger.info("redirect");
+		logger.info(servletRequest.getScheme() + "\n" + servletRequest.getRequestURL());
 		// return "redirect:http://www.baidu.com";
 //		try {
 //			response.getWriter().write("http://www.baidu.com");
@@ -223,7 +320,7 @@ public class testcontroller {
 
 	@RequestMapping("/rd1")
 	public void redirect1(HttpServletResponse response) {
-		System.out.println("redirect1");
+		logger.info("redirect1");
 		try {
 			response.sendRedirect("http://www.baidu.com");
 		} catch (IOException e) {
@@ -234,7 +331,7 @@ public class testcontroller {
 
 	@RequestMapping("/rdp")
 	public void redirectpostattribute(HttpServletResponse response) {
-		System.out.println("rdp");
+		logger.info("rdp");
 		try {
 			String url = "testpost";
 			Map<String, Object> parameter = new HashMap<String, Object>();
@@ -267,7 +364,7 @@ public class testcontroller {
 	// = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@RequestMapping(value = "/getPostUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ModelAndView getPostUser(@RequestBody User user) {
-		// System.out.println(JSONObject.toJSON(userDTO));
+		// logger.info(JSONObject.toJSON(userDTO));
 
 		ModelAndView mAndView = new ModelAndView("showUser");
 		mAndView.addObject("username", user.getName());
@@ -279,7 +376,7 @@ public class testcontroller {
 	@RequestMapping(value = "/getPostUser1", method = RequestMethod.POST, produces = MediaType.APPLICATION_XML_VALUE)
 	@ResponseBody
 	public User getPostUser1(User user) {
-		// System.out.println(JSONObject.toJSON(userDTO));
+		// logger.info(JSONObject.toJSON(userDTO));
 
 		return user;
 	}
@@ -287,7 +384,7 @@ public class testcontroller {
 	@RequestMapping(value = "/postUser", method = RequestMethod.POST) // application/xml;charset=UTF-8,
 	@ResponseBody
 	public User pUser(User user) {
-		// System.out.println(JSONObject.toJSON(userDTO));
+		// logger.info(JSONObject.toJSON(userDTO));
 
 		return user;
 	}
@@ -311,7 +408,7 @@ public class testcontroller {
 		map.add("name", "123post");
 //		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 //		UserVo vo  = mapperFactory.getMapperFacade().map(user, UserVo.class);
-//		//System.out.println(vo.toString());
+//		//logger.info(vo.toString());
 //		logger.info("vo:"+JsonMapper.toJsonString(vo));
 		HttpEntity<MultiValueMap<String, Object>> requestmap = new HttpEntity<MultiValueMap<String, Object>>(map,
 				headers);
@@ -324,7 +421,7 @@ public class testcontroller {
 		User uu = RestClient.getClient().exchange(url, HttpMethod.POST, requestmap, User.class).getBody();// headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);//produces
 																											// =
 																											// MediaType.APPLICATION_XML_VALUE
-		// System.out.println(u);
+		// logger.info(u);
 		return JsonMapper.toJsonString(uu);
 	}
 
@@ -360,14 +457,14 @@ public class testcontroller {
 		// String u = RestClient.getClient().exchange(url,HttpMethod.POST,
 		// requestmap,String.class).getBody();//headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);//produces
 		// = MediaType.APPLICATION_XML_VALUE
-		System.out.println(u);
+		logger.info(u);
 		return u;
 		// User json =
 		// RestClient.getClient().postForEntity(url,request,User.class).getBody();
 		// JSONObject json = RestClient.getClient().postForEntity(url,
 		// postData,JSONObject.class).getBody();
 		// String json = JsonUtil.beanToJson(u);
-		// System.out.println(json.toString());
+		// logger.info(json.toString());
 
 //		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 //		
@@ -385,8 +482,8 @@ public class testcontroller {
 //		// JSONObject json = RestClient.getClient().postForEntity(url, postData,
 //		//// JSONObject.class).getBody();
 //		// String json = JsonUtil.beanToJson(u);
-//		// System.out.println(json.toString());
-//		System.out.println(u);
+//		// logger.info(json.toString());
+//		logger.info(u);
 		// return mAndView;
 	}
 
@@ -426,7 +523,7 @@ public class testcontroller {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("name", txt);
 		mv.setViewName("success");
-		System.out.println("test:" + txt);
+		logger.info("test:" + txt);
 
 		return mv;
 	}
@@ -467,9 +564,9 @@ public class testcontroller {
 		int count = sysLogService.count();
 		// String cache = "2222";
 //		Thread.sleep(1000);
-//		System.out.println(cache);
+//		logger.info(cache);
 //		Thread.sleep(11000);
-//		System.out.println("11秒："+cache);
+//		logger.info("11秒："+cache);
 		return "aaaa" + count;
 	}
 
@@ -487,7 +584,7 @@ public class testcontroller {
 	// @Log(desc="test define annotation")
 	@ResponseBody
 	public String getUser(UserDTO userDTO) {
-		System.out.println(JSONObject.toJSON(userDTO));
+		logger.info(JSONObject.toJSON(userDTO).toString());
 
 		return JSONObject.toJSON(userDTO).toString();
 	}
@@ -511,8 +608,8 @@ public class testcontroller {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		System.out.println("getParameter:" + request.getParameter("Id"));
-		System.out.println(u.getId());
+		logger.info("getParameter:" + request.getParameter("Id"));
+		logger.info(String.valueOf(u.getId()));
 		return u;
 	}
 
@@ -521,7 +618,7 @@ public class testcontroller {
 	// @Log(desc="test define annotation")
 	@ResponseBody
 	public String getUser1(UserDTO userDTO) {
-		System.out.println(JSONObject.toJSON(userDTO));
+		logger.info(JSONObject.toJSON(userDTO).toString());
 
 		return JSONObject.toJSON(userDTO).toString();
 	}
@@ -538,9 +635,9 @@ public class testcontroller {
 	@ResponseBody
 	public String clearcache() throws InterruptedException {
 		memCacheTestService.clearAll();
-		System.out.println("5 mC_t：" + memCacheTestService.getTimestamp("t"));
-		System.out.println("5 mC_st：" + memCacheTestService.getTimestamp("st"));
-		System.out.println("5 myCache_t：" + ehCacheTestService.getTimestamp("t"));
+		logger.info("5 mC_t：" + memCacheTestService.getTimestamp("t"));
+		logger.info("5 mC_st：" + memCacheTestService.getTimestamp("st"));
+		logger.info("5 myCache_t：" + ehCacheTestService.getTimestamp("t"));
 		List<String> listKey = new ArrayList<String>();
 		listKey.add("t");
 		listKey.add("st");
@@ -548,8 +645,8 @@ public class testcontroller {
 			memCacheTestService.deleteOne(s);
 		}
 
-		System.out.println("5 mC_t：" + memCacheTestService.getTimestamp("t"));
-		System.out.println("5 mC_st：" + memCacheTestService.getTimestamp("st"));
+		logger.info("5 mC_t：" + memCacheTestService.getTimestamp("t"));
+		logger.info("5 mC_st：" + memCacheTestService.getTimestamp("st"));
 		return "ok";
 	}
 
@@ -594,22 +691,22 @@ public class testcontroller {
 		modelAndView.addObject("param", "123");
 		// modelAndView.setViewName("forward:/t/getforward?" +
 		// servletRequest.getQueryString());
-		//modelAndView.setViewName("forward:/t/getforward");
-		//modelAndView.setViewName("forward:/view/getforward?abc=123");
+		// modelAndView.setViewName("forward:/t/getforward");
+		// modelAndView.setViewName("forward:/view/getforward?abc=123");
 		modelAndView.setViewName("redirect:/view/showattr#abc=123");
 		return modelAndView;
 	}
-	
+
 	@RequestMapping(value = "/sforward", method = RequestMethod.GET)
-	public String  sforward() {
+	public String sforward() {
 		return "redirect:/view/showattr#abc=123";
 	}
-	
-	@ModelAttribute  
-    public void populateModel(Model model) {  
-       model.addAttribute("param", "abc");  //返回model
-    } 
-	
+
+	@ModelAttribute
+	public void populateModel(Model model) {
+		model.addAttribute("param", "abc"); // 返回model
+	}
+
 	@ModelAttribute(value = "fwinfo")
 	public Map<String, String> userinfo() {
 		HashMap<String, String> map = new HashMap<>();
@@ -619,7 +716,8 @@ public class testcontroller {
 	}
 
 	@RequestMapping(value = "/getforward", method = RequestMethod.GET)
-	public ResponseEntity<String> getForward(@RequestParam(required = false) String param,@ModelAttribute("fwinfo") Map<String, String> m) {
+	public ResponseEntity<String> getForward(@RequestParam(required = false) String param,
+			@ModelAttribute("fwinfo") Map<String, String> m) {
 		logger.info("------param------" + param);
 		return ResponseEntity.ok(m.get("name"));
 	}

@@ -126,8 +126,11 @@ public class TestDemo {
 		//{n,}:前面字符或组的数量至少n个
 		//{n,m}:前面字符或组数量至少n个,最多m个
 	}
+	
+	private final static String s_str = "final static str";
 
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
+		System.out.println(s_str);
 		reg() ;
 		System.out.println(EnumDemo.CODE.getName());//RSA
 		System.out.println(EnumDemo.CODE.getType());//1
@@ -173,6 +176,9 @@ public class TestDemo {
 		System.out.println("1".equals(myint));// false
 		System.out.println("1".equals(myint.toString()));// true
 		System.out.println(TestDemo.class.getResource("/"));
+		int count = 0 ;
+		System.out.println(count);
+		
 		rand();
 		String p = null;
 		String p2 = "123";

@@ -794,4 +794,10 @@ public class RestApiTestController {
         logger.info("controller-post请求参数:[params={}]", params);
     }
 	
+	@RequestMapping(value = "/postStrParam",method = RequestMethod.POST)
+	public String postStrParam(@RequestBody String param) {
+		logger.info("post请求参数:[param={}]", param);
+		return param;
+	}
+	
 }
