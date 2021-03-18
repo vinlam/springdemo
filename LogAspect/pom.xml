@@ -42,7 +42,7 @@
 		<jsoup.version>1.11.3</jsoup.version>
 		<jackson.version>2.10.3</jackson.version>
 		<fastjson.version>1.2.58</fastjson.version>
-		<elasticsearch.version>6.7.1</elasticsearch.version>
+		<elasticsearch.version>6.8.13</elasticsearch.version>
 		<elasticsearch.client.version>6.3.2</elasticsearch.client.version>
 		<aspectjrt.version>1.6.11</aspectjrt.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
