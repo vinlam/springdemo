@@ -162,13 +162,13 @@ public class testcontroller {
 	// http://localhost:8080/LogAspect/t/testApi
 	@RequestMapping(value = "/redirectview", method = RequestMethod.GET)
 	public String redirectview() throws IOException {
-		String path = "http://mall.ccb.com/ecp/view/thirdpart/member/authorize?channel_code=CCVMB001&loginParam=DCsOxzQK0cATEM6572Eg8cKqn3KtXvvUMd7Vbi42ApgNiVc1J3kFzKh%2BcHI%2BTEwuBFyg12oYwxzJxvEhuf%2BCVlO9UqATEo94Jqe42wySTOQqoLglXuVLTgX8KHgUCAdGOwQDiXQeoKH1oGDa53RfJyZ37AeZtBffqFDo%2BmZpUnM%3D&toUrl=http://mall.ccb.com/ecp/view/sft/m-index?channelCode=CCVMB001";
+		String path = "https://www.baidu.com";
 		return "redirect:" + "path";
 	}
 
 	@RequestMapping(value = "/rdv", method = RequestMethod.GET)
 	public ModelAndView rdv() throws IOException {
-		String path = "https://mall.ccb.com/ecp/view/thirdpart/member/authorize?channel_code=CCVMB001&loginParam=DCsOxzQK0cATEM6572Eg8cKqn3KtXvvUMd7Vbi42ApgNiVc1J3kFzKh%2BcHI%2BTEwuBFyg12oYwxzJxvEhuf%2BCVlO9UqATEo94Jqe42wySTOQqoLglXuVLTgX8KHgUCAdGOwQDiXQeoKH1oGDa53RfJyZ37AeZtBffqFDo%2BmZpUnM%3D&toUrl=https://mall.ccb.com/ecp/view/sft/m-index?channelCode=CCVMB001";
+		String path = "/testget";
 		servletResponse.setContentType("application/json;charset=utf-8");
 		servletResponse.setHeader("Content-Type", "application/json");
 		servletResponse.setCharacterEncoding("UTF-8");

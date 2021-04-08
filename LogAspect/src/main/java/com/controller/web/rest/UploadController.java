@@ -87,13 +87,8 @@ public class UploadController {
 		headerParams.put("Accept-Encoding", "gzip");
 		headerParams.put("charset", "utf-8");
 		
-		otherParams.put("ThirdSysID", "ZHCS001");
-		otherParams.put("TxCode", "SFT10030");
-		otherParams.put("Data", "30E1456CAE4AC140");
-		otherParams.put("Auth", "f010b054dfd284eff25065792c143271");
 		// data = JSON.toJSONString(otherParams);
 		String url = "http://localhost:8080/LogAspect/api/upload/springUpload";
-		url = "http://mall.ccb.com/ecp/api/thirdpart/upload";
 		return uploadService.upload(url, multipartFile, headerParams, otherParams);
 	}
 	
