@@ -97,8 +97,8 @@ public class TestDemo {
 		}
 		
 		String reg = "^(?:https?://)?[\\w]{1,}(?:\\.?[\\w]{1,})+[\\w-_/?&=#%:]*$";
-		String reg1 = "^(http|https)?:\\/\\/([\\w]{1,}+\\.)*(ccb.com)*$";
-		url = "https://a.ccb.com";
+		String reg1 = "^(http|https)?:\\/\\/([\\w]{1,}+\\.)*(cb.com)*$";
+		url = "https://a.cb.com";
 		pattern = Pattern.compile(reg1);
 		if (pattern.matcher(url).matches()) {
 			System.out.println("是正确的网址");
