@@ -30,7 +30,7 @@
 		<hibernate.validator.version>5.4.0.Final</hibernate.validator.version>
 		<validator.version>2.0.1.Final</validator.version>
 		<spring.version>4.3.24.RELEASE</spring.version>
-		<security.version>4.2.12.RELEASE</security.version>
+		<security.version>5.2.10.RELEASE</security.version>
 		<springaspects.version>4.2.6.RELEASE </springaspects.version>
 		<log4j.version>1.2.17</log4j.version>
 		<solrj.version>4.10.3</solrj.version>
